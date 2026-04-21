@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>com.nhom34.pojo.Admins</class>
+    <class>com.nhom34.pojo.Images</class>
+    <class>com.nhom34.pojo.TransportDetails</class>
+    <class>com.nhom34.pojo.Providers</class>
+    <class>com.nhom34.pojo.Customers</class>
+    <class>com.nhom34.pojo.TourDetails</class>
+    <class>com.nhom34.pojo.Payments</class>
+    <class>com.nhom34.pojo.Services</class>
+    <class>com.nhom34.pojo.Reviews</class>
+    <class>com.nhom34.pojo.BookingServiceDetail</class>
+    <class>com.nhom34.pojo.Users</class>
+    <class>com.nhom34.pojo.HotelDetails</class>
+    <class>com.nhom34.pojo.Bookings</class>
+  </persistence-unit>
+</persistence>
