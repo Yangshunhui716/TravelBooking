@@ -28,7 +28,7 @@ import java.io.Serializable;
     @NamedQuery(name = "Providers.findById", query = "SELECT p FROM Providers p WHERE p.id = :id"),
     @NamedQuery(name = "Providers.findByTax", query = "SELECT p FROM Providers p WHERE p.tax = :tax"),
     @NamedQuery(name = "Providers.findByBusinessName", query = "SELECT p FROM Providers p WHERE p.businessName = :businessName"),
-    @NamedQuery(name = "Providers.findByVerificationStatus", query = "SELECT p FROM Providers p WHERE p.verificationStatus = :verificationStatus")})
+    })
 public class Providers implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,9 +42,6 @@ public class Providers implements Serializable {
     @Size(max = 255)
     @Column(name = "business_name")
     private String businessName;
-    @Size(max = 50)
-    @Column(name = "verification_status")
-    private String verificationStatus;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Users users;
@@ -78,14 +75,6 @@ public class Providers implements Serializable {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
-    }
-
-    public String getVerificationStatus() {
-        return verificationStatus;
-    }
-
-    public void setVerificationStatus(String verificationStatus) {
-        this.verificationStatus = verificationStatus;
     }
 
     public Users getUsers() {

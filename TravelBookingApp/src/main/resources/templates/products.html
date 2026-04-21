@@ -1,0 +1,40 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý nhà cung cấp</title>
+    <th:block th:replace="base :: resources"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
+
+    <section class="container">
+        <form method="post" th:object="${product}" enctype="multipart/form-data" th:action="@{/admin/products}">
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" placeholder="Tên sản phẩm" required="true" th:field="*{name}" />
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="number" class="form-control" placeholder="Gía sản phẩm" th:field="*{price}" />
+            </div>
+            <div class="mb-3 mt-3">
+                <select class="form-select" th:field="*{categoryId}">
+                    <option th:each="c:${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="file" class="form-control" th:field="*{file}" placeholder="anh san pham" />
+                
+                <img th:if="${product.image != null}" th:src="${product.image}" width="200" />
+            </div>
+            
+            <button th:if="${UserProviders.is == null}" type="submit" class="btn btn-primary mb-2">Thêm sản phẩm</button>
+            <button th:unless="${product.id == null}" type="submit" class="btn btn-primary mb-2">Cập nhật sản phẩm</button>
+            
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{image}" />
+        </form>
+    </section>
+
+    <div th:replace="base :: footer"></div>
+</body>
+</html>
+
