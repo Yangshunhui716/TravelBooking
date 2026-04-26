@@ -4,28 +4,19 @@
  */
 package com.nhom34.controllers;
 
-
-import com.nhom34.pojo.Providers;
-import com.nhom34.services.ProviderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.nhom34.services.UserService;
-import java.util.List;
 
 /**
  *
  * @author QUANG AN
  */
 @Controller
-
-public class HomeController {
-    
-    @RequestMapping("/")
-    public String index(Model model){
-        return "index";
+@RequestMapping("/admin")
+public class UserControler {
+    @GetMapping("/login")
+    public String loginView(){
+        return "login"; 
     }
-    
-    
 }

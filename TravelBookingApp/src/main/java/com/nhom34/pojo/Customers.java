@@ -17,11 +17,11 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "customers")
@@ -50,7 +50,7 @@ public class Customers implements Serializable {
     @OneToOne(optional = false)
     private Users users;
     @OneToMany(mappedBy = "customerId")
-    private Set<Bookings> bookingsSet;
+    private Collection<Bookings> bookingsCollection;
 
     public Customers() {
     }
@@ -99,12 +99,12 @@ public class Customers implements Serializable {
         this.users = users;
     }
 
-    public Set<Bookings> getBookingsSet() {
-        return bookingsSet;
+    public Collection<Bookings> getBookingsCollection() {
+        return bookingsCollection;
     }
 
-    public void setBookingsSet(Set<Bookings> bookingsSet) {
-        this.bookingsSet = bookingsSet;
+    public void setBookingsCollection(Collection<Bookings> bookingsCollection) {
+        this.bookingsCollection = bookingsCollection;
     }
 
     @Override

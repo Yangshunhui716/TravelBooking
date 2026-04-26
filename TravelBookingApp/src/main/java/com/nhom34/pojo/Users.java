@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,7 +24,7 @@ import java.util.Date;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "users")
@@ -35,7 +36,12 @@ import java.util.Date;
     @NamedQuery(name = "Users.findByPhone", query = "SELECT u FROM Users u WHERE u.phone = :phone"),
     @NamedQuery(name = "Users.findByCreatedAt", query = "SELECT u FROM Users u WHERE u.createdAt = :createdAt"),
     @NamedQuery(name = "Users.findByUpdatedAt", query = "SELECT u FROM Users u WHERE u.updatedAt = :updatedAt"),
-    @NamedQuery(name = "Users.findByIsActive", query = "SELECT u FROM Users u WHERE u.isActive = :isActive")})
+    @NamedQuery(name = "Users.findByIsActive", query = "SELECT u FROM Users u WHERE u.isActive = :isActive"),
+    @NamedQuery(name = "Users.findByAvatar", query = "SELECT u FROM Users u WHERE u.avatar = :avatar"),
+    @NamedQuery(name = "Users.findByRole", query = "SELECT u FROM Users u WHERE u.role = :role")})
+@JsonIgnoreProperties(value={
+"password"
+})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -62,8 +68,12 @@ public class Users implements Serializable {
     private Date updatedAt;
     @Column(name = "is_active")
     private Boolean isActive;
-    @OneToOne(mappedBy = "userId")
-    private Images images;
+    @Size(max = 255)
+    @Column(name = "avatar")
+    private String avatar;
+    @Size(max = 50)
+    @Column(name = "role")
+    private String role;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
     private Customers customers;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
@@ -134,12 +144,20 @@ public class Users implements Serializable {
         this.isActive = isActive;
     }
 
-    public Images getImages() {
-        return images;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setImages(Images images) {
-        this.images = images;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Customers getCustomers() {

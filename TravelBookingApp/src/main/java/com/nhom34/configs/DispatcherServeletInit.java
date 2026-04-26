@@ -4,6 +4,9 @@
  */
 package com.nhom34.configs;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
@@ -17,6 +20,7 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
         return new Class[]{
             ThymeleafConfigs.class,
             HibernateConfigs.class,
+            SpringSecurityConfigs.class
         };
     }
     
@@ -32,6 +36,12 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
     protected String[] getServletMappings() {
         return new String[] {"/"};
     }
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        registration.setMultipartConfig(new MultipartConfigElement("/", 5000000, 15000000, 0));
+    }
+    
+
     
     
 }

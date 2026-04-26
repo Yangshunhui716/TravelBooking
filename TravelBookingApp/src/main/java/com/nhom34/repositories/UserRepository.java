@@ -15,5 +15,10 @@ import java.util.List;
 public interface UserRepository {
     List<Users> getUser();
     List<Users> getUserProvider(List<Providers> p);
+    void updateActive(int id);
+    Users getUserById(int id);
+    Users getUserByUserName(String username);
+    Users addUser(Users u);
+    boolean authenticate(String username, String password);
     
 }

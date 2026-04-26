@@ -30,5 +30,7 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         Query q = s.createQuery("FROM Providers", Providers.class);
         return q.getResultList();
     }  
+
+
     
 }

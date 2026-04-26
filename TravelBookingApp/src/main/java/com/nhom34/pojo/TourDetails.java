@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "tour_details")

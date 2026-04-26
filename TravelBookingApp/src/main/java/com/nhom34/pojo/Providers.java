@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "providers")
@@ -27,8 +27,7 @@ import java.io.Serializable;
     @NamedQuery(name = "Providers.findAll", query = "SELECT p FROM Providers p"),
     @NamedQuery(name = "Providers.findById", query = "SELECT p FROM Providers p WHERE p.id = :id"),
     @NamedQuery(name = "Providers.findByTax", query = "SELECT p FROM Providers p WHERE p.tax = :tax"),
-    @NamedQuery(name = "Providers.findByBusinessName", query = "SELECT p FROM Providers p WHERE p.businessName = :businessName"),
-    })
+    @NamedQuery(name = "Providers.findByBusinessName", query = "SELECT p FROM Providers p WHERE p.businessName = :businessName")})
 public class Providers implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -20,12 +20,12 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "bookings")
@@ -68,9 +68,9 @@ public class Bookings implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
     @OneToMany(mappedBy = "bookingId")
-    private Set<Payments> paymentsSet;
+    private Collection<BookingServiceDetail> bookingServiceDetailCollection;
     @OneToMany(mappedBy = "bookingId")
-    private Set<BookingServiceDetail> bookingServiceDetailSet;
+    private Collection<Payments> paymentsCollection;
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @ManyToOne
     private Customers customerId;
@@ -146,20 +146,20 @@ public class Bookings implements Serializable {
         this.isActive = isActive;
     }
 
-    public Set<Payments> getPaymentsSet() {
-        return paymentsSet;
+    public Collection<BookingServiceDetail> getBookingServiceDetailCollection() {
+        return bookingServiceDetailCollection;
     }
 
-    public void setPaymentsSet(Set<Payments> paymentsSet) {
-        this.paymentsSet = paymentsSet;
+    public void setBookingServiceDetailCollection(Collection<BookingServiceDetail> bookingServiceDetailCollection) {
+        this.bookingServiceDetailCollection = bookingServiceDetailCollection;
     }
 
-    public Set<BookingServiceDetail> getBookingServiceDetailSet() {
-        return bookingServiceDetailSet;
+    public Collection<Payments> getPaymentsCollection() {
+        return paymentsCollection;
     }
 
-    public void setBookingServiceDetailSet(Set<BookingServiceDetail> bookingServiceDetailSet) {
-        this.bookingServiceDetailSet = bookingServiceDetailSet;
+    public void setPaymentsCollection(Collection<Payments> paymentsCollection) {
+        this.paymentsCollection = paymentsCollection;
     }
 
     public Customers getCustomerId() {

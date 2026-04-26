@@ -21,12 +21,12 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "services")
@@ -40,7 +40,8 @@ import java.util.Set;
     @NamedQuery(name = "Services.findByStatus", query = "SELECT s FROM Services s WHERE s.status = :status"),
     @NamedQuery(name = "Services.findByCreatedAt", query = "SELECT s FROM Services s WHERE s.createdAt = :createdAt"),
     @NamedQuery(name = "Services.findByUpdatedAt", query = "SELECT s FROM Services s WHERE s.updatedAt = :updatedAt"),
-    @NamedQuery(name = "Services.findByIsActive", query = "SELECT s FROM Services s WHERE s.isActive = :isActive")})
+    @NamedQuery(name = "Services.findByIsActive", query = "SELECT s FROM Services s WHERE s.isActive = :isActive"),
+    @NamedQuery(name = "Services.findByImgUrl", query = "SELECT s FROM Services s WHERE s.imgUrl = :imgUrl")})
 public class Services implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -75,10 +76,11 @@ public class Services implements Serializable {
     private Date updatedAt;
     @Column(name = "is_active")
     private Boolean isActive;
+    @Size(max = 255)
+    @Column(name = "img_url")
+    private String imgUrl;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
     private TourDetails tourDetails;
-    @OneToOne(mappedBy = "serviceId")
-    private Images images;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
     private HotelDetails hotelDetails;
     @OneToOne(mappedBy = "serviceId")
@@ -86,7 +88,7 @@ public class Services implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
     private TransportDetails transportDetails;
     @OneToMany(mappedBy = "serviceId")
-    private Set<BookingServiceDetail> bookingServiceDetailSet;
+    private Collection<BookingServiceDetail> bookingServiceDetailCollection;
 
     public Services() {
     }
@@ -175,20 +177,20 @@ public class Services implements Serializable {
         this.isActive = isActive;
     }
 
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
     public TourDetails getTourDetails() {
         return tourDetails;
     }
 
     public void setTourDetails(TourDetails tourDetails) {
         this.tourDetails = tourDetails;
-    }
-
-    public Images getImages() {
-        return images;
-    }
-
-    public void setImages(Images images) {
-        this.images = images;
     }
 
     public HotelDetails getHotelDetails() {
@@ -215,12 +217,12 @@ public class Services implements Serializable {
         this.transportDetails = transportDetails;
     }
 
-    public Set<BookingServiceDetail> getBookingServiceDetailSet() {
-        return bookingServiceDetailSet;
+    public Collection<BookingServiceDetail> getBookingServiceDetailCollection() {
+        return bookingServiceDetailCollection;
     }
 
-    public void setBookingServiceDetailSet(Set<BookingServiceDetail> bookingServiceDetailSet) {
-        this.bookingServiceDetailSet = bookingServiceDetailSet;
+    public void setBookingServiceDetailCollection(Collection<BookingServiceDetail> bookingServiceDetailCollection) {
+        this.bookingServiceDetailCollection = bookingServiceDetailCollection;
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.nhom34.repositories.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
@@ -25,6 +26,13 @@ import com.nhom34.repositories.UserRepository;
 public class UserRepositoryImpl implements UserRepository{
     @Autowired
     private LocalSessionFactoryBean factory; 
+    
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    
+
+    public UserRepositoryImpl() {
+    }
     @Override
     public List<Users> getUser() {
         Session s = this.factory.getObject().getCurrentSession();
@@ -38,5 +46,47 @@ public class UserRepositoryImpl implements UserRepository{
             .map(Providers::getUsers)
             .toList();
     }
+    @Override
+    public Users getUserById(int id) {
+       Session s = this.factory.getObject().getCurrentSession();
+       return s.get(Users.class, id);
+    }
+
+    @Override
+    public void updateActive(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Users u = this.getUserById(id);
+        if (u.getIsActive().equals(Boolean.TRUE) ){
+            u.setIsActive(Boolean.FALSE);
+        }
+        else u.setIsActive(Boolean.TRUE);
+        s.merge(u);
+    }
+
+    @Override
+    public Users getUserByUserName(String username) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query query = s.createNamedQuery("Users.findByUsername", Users.class);
+        query.setParameter("username", username);
+
+        return (Users) query.getSingleResult();
+    }
+    
+    @Override
+    public Users addUser(Users u) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(u);
+        
+        return u;
+    }
+    
+    @Override
+    public boolean authenticate(String username, String password) {
+        Users u = this.getUserByUserName(username);
+
+        return this.passwordEncoder.matches(password, u.getPassword());
+    }
+
+
     
 }
