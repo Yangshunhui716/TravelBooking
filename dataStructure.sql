@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: localhost    Database: travelbookingdb
 -- ------------------------------------------------------
--- Server version	9.4.0
+-- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -159,39 +159,6 @@ INSERT INTO `hotel_details` VALUES (1,'Deluxe','2026-04-21 14:00:00','2026-04-22
 UNLOCK TABLES;
 
 --
--- Table structure for table `images`
---
-
-DROP TABLE IF EXISTS `images`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `images` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `url` text,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `is_active` tinyint(1) DEFAULT NULL,
-  `user_id` bigint DEFAULT NULL,
-  `service_id` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_image_user` (`user_id`),
-  UNIQUE KEY `uq_image_service` (`service_id`),
-  CONSTRAINT `fk_image_service` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`),
-  CONSTRAINT `fk_image_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `images`
---
-
-LOCK TABLES `images` WRITE;
-/*!40000 ALTER TABLE `images` DISABLE KEYS */;
-INSERT INTO `images` VALUES (1,'img_user1.jpg','2026-04-21 15:07:34','2026-04-21 15:07:34',1,1,NULL),(2,'img_service1.jpg','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL,1),(3,'img_service2.jpg','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL,2);
-/*!40000 ALTER TABLE `images` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `payments`
 --
 
@@ -235,7 +202,6 @@ CREATE TABLE `providers` (
   `id` bigint NOT NULL,
   `tax` int DEFAULT NULL,
   `business_name` varchar(255) DEFAULT NULL,
-  `verification_status` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `providers_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -247,7 +213,7 @@ CREATE TABLE `providers` (
 
 LOCK TABLES `providers` WRITE;
 /*!40000 ALTER TABLE `providers` DISABLE KEYS */;
-INSERT INTO `providers` VALUES (3,123456,'ABC Travel','VERIFIED');
+INSERT INTO `providers` VALUES (3,123456,'ABC Travel');
 /*!40000 ALTER TABLE `providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,6 +269,7 @@ CREATE TABLE `services` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT NULL,
+  `img_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -313,7 +280,7 @@ CREATE TABLE `services` (
 
 LOCK TABLES `services` WRITE;
 /*!40000 ALTER TABLE `services` DISABLE KEYS */;
-INSERT INTO `services` VALUES (1,'Hotel 5 Sao','Luxury hotel',200,10,'Da Nang','AVAILABLE','2026-04-21 15:07:34','2026-04-21 15:07:34',1),(2,'Tour Da Nang','City tour',100,20,'Da Nang','AVAILABLE','2026-04-21 15:07:34','2026-04-21 15:07:34',1),(3,'Xe Dua Don','Airport pickup',50,15,'Da Nang','AVAILABLE','2026-04-21 15:07:34','2026-04-21 15:07:34',1);
+INSERT INTO `services` VALUES (1,'Hotel 5 Sao','Luxury hotel',200,10,'Da Nang','AVAILABLE','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL),(2,'Tour Da Nang','City tour',100,20,'Da Nang','AVAILABLE','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL),(3,'Xe Dua Don','Airport pickup',50,15,'Da Nang','AVAILABLE','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL);
 /*!40000 ALTER TABLE `services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -385,8 +352,10 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -395,7 +364,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'user1','123','0901','2026-04-21 15:07:34','2026-04-21 15:07:34',1),(2,'user2','123','0902','2026-04-21 15:07:34','2026-04-21 15:07:34',1),(3,'provider1','123','0903','2026-04-21 15:07:34','2026-04-21 15:07:34',1),(4,'admin1','123','0904','2026-04-21 15:07:34','2026-04-21 15:07:34',1);
+INSERT INTO `users` VALUES (1,'user1','123','0901','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL,NULL),(2,'user2','123','0902','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL,NULL),(3,'provider1','123','0903','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL,NULL),(4,'admin1','123','0904','2026-04-21 15:07:34','2026-04-21 15:07:34',1,NULL,NULL),(5,'aaaaa','$2a$10$gmcrFutlVFiXWdDaqxW.lubLOmhQWAUT6i4PPJPX82Q/hr/iEAysu','1235',NULL,NULL,NULL,NULL,NULL),(7,'bbbb','$2a$10$K0vVAt.XQIRO5h6v/lRnMOeIRfiT6XkWND.UE.G1dz61vrcF8FNri','12351111111','2026-04-26 17:39:14','2026-04-26 17:39:14',1,NULL,'ROLE_ADMIN'),(8,'a','$2a$10$K345TyEPJgEGI1o9SguZV.urgSbYR0vFwc9yjRYWWb2OCRQz/zhQ.','12351111111','2026-04-26 17:53:04','2026-04-26 17:53:04',1,NULL,'ADMIN');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -408,4 +377,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-21 15:46:29
+-- Dump completed on 2026-04-26 18:39:10
