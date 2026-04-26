@@ -25,8 +25,10 @@
                         <td th:text="${p.tax}"></td>
                         <td th:text="${UserProviders[i.index].isActive}"></td>
                         <td>
-                            <button th:if="${UserProviders[i.index].isActive == false}" type="submit" class="btn btn-primary mb-2">Hoạt động</button>
-                            <button th:unless="${UserProviders[i.index].isActive == false}" type="submit" class="btn btn-primary mb-2">Không hoạt động</button>
+                            <button th:if="${UserProviders[i.index].isActive == false}" type="button" class="btn btn-primary mb-2" 
+                                    th:onclick="'updateActive(\'' + @{/api/users/} + ${p.id} + '\')'">Hoạt động</button>
+                            <button th:unless="${UserProviders[i.index].isActive == false}" type="button" class="btn btn-primary mb-2"
+                                    th:onclick="'updateActive(\'' + @{/api/users/} + ${p.id} + '\')'">Không hoạt động</button>
                         </td>
                     </tr>
                     
@@ -38,4 +40,5 @@
         
         <script th:src="@{/js/script.js}"></script>
     </body>
+
 </html>

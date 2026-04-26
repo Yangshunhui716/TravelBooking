@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "transport_details")

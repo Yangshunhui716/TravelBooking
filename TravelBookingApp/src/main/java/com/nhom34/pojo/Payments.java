@@ -23,7 +23,7 @@ import java.util.Date;
 
 /**
  *
- * @author PC
+ * @author QUANG AN
  */
 @Entity
 @Table(name = "payments")
