@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService extends UserDetailsService{
     List<Users> getUser();
     List<Users> getUserProvider(List<Providers> p);
-     void updateActive(int id);
+     void updateActive(int id, boolean active);
     Users getUserById(int id);
     Users getUserByUsername(String username);
     Users addUser(Map<String, String> info, MultipartFile avatar);

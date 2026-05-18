@@ -9,26 +9,28 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
-@Table(name = "tour_details")
+@Table(name = "tour_services")
 @NamedQueries({
-    @NamedQuery(name = "TourDetails.findAll", query = "SELECT t FROM TourDetails t"),
-    @NamedQuery(name = "TourDetails.findById", query = "SELECT t FROM TourDetails t WHERE t.id = :id"),
-    @NamedQuery(name = "TourDetails.findByDurationDays", query = "SELECT t FROM TourDetails t WHERE t.durationDays = :durationDays")})
-public class TourDetails implements Serializable {
+    @NamedQuery(name = "TourServices.findAll", query = "SELECT t FROM TourServices t"),
+    @NamedQuery(name = "TourServices.findById", query = "SELECT t FROM TourServices t WHERE t.id = :id"),
+    @NamedQuery(name = "TourServices.findByDurationDays", query = "SELECT t FROM TourServices t WHERE t.durationDays = :durationDays"),
+    @NamedQuery(name = "TourServices.findByDepartureTime", query = "SELECT t FROM TourServices t WHERE t.departureTime = :departureTime")})
+public class TourServices implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -36,21 +38,30 @@ public class TourDetails implements Serializable {
     @NotNull
     @Column(name = "id")
     private Long id;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "duration_days")
-    private Integer durationDays;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "itinerary")
-    private String itinerary;
+    private int durationDays;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "departure_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date departureTime;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Services services;
 
-    public TourDetails() {
+    public TourServices() {
     }
 
-    public TourDetails(Long id) {
+    public TourServices(Long id) {
         this.id = id;
+    }
+
+    public TourServices(Long id, int durationDays, Date departureTime) {
+        this.id = id;
+        this.durationDays = durationDays;
+        this.departureTime = departureTime;
     }
 
     public Long getId() {
@@ -61,20 +72,20 @@ public class TourDetails implements Serializable {
         this.id = id;
     }
 
-    public Integer getDurationDays() {
+    public int getDurationDays() {
         return durationDays;
     }
 
-    public void setDurationDays(Integer durationDays) {
+    public void setDurationDays(int durationDays) {
         this.durationDays = durationDays;
     }
 
-    public String getItinerary() {
-        return itinerary;
+    public Date getDepartureTime() {
+        return departureTime;
     }
 
-    public void setItinerary(String itinerary) {
-        this.itinerary = itinerary;
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
     }
 
     public Services getServices() {
@@ -95,10 +106,10 @@ public class TourDetails implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TourDetails)) {
+        if (!(object instanceof TourServices)) {
             return false;
         }
-        TourDetails other = (TourDetails) object;
+        TourServices other = (TourServices) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,7 +118,7 @@ public class TourDetails implements Serializable {
 
     @Override
     public String toString() {
-        return "com.nhom34.pojo.TourDetails[ id=" + id + " ]";
+        return "com.nhom34.pojo.TourServices[ id=" + id + " ]";
     }
     
 }

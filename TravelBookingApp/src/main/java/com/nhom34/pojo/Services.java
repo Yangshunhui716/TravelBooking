@@ -11,7 +11,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -19,6 +21,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,7 +29,7 @@ import java.util.Date;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
 @Table(name = "services")
@@ -35,8 +38,8 @@ import java.util.Date;
     @NamedQuery(name = "Services.findById", query = "SELECT s FROM Services s WHERE s.id = :id"),
     @NamedQuery(name = "Services.findByName", query = "SELECT s FROM Services s WHERE s.name = :name"),
     @NamedQuery(name = "Services.findByPrice", query = "SELECT s FROM Services s WHERE s.price = :price"),
+    @NamedQuery(name = "Services.findByDestination", query = "SELECT s FROM Services s WHERE s.destination = :destination"),
     @NamedQuery(name = "Services.findByAvailableSlots", query = "SELECT s FROM Services s WHERE s.availableSlots = :availableSlots"),
-    @NamedQuery(name = "Services.findByLocation", query = "SELECT s FROM Services s WHERE s.location = :location"),
     @NamedQuery(name = "Services.findByStatus", query = "SELECT s FROM Services s WHERE s.status = :status"),
     @NamedQuery(name = "Services.findByCreatedAt", query = "SELECT s FROM Services s WHERE s.createdAt = :createdAt"),
     @NamedQuery(name = "Services.findByUpdatedAt", query = "SELECT s FROM Services s WHERE s.updatedAt = :updatedAt"),
@@ -50,51 +53,84 @@ public class Services implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "name")
     private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "price")
+    private double price;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "destination")
+    private String destination;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "available_slots")
+    private int availableSlots;
+    @Basic(optional = false)
+    @NotNull
     @Lob
-    @Size(max = 65535)
+    @Size(min = 1, max = 65535)
     @Column(name = "description")
     private String description;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "price")
-    private Double price;
-    @Column(name = "available_slots")
-    private Integer availableSlots;
-    @Size(max = 255)
-    @Column(name = "location")
-    private String location;
-    @Size(max = 50)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
     @Column(name = "status")
     private String status;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "is_active")
-    private Boolean isActive;
+    private boolean isActive;
     @Size(max = 255)
     @Column(name = "img_url")
     private String imgUrl;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
-    private TourDetails tourDetails;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
-    private HotelDetails hotelDetails;
-    @OneToOne(mappedBy = "serviceId")
-    private Reviews reviews;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
-    private TransportDetails transportDetails;
+    private HotelRoomServices hotelRoomServices;
     @OneToMany(mappedBy = "serviceId")
-    private Collection<BookingServiceDetail> bookingServiceDetailCollection;
+    private Collection<Reviews> reviewsCollection;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
+    private TransportServices transportServices;
+    @JoinColumn(name = "provider_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Providers providerId;
+    @OneToMany(mappedBy = "serviceId")
+    private Collection<BookingsServiceDetail> bookingsServiceDetailCollection;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
+    private TourServices tourServices;
 
     public Services() {
     }
 
     public Services(Long id) {
         this.id = id;
+    }
+
+    public Services(Long id, String name, double price, String destination, int availableSlots, String description, String status, Date createdAt, Date updatedAt, boolean isActive) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.destination = destination;
+        this.availableSlots = availableSlots;
+        this.description = description;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -113,36 +149,36 @@ public class Services implements Serializable {
         this.name = name;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public int getAvailableSlots() {
+        return availableSlots;
+    }
+
+    public void setAvailableSlots(int availableSlots) {
+        this.availableSlots = availableSlots;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getAvailableSlots() {
-        return availableSlots;
-    }
-
-    public void setAvailableSlots(Integer availableSlots) {
-        this.availableSlots = availableSlots;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getStatus() {
@@ -169,11 +205,11 @@ public class Services implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Boolean getIsActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
+    public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -185,44 +221,52 @@ public class Services implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public TourDetails getTourDetails() {
-        return tourDetails;
+    public HotelRoomServices getHotelRoomServices() {
+        return hotelRoomServices;
     }
 
-    public void setTourDetails(TourDetails tourDetails) {
-        this.tourDetails = tourDetails;
+    public void setHotelRoomServices(HotelRoomServices hotelRoomServices) {
+        this.hotelRoomServices = hotelRoomServices;
     }
 
-    public HotelDetails getHotelDetails() {
-        return hotelDetails;
+    public Collection<Reviews> getReviewsCollection() {
+        return reviewsCollection;
     }
 
-    public void setHotelDetails(HotelDetails hotelDetails) {
-        this.hotelDetails = hotelDetails;
+    public void setReviewsCollection(Collection<Reviews> reviewsCollection) {
+        this.reviewsCollection = reviewsCollection;
     }
 
-    public Reviews getReviews() {
-        return reviews;
+    public TransportServices getTransportServices() {
+        return transportServices;
     }
 
-    public void setReviews(Reviews reviews) {
-        this.reviews = reviews;
+    public void setTransportServices(TransportServices transportServices) {
+        this.transportServices = transportServices;
     }
 
-    public TransportDetails getTransportDetails() {
-        return transportDetails;
+    public Providers getProviderId() {
+        return providerId;
     }
 
-    public void setTransportDetails(TransportDetails transportDetails) {
-        this.transportDetails = transportDetails;
+    public void setProviderId(Providers providerId) {
+        this.providerId = providerId;
     }
 
-    public Collection<BookingServiceDetail> getBookingServiceDetailCollection() {
-        return bookingServiceDetailCollection;
+    public Collection<BookingsServiceDetail> getBookingsServiceDetailCollection() {
+        return bookingsServiceDetailCollection;
     }
 
-    public void setBookingServiceDetailCollection(Collection<BookingServiceDetail> bookingServiceDetailCollection) {
-        this.bookingServiceDetailCollection = bookingServiceDetailCollection;
+    public void setBookingsServiceDetailCollection(Collection<BookingsServiceDetail> bookingsServiceDetailCollection) {
+        this.bookingsServiceDetailCollection = bookingsServiceDetailCollection;
+    }
+
+    public TourServices getTourServices() {
+        return tourServices;
+    }
+
+    public void setTourServices(TourServices tourServices) {
+        this.tourServices = tourServices;
     }
 
     @Override

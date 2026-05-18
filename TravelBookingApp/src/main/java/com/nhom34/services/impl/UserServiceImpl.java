@@ -60,8 +60,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void updateActive(int id) {
-         this.userRepo.updateActive(id);
+    public void updateActive(int id, boolean active) {
+         this.userRepo.updateActive(id, active);
     }
         @Override
     public Users getUserByUsername(String username) {
@@ -73,9 +73,12 @@ public class UserServiceImpl implements UserService{
         Users u = new Users();
         u.setPhone(info.get("phone"));
         u.setUsername(info.get("username"));
+        u.setEmail(info.get("email"));
         u.setPassword(this.passwordEncoder.encode(info.get("password")));
         u.setCreatedAt(new Date());
         u.setUpdatedAt(new Date());
+        u.setRole(info.get("role"));
+        u.setIsActive(true);
         if (!avatar.isEmpty()) {
             try {
                 Map res = this.cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));

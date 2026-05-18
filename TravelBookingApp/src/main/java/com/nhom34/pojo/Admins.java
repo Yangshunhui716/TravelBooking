@@ -18,7 +18,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
 @Table(name = "admins")

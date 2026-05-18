@@ -21,7 +21,7 @@ import java.util.Collection;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
 @Table(name = "customers")
@@ -38,14 +38,18 @@ public class Customers implements Serializable {
     @NotNull
     @Column(name = "id")
     private Long id;
-    @Size(max = 255)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "fullname")
     private String fullname;
-    @Size(max = 10)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "gender")
     private String gender;
-    @OneToOne(mappedBy = "customerId")
-    private Reviews reviews;
+    @OneToMany(mappedBy = "customerId")
+    private Collection<Reviews> reviewsCollection;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Users users;
@@ -57,6 +61,12 @@ public class Customers implements Serializable {
 
     public Customers(Long id) {
         this.id = id;
+    }
+
+    public Customers(Long id, String fullname, String gender) {
+        this.id = id;
+        this.fullname = fullname;
+        this.gender = gender;
     }
 
     public Long getId() {
@@ -83,12 +93,12 @@ public class Customers implements Serializable {
         this.gender = gender;
     }
 
-    public Reviews getReviews() {
-        return reviews;
+    public Collection<Reviews> getReviewsCollection() {
+        return reviewsCollection;
     }
 
-    public void setReviews(Reviews reviews) {
-        this.reviews = reviews;
+    public void setReviewsCollection(Collection<Reviews> reviewsCollection) {
+        this.reviewsCollection = reviewsCollection;
     }
 
     public Users getUsers() {

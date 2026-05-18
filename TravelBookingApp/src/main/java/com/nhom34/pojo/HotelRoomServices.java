@@ -19,17 +19,16 @@ import java.io.Serializable;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
-@Table(name = "transport_details")
+@Table(name = "hotel_room_services")
 @NamedQueries({
-    @NamedQuery(name = "TransportDetails.findAll", query = "SELECT t FROM TransportDetails t"),
-    @NamedQuery(name = "TransportDetails.findById", query = "SELECT t FROM TransportDetails t WHERE t.id = :id"),
-    @NamedQuery(name = "TransportDetails.findByTransportType", query = "SELECT t FROM TransportDetails t WHERE t.transportType = :transportType"),
-    @NamedQuery(name = "TransportDetails.findByFromLocation", query = "SELECT t FROM TransportDetails t WHERE t.fromLocation = :fromLocation"),
-    @NamedQuery(name = "TransportDetails.findByDescriptionLocation", query = "SELECT t FROM TransportDetails t WHERE t.descriptionLocation = :descriptionLocation")})
-public class TransportDetails implements Serializable {
+    @NamedQuery(name = "HotelRoomServices.findAll", query = "SELECT h FROM HotelRoomServices h"),
+    @NamedQuery(name = "HotelRoomServices.findById", query = "SELECT h FROM HotelRoomServices h WHERE h.id = :id"),
+    @NamedQuery(name = "HotelRoomServices.findByHotelName", query = "SELECT h FROM HotelRoomServices h WHERE h.hotelName = :hotelName"),
+    @NamedQuery(name = "HotelRoomServices.findByAddress", query = "SELECT h FROM HotelRoomServices h WHERE h.address = :address")})
+public class HotelRoomServices implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,24 +36,31 @@ public class TransportDetails implements Serializable {
     @NotNull
     @Column(name = "id")
     private Long id;
-    @Size(max = 100)
-    @Column(name = "transport_type")
-    private String transportType;
-    @Size(max = 255)
-    @Column(name = "from_location")
-    private String fromLocation;
-    @Size(max = 255)
-    @Column(name = "description_location")
-    private String descriptionLocation;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "hotel_name")
+    private String hotelName;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "address")
+    private String address;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Services services;
 
-    public TransportDetails() {
+    public HotelRoomServices() {
     }
 
-    public TransportDetails(Long id) {
+    public HotelRoomServices(Long id) {
         this.id = id;
+    }
+
+    public HotelRoomServices(Long id, String hotelName, String address) {
+        this.id = id;
+        this.hotelName = hotelName;
+        this.address = address;
     }
 
     public Long getId() {
@@ -65,28 +71,20 @@ public class TransportDetails implements Serializable {
         this.id = id;
     }
 
-    public String getTransportType() {
-        return transportType;
+    public String getHotelName() {
+        return hotelName;
     }
 
-    public void setTransportType(String transportType) {
-        this.transportType = transportType;
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
     }
 
-    public String getFromLocation() {
-        return fromLocation;
+    public String getAddress() {
+        return address;
     }
 
-    public void setFromLocation(String fromLocation) {
-        this.fromLocation = fromLocation;
-    }
-
-    public String getDescriptionLocation() {
-        return descriptionLocation;
-    }
-
-    public void setDescriptionLocation(String descriptionLocation) {
-        this.descriptionLocation = descriptionLocation;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Services getServices() {
@@ -107,10 +105,10 @@ public class TransportDetails implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TransportDetails)) {
+        if (!(object instanceof HotelRoomServices)) {
             return false;
         }
-        TransportDetails other = (TransportDetails) object;
+        HotelRoomServices other = (HotelRoomServices) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -119,7 +117,7 @@ public class TransportDetails implements Serializable {
 
     @Override
     public String toString() {
-        return "com.nhom34.pojo.TransportDetails[ id=" + id + " ]";
+        return "com.nhom34.pojo.HotelRoomServices[ id=" + id + " ]";
     }
     
 }
