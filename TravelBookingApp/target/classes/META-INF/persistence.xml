@@ -15,5 +15,10 @@
     <class>com.nhom34.pojo.Users</class>
     <class>com.nhom34.pojo.HotelDetails</class>
     <class>com.nhom34.pojo.Bookings</class>
+    <class>com.nhom34.pojo.HotelRoomServices</class>
+    <class>com.nhom34.pojo.TransportServices</class>
+    <class>com.nhom34.pojo.TransferTransactions</class>
+    <class>com.nhom34.pojo.BookingsServiceDetail</class>
+    <class>com.nhom34.pojo.TourServices</class>
   </persistence-unit>
 </persistence>

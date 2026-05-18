@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/admin")
-public class UserControler {
+public class UserController {
     @GetMapping("/login")
     public String loginView(){
         return "login"; 

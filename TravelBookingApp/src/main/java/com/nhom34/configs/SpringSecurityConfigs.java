@@ -51,6 +51,7 @@ public class SpringSecurityConfigs {
         http.csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/js/**").permitAll()
         ).formLogin(form -> form.loginPage("/admin/login") // Đường dẫn tới trang đăng nhập
                 .loginProcessingUrl("/admin/login") // Đường dẫn xử lý POST
                 .defaultSuccessUrl("/", true) // Chuyển hướng khi thành công

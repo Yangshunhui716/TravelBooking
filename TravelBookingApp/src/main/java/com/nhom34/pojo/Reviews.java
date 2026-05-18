@@ -12,9 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -24,7 +24,7 @@ import java.util.Date;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
 @Table(name = "reviews")
@@ -33,8 +33,7 @@ import java.util.Date;
     @NamedQuery(name = "Reviews.findById", query = "SELECT r FROM Reviews r WHERE r.id = :id"),
     @NamedQuery(name = "Reviews.findByRating", query = "SELECT r FROM Reviews r WHERE r.rating = :rating"),
     @NamedQuery(name = "Reviews.findByCreatedAt", query = "SELECT r FROM Reviews r WHERE r.createdAt = :createdAt"),
-    @NamedQuery(name = "Reviews.findByUpdatedAt", query = "SELECT r FROM Reviews r WHERE r.updatedAt = :updatedAt"),
-    @NamedQuery(name = "Reviews.findByIsActive", query = "SELECT r FROM Reviews r WHERE r.isActive = :isActive")})
+    @NamedQuery(name = "Reviews.findByUpdatedAt", query = "SELECT r FROM Reviews r WHERE r.updatedAt = :updatedAt")})
 public class Reviews implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,13 +54,11 @@ public class Reviews implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @Column(name = "is_active")
-    private Boolean isActive;
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    @OneToOne
+    @ManyToOne
     private Customers customerId;
     @JoinColumn(name = "service_id", referencedColumnName = "id")
-    @OneToOne
+    @ManyToOne
     private Services serviceId;
 
     public Reviews() {
@@ -109,14 +106,6 @@ public class Reviews implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
     }
 
     public Customers getCustomerId() {

@@ -5,21 +5,24 @@
 package com.nhom34.pojo;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
 @Table(name = "providers")
@@ -27,7 +30,8 @@ import java.io.Serializable;
     @NamedQuery(name = "Providers.findAll", query = "SELECT p FROM Providers p"),
     @NamedQuery(name = "Providers.findById", query = "SELECT p FROM Providers p WHERE p.id = :id"),
     @NamedQuery(name = "Providers.findByTax", query = "SELECT p FROM Providers p WHERE p.tax = :tax"),
-    @NamedQuery(name = "Providers.findByBusinessName", query = "SELECT p FROM Providers p WHERE p.businessName = :businessName")})
+    @NamedQuery(name = "Providers.findByBusinessName", query = "SELECT p FROM Providers p WHERE p.businessName = :businessName"),
+    @NamedQuery(name = "Providers.findByAddress", query = "SELECT p FROM Providers p WHERE p.address = :address")})
 public class Providers implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,11 +40,23 @@ public class Providers implements Serializable {
     @NotNull
     @Column(name = "id")
     private Long id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "tax")
-    private Integer tax;
-    @Size(max = 255)
+    private String tax;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "business_name")
     private String businessName;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "address")
+    private String address;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "providerId")
+    private Collection<Services> servicesCollection;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Users users;
@@ -52,6 +68,13 @@ public class Providers implements Serializable {
         this.id = id;
     }
 
+    public Providers(Long id, String tax, String businessName, String address) {
+        this.id = id;
+        this.tax = tax;
+        this.businessName = businessName;
+        this.address = address;
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,11 +83,11 @@ public class Providers implements Serializable {
         this.id = id;
     }
 
-    public Integer getTax() {
+    public String getTax() {
         return tax;
     }
 
-    public void setTax(Integer tax) {
+    public void setTax(String tax) {
         this.tax = tax;
     }
 
@@ -74,6 +97,22 @@ public class Providers implements Serializable {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Collection<Services> getServicesCollection() {
+        return servicesCollection;
+    }
+
+    public void setServicesCollection(Collection<Services> servicesCollection) {
+        this.servicesCollection = servicesCollection;
     }
 
     public Users getUsers() {

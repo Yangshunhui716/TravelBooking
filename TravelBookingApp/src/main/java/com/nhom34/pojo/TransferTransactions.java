@@ -17,27 +17,26 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
-@Table(name = "payments")
+@Table(name = "transfer_transactions")
 @NamedQueries({
-    @NamedQuery(name = "Payments.findAll", query = "SELECT p FROM Payments p"),
-    @NamedQuery(name = "Payments.findById", query = "SELECT p FROM Payments p WHERE p.id = :id"),
-    @NamedQuery(name = "Payments.findByPaymentMethod", query = "SELECT p FROM Payments p WHERE p.paymentMethod = :paymentMethod"),
-    @NamedQuery(name = "Payments.findByAmount", query = "SELECT p FROM Payments p WHERE p.amount = :amount"),
-    @NamedQuery(name = "Payments.findByTransactionCode", query = "SELECT p FROM Payments p WHERE p.transactionCode = :transactionCode"),
-    @NamedQuery(name = "Payments.findByStatus", query = "SELECT p FROM Payments p WHERE p.status = :status"),
-    @NamedQuery(name = "Payments.findByCreatedAt", query = "SELECT p FROM Payments p WHERE p.createdAt = :createdAt"),
-    @NamedQuery(name = "Payments.findByUpdatedAt", query = "SELECT p FROM Payments p WHERE p.updatedAt = :updatedAt"),
-    @NamedQuery(name = "Payments.findByIsActive", query = "SELECT p FROM Payments p WHERE p.isActive = :isActive")})
-public class Payments implements Serializable {
+    @NamedQuery(name = "TransferTransactions.findAll", query = "SELECT t FROM TransferTransactions t"),
+    @NamedQuery(name = "TransferTransactions.findById", query = "SELECT t FROM TransferTransactions t WHERE t.id = :id"),
+    @NamedQuery(name = "TransferTransactions.findByAmount", query = "SELECT t FROM TransferTransactions t WHERE t.amount = :amount"),
+    @NamedQuery(name = "TransferTransactions.findByTransactionCode", query = "SELECT t FROM TransferTransactions t WHERE t.transactionCode = :transactionCode"),
+    @NamedQuery(name = "TransferTransactions.findByStatus", query = "SELECT t FROM TransferTransactions t WHERE t.status = :status"),
+    @NamedQuery(name = "TransferTransactions.findByCreatedAt", query = "SELECT t FROM TransferTransactions t WHERE t.createdAt = :createdAt"),
+    @NamedQuery(name = "TransferTransactions.findByUpdatedAt", query = "SELECT t FROM TransferTransactions t WHERE t.updatedAt = :updatedAt")})
+public class TransferTransactions implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,35 +44,48 @@ public class Payments implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 50)
-    @Column(name = "payment_method")
-    private String paymentMethod;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "amount")
-    private Double amount;
-    @Size(max = 100)
+    private double amount;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "transaction_code")
     private String transactionCode;
-    @Size(max = 20)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
     @Column(name = "status")
     private String status;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @Column(name = "is_active")
-    private Boolean isActive;
     @JoinColumn(name = "booking_id", referencedColumnName = "id")
     @ManyToOne
     private Bookings bookingId;
 
-    public Payments() {
+    public TransferTransactions() {
     }
 
-    public Payments(Long id) {
+    public TransferTransactions(Long id) {
         this.id = id;
+    }
+
+    public TransferTransactions(Long id, double amount, String transactionCode, String status, Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.amount = amount;
+        this.transactionCode = transactionCode;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -84,19 +96,11 @@ public class Payments implements Serializable {
         this.id = id;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public Double getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -132,14 +136,6 @@ public class Payments implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
     public Bookings getBookingId() {
         return bookingId;
     }
@@ -158,10 +154,10 @@ public class Payments implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Payments)) {
+        if (!(object instanceof TransferTransactions)) {
             return false;
         }
-        Payments other = (Payments) object;
+        TransferTransactions other = (TransferTransactions) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -170,7 +166,7 @@ public class Payments implements Serializable {
 
     @Override
     public String toString() {
-        return "com.nhom34.pojo.Payments[ id=" + id + " ]";
+        return "com.nhom34.pojo.TransferTransactions[ id=" + id + " ]";
     }
     
 }

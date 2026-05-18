@@ -15,21 +15,22 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
-@Table(name = "booking_service_detail")
+@Table(name = "bookings_service_detail")
 @NamedQueries({
-    @NamedQuery(name = "BookingServiceDetail.findAll", query = "SELECT b FROM BookingServiceDetail b"),
-    @NamedQuery(name = "BookingServiceDetail.findById", query = "SELECT b FROM BookingServiceDetail b WHERE b.id = :id"),
-    @NamedQuery(name = "BookingServiceDetail.findByUnitPrice", query = "SELECT b FROM BookingServiceDetail b WHERE b.unitPrice = :unitPrice"),
-    @NamedQuery(name = "BookingServiceDetail.findBySubtotal", query = "SELECT b FROM BookingServiceDetail b WHERE b.subtotal = :subtotal"),
-    @NamedQuery(name = "BookingServiceDetail.findByQuantity", query = "SELECT b FROM BookingServiceDetail b WHERE b.quantity = :quantity")})
-public class BookingServiceDetail implements Serializable {
+    @NamedQuery(name = "BookingsServiceDetail.findAll", query = "SELECT b FROM BookingsServiceDetail b"),
+    @NamedQuery(name = "BookingsServiceDetail.findById", query = "SELECT b FROM BookingsServiceDetail b WHERE b.id = :id"),
+    @NamedQuery(name = "BookingsServiceDetail.findByUnitPrice", query = "SELECT b FROM BookingsServiceDetail b WHERE b.unitPrice = :unitPrice"),
+    @NamedQuery(name = "BookingsServiceDetail.findBySubtotal", query = "SELECT b FROM BookingsServiceDetail b WHERE b.subtotal = :subtotal"),
+    @NamedQuery(name = "BookingsServiceDetail.findByQuantity", query = "SELECT b FROM BookingsServiceDetail b WHERE b.quantity = :quantity")})
+public class BookingsServiceDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,25 +38,37 @@ public class BookingServiceDetail implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "unit_price")
-    private Double unitPrice;
+    private double unitPrice;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "subtotal")
-    private Double subtotal;
+    private double subtotal;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "quantity")
-    private Integer quantity;
+    private int quantity;
     @JoinColumn(name = "booking_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Bookings bookingId;
     @JoinColumn(name = "service_id", referencedColumnName = "id")
     @ManyToOne
     private Services serviceId;
 
-    public BookingServiceDetail() {
+    public BookingsServiceDetail() {
     }
 
-    public BookingServiceDetail(Long id) {
+    public BookingsServiceDetail(Long id) {
         this.id = id;
+    }
+
+    public BookingsServiceDetail(Long id, double unitPrice, double subtotal, int quantity) {
+        this.id = id;
+        this.unitPrice = unitPrice;
+        this.subtotal = subtotal;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -66,27 +79,27 @@ public class BookingServiceDetail implements Serializable {
         this.id = id;
     }
 
-    public Double getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(Double unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
-    public Double getSubtotal() {
+    public double getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(Double subtotal) {
+    public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
@@ -116,10 +129,10 @@ public class BookingServiceDetail implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof BookingServiceDetail)) {
+        if (!(object instanceof BookingsServiceDetail)) {
             return false;
         }
-        BookingServiceDetail other = (BookingServiceDetail) object;
+        BookingsServiceDetail other = (BookingsServiceDetail) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -128,7 +141,7 @@ public class BookingServiceDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "com.nhom34.pojo.BookingServiceDetail[ id=" + id + " ]";
+        return "com.nhom34.pojo.BookingsServiceDetail[ id=" + id + " ]";
     }
     
 }

@@ -5,6 +5,7 @@
 package com.nhom34.pojo;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
@@ -25,7 +27,7 @@ import java.util.Date;
 
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Entity
 @Table(name = "bookings")
@@ -37,8 +39,7 @@ import java.util.Date;
     @NamedQuery(name = "Bookings.findByPaymentStatus", query = "SELECT b FROM Bookings b WHERE b.paymentStatus = :paymentStatus"),
     @NamedQuery(name = "Bookings.findByPaymentMethod", query = "SELECT b FROM Bookings b WHERE b.paymentMethod = :paymentMethod"),
     @NamedQuery(name = "Bookings.findByCreatedAt", query = "SELECT b FROM Bookings b WHERE b.createdAt = :createdAt"),
-    @NamedQuery(name = "Bookings.findByUpdatedAt", query = "SELECT b FROM Bookings b WHERE b.updatedAt = :updatedAt"),
-    @NamedQuery(name = "Bookings.findByIsActive", query = "SELECT b FROM Bookings b WHERE b.isActive = :isActive")})
+    @NamedQuery(name = "Bookings.findByUpdatedAt", query = "SELECT b FROM Bookings b WHERE b.updatedAt = :updatedAt")})
 public class Bookings implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,39 +48,58 @@ public class Bookings implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "total_amount")
-    private Double totalAmount;
-    @Size(max = 20)
+    private double totalAmount;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
     @Column(name = "booking_status")
     private String bookingStatus;
-    @Size(max = 20)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
     @Column(name = "payment_status")
     private String paymentStatus;
-    @Size(max = 50)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
     @Column(name = "payment_method")
     private String paymentMethod;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @Column(name = "is_active")
-    private Boolean isActive;
     @OneToMany(mappedBy = "bookingId")
-    private Collection<BookingServiceDetail> bookingServiceDetailCollection;
-    @OneToMany(mappedBy = "bookingId")
-    private Collection<Payments> paymentsCollection;
+    private Collection<TransferTransactions> transferTransactionsCollection;
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @ManyToOne
     private Customers customerId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookingId")
+    private Collection<BookingsServiceDetail> bookingsServiceDetailCollection;
 
     public Bookings() {
     }
 
     public Bookings(Long id) {
         this.id = id;
+    }
+
+    public Bookings(Long id, double totalAmount, String bookingStatus, String paymentStatus, String paymentMethod, Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.totalAmount = totalAmount;
+        this.bookingStatus = bookingStatus;
+        this.paymentStatus = paymentStatus;
+        this.paymentMethod = paymentMethod;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -90,11 +110,11 @@ public class Bookings implements Serializable {
         this.id = id;
     }
 
-    public Double getTotalAmount() {
+    public double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -138,28 +158,12 @@ public class Bookings implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Collection<TransferTransactions> getTransferTransactionsCollection() {
+        return transferTransactionsCollection;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public Collection<BookingServiceDetail> getBookingServiceDetailCollection() {
-        return bookingServiceDetailCollection;
-    }
-
-    public void setBookingServiceDetailCollection(Collection<BookingServiceDetail> bookingServiceDetailCollection) {
-        this.bookingServiceDetailCollection = bookingServiceDetailCollection;
-    }
-
-    public Collection<Payments> getPaymentsCollection() {
-        return paymentsCollection;
-    }
-
-    public void setPaymentsCollection(Collection<Payments> paymentsCollection) {
-        this.paymentsCollection = paymentsCollection;
+    public void setTransferTransactionsCollection(Collection<TransferTransactions> transferTransactionsCollection) {
+        this.transferTransactionsCollection = transferTransactionsCollection;
     }
 
     public Customers getCustomerId() {
@@ -168,6 +172,14 @@ public class Bookings implements Serializable {
 
     public void setCustomerId(Customers customerId) {
         this.customerId = customerId;
+    }
+
+    public Collection<BookingsServiceDetail> getBookingsServiceDetailCollection() {
+        return bookingsServiceDetailCollection;
+    }
+
+    public void setBookingsServiceDetailCollection(Collection<BookingsServiceDetail> bookingsServiceDetailCollection) {
+        this.bookingsServiceDetailCollection = bookingsServiceDetailCollection;
     }
 
     @Override

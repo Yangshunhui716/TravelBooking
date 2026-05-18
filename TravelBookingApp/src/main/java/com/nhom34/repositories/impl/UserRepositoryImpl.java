@@ -42,10 +42,9 @@ public class UserRepositoryImpl implements UserRepository{
 
     @Override
     public List<Users> getUserProvider(List<Providers> p) {
-    return p.stream()
-            .map(Providers::getUsers)
-            .toList();
+        return p.stream().map(Providers::getUsers).toList();
     }
+    
     @Override
     public Users getUserById(int id) {
        Session s = this.factory.getObject().getCurrentSession();
@@ -53,13 +52,12 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
-    public void updateActive(int id) {
+    public void updateActive(int id, boolean active) {
         Session s = this.factory.getObject().getCurrentSession();
         Users u = this.getUserById(id);
-        if (u.getIsActive().equals(Boolean.TRUE) ){
-            u.setIsActive(Boolean.FALSE);
+        if (!u.getIsActive()==active){
+            u.setIsActive(active);
         }
-        else u.setIsActive(Boolean.TRUE);
         s.merge(u);
     }
 
