@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -99,17 +100,22 @@ public class Services implements Serializable {
     @Size(max = 255)
     @Column(name = "img_url")
     private String imgUrl;
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
     private HotelRoomServices hotelRoomServices;
+    @JsonIgnore
     @OneToMany(mappedBy = "serviceId")
     private Collection<Reviews> reviewsCollection;
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
     private TransportServices transportServices;
     @JoinColumn(name = "provider_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Providers providerId;
+    @JsonIgnore
     @OneToMany(mappedBy = "serviceId")
     private Collection<BookingsServiceDetail> bookingsServiceDetailCollection;
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
     private TourServices tourServices;
 
