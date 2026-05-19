@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,11 +49,13 @@ public class Customers implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "gender")
     private String gender;
+    @JsonIgnore
     @OneToMany(mappedBy = "customerId")
     private Collection<Reviews> reviewsCollection;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Users users;
+    @JsonIgnore
     @OneToMany(mappedBy = "customerId")
     private Collection<Bookings> bookingsCollection;
 

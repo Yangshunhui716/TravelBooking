@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -55,6 +56,7 @@ public class Providers implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "address")
     private String address;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "providerId")
     private Collection<Services> servicesCollection;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
