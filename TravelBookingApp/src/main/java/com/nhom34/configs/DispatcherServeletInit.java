@@ -14,36 +14,42 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  *
  * @author QUANG AN
  */
-public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherServletInitializer{
+public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{
+        return new Class[] {
             ThymeleafConfigs.class,
             HibernateConfigs.class,
-            SpringSecurityConfigs.class
+            SpringSecurityConfigs.class,
+            ApiSecurityConfigs.class
         };
     }
-    
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{
+        return new Class[] {
             WebAppContextConfigs.class
         };
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[] {"/"};
+        return new String[] { "/" };
     }
+
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
-        registration.setMultipartConfig(new MultipartConfigElement("/", 5000000, 15000000, 0));
+        String location = "/";
+        long maxFileSize = 5242880; // 5MB
+        long maxRequestSize = 20971520; // 20MB
+        int fileSizeThreshold = 0;
+
+        registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
     }
     
-    @Override
-    protected Filter[] getServletFilters() {
-        return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
-    }
+//    @Override
+//    protected Filter[] getServletFilters() {
+//        return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
+//    }
 }
