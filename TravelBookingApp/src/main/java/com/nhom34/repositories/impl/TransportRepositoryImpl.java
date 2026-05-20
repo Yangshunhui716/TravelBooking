@@ -67,4 +67,12 @@ public class TransportRepositoryImpl implements TransportRepository{
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(TransportServices.class, id);
     }  
+
+    @Override
+    public TransportServices addTransportService(TransportServices transport) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(transport);
+        
+        return transport;
+    }
 }
