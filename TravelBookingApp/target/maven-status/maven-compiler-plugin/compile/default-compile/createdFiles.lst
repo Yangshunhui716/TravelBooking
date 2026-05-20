@@ -4,6 +4,7 @@ com\nhom34\repositories\ProviderRepository.class
 com\nhom34\pojo\Admins.class
 com\nhom34\services\UserService.class
 com\nhom34\pojo\Reviews.class
+com\nhom34\repositories\impl\HotelRepositoryImpl.class
 com\nhom34\services\impl\TransportServiceImpl.class
 com\nhom34\controllers\ApiHotelController.class
 com\nhom34\pojo\Providers.class
