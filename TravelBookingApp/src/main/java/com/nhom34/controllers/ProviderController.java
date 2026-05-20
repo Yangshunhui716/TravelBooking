@@ -22,14 +22,12 @@ import org.springframework.stereotype.Controller;
 public class ProviderController {
     @Autowired
     private ProviderService provService;
-    @Autowired
-    private UserService userService;
     
     @GetMapping("/providers")
     public String createView(Model model){
         List<Providers> p = this.provService.getProv();
         model.addAttribute("Providers", p);
-        model.addAttribute("UserProviders", this.userService.getUserProvider(p));
+        model.addAttribute("UserProviders", this.provService.getProvUser(p));
         return "providers";
     }
 }
