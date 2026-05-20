@@ -4,8 +4,6 @@
  */
 package com.nhom34.repositories.impl;
 
-import com.nhom34.pojo.Admins;
-import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Users;
 import jakarta.persistence.Query;
 import java.util.List;
@@ -38,11 +36,6 @@ public class UserRepositoryImpl implements UserRepository{
         Session s = this.factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM Users", Users.class);
         return q.getResultList();
-    }
-
-    @Override
-    public List<Users> getUserProvider(List<Providers> p) {
-        return p.stream().map(Providers::getUsers).toList();
     }
     
     @Override

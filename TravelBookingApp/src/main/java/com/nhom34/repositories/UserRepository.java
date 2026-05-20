@@ -4,7 +4,6 @@
  */
 package com.nhom34.repositories;
 
-import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Users;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import java.util.List;
  */
 public interface UserRepository {
     List<Users> getUser();
-    List<Users> getUserProvider(List<Providers> p);
     void updateActive(int id, boolean active);
     Users getUserById(int id);
     Users getUserByUserName(String username);
