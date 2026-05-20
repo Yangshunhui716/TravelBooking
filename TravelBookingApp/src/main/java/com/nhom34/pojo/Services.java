@@ -27,6 +27,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 /**
  *
@@ -46,8 +47,8 @@ import java.util.Date;
     @NamedQuery(name = "Services.findByUpdatedAt", query = "SELECT s FROM Services s WHERE s.updatedAt = :updatedAt"),
     @NamedQuery(name = "Services.findByIsActive", query = "SELECT s FROM Services s WHERE s.isActive = :isActive"),
     @NamedQuery(name = "Services.findByImgUrl", query = "SELECT s FROM Services s WHERE s.imgUrl = :imgUrl")})
+@BatchSize(size=20)
 public class Services implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,24 +101,18 @@ public class Services implements Serializable {
     @Size(max = 255)
     @Column(name = "img_url")
     private String imgUrl;
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
-    private HotelRoomServices hotelRoomServices;
+
     @JsonIgnore
     @OneToMany(mappedBy = "serviceId")
     private Collection<Reviews> reviewsCollection;
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
-    private TransportServices transportServices;
+
     @JoinColumn(name = "provider_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Providers providerId;
     @JsonIgnore
     @OneToMany(mappedBy = "serviceId")
     private Collection<BookingsServiceDetail> bookingsServiceDetailCollection;
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "services")
-    private TourServices tourServices;
+
 
     public Services() {
     }
@@ -227,13 +222,9 @@ public class Services implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public HotelRoomServices getHotelRoomServices() {
-        return hotelRoomServices;
-    }
 
-    public void setHotelRoomServices(HotelRoomServices hotelRoomServices) {
-        this.hotelRoomServices = hotelRoomServices;
-    }
+
+
 
     public Collection<Reviews> getReviewsCollection() {
         return reviewsCollection;
@@ -243,13 +234,8 @@ public class Services implements Serializable {
         this.reviewsCollection = reviewsCollection;
     }
 
-    public TransportServices getTransportServices() {
-        return transportServices;
-    }
 
-    public void setTransportServices(TransportServices transportServices) {
-        this.transportServices = transportServices;
-    }
+
 
     public Providers getProviderId() {
         return providerId;
@@ -267,13 +253,7 @@ public class Services implements Serializable {
         this.bookingsServiceDetailCollection = bookingsServiceDetailCollection;
     }
 
-    public TourServices getTourServices() {
-        return tourServices;
-    }
 
-    public void setTourServices(TourServices tourServices) {
-        this.tourServices = tourServices;
-    }
 
     @Override
     public int hashCode() {
