@@ -20,6 +20,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,8 @@ import org.springframework.web.multipart.MultipartFile;
  * @author PC
  */
 @RestController
-@RequestMapping("/api/provider")
+@RequestMapping("/api/secure/provider")
+@PreAuthorize("hasRole('PROVIDER')")
 @CrossOrigin
 public class ApiProviderController {
     @Autowired
@@ -67,7 +69,7 @@ public class ApiProviderController {
     }
     
     @PostMapping("/tour-services")
-    public ResponseEntity<TourServices> addTourService(@RequestBody Map<String, String> info, 
+    public ResponseEntity<TourServices> addTourService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Users user = this.userService.getUserByUsername(principal.getName());
         Providers provider = this.provService.getProvById(user.getId());
@@ -75,7 +77,7 @@ public class ApiProviderController {
     }
     
     @PostMapping("/transport-services")
-    public ResponseEntity<TransportServices> addTransportService(@RequestBody Map<String, String> info, 
+    public ResponseEntity<TransportServices> addTransportService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Users user = this.userService.getUserByUsername(principal.getName());
         Providers provider = this.provService.getProvById(user.getId());
@@ -83,7 +85,7 @@ public class ApiProviderController {
     } 
     
     @PostMapping("/hotel-room-services")
-    public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestBody Map<String, String> info, 
+    public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Users user = this.userService.getUserByUsername(principal.getName());
         Providers provider = this.provService.getProvById(user.getId());

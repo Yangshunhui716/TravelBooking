@@ -4,6 +4,7 @@
  */
 package com.nhom34.configs;
 
+import com.nhom34.filters.JwtFilter;
 import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
@@ -41,7 +42,8 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
         registration.setMultipartConfig(new MultipartConfigElement("/", 5000000, 15000000, 0));
     }
     
-
-    
-    
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
+    }
 }
