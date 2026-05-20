@@ -35,7 +35,7 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
         configurer.enable();
     }
      
-    @Bean
+    @Bean(name = "multipartResolver")
     public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }

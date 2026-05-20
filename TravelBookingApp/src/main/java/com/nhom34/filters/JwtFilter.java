@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.filters;
 
 import com.nhom34.utils.JwtUtils;
@@ -16,48 +12,72 @@ import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- *
- * @author huu-thanhduong
- */
-public class JwtFilter implements Filter{
+public class JwtFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        
+    public void doFilter(
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain
+    ) throws IOException, ServletException {
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        
-        if (httpRequest.getRequestURI().startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true) {
-        
-           
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        String uri = httpRequest.getRequestURI();
+
+        System.out.println("FILTER URI = " + uri);
+
+        // Chỉ check JWT với api secure
+        if (uri.startsWith(httpRequest.getContextPath() + "/api/secure")) {
+
             String header = httpRequest.getHeader("Authorization");
-            
+
             if (header == null || !header.startsWith("Bearer ")) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+                httpResponse.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Missing Authorization Header"
+                );
                 return;
             }
-            else {
-                String token = header.substring(7);
-                try {
-                    String username = JwtUtils.validateTokenAndGetUsername(token);
-                    if (username != null) {
-                        httpRequest.setAttribute("username", username);
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, null);
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        
-                        chain.doFilter(request, response);
-                        return;
-                    }
-                } catch (Exception e) {
-                    // Log lỗi
-                }
-            }
 
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, 
-                    "Token không hợp lệ hoặc hết hạn");
+            try {
+                String token = header.substring(7);
+
+                String username =
+                        JwtUtils.validateTokenAndGetUsername(token);
+
+                if (username == null) {
+                    httpResponse.sendError(
+                            HttpServletResponse.SC_UNAUTHORIZED,
+                            "Invalid token"
+                    );
+                    return;
+                }
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                null
+                        );
+
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                httpResponse.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Token invalid"
+                );
+
+                return;
+            }
         }
-        
+
         chain.doFilter(request, response);
     }
-    
 }

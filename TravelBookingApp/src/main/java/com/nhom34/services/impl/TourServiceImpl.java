@@ -51,17 +51,32 @@ public class TourServiceImpl implements  TourService{
     @Override
     @Transactional
     public TourServices addTourService(Map<String, String> info, MultipartFile img, Providers prov) {
+        System.out.println("=== START ADD TOUR ===");
+
+        if (img == null || img.isEmpty()) {
+            throw new RuntimeException("Vui lòng chọn ảnh");
+        }
+
         Services newService = new Services();
         TourServices newTour = new TourServices();
 
         try {
-            Map res = this.cloudinary.uploader().upload(img.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+            Map res = this.cloudinary.uploader().upload(
+                    img.getBytes(),
+                    ObjectUtils.asMap("resource_type", "auto")
+            );
+
+            System.out.println("UPLOAD CLOUDINARY OK");
+
             newService.setImgUrl(res.get("secure_url").toString());
+
         } catch (IOException ex) {
-            Logger.getLogger(TourServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException("Xảy ra lỗi khi tải ảnh lên hệ thống");
+            ex.printStackTrace();
+            throw new RuntimeException("Upload ảnh thất bại");
         }
-        
+
+        System.out.println("SET SERVICE INFO");
+
         newService.setName(info.get("name"));
         newService.setPrice(Double.parseDouble(info.get("price")));
         newService.setDescription(info.get("description"));
@@ -69,16 +84,30 @@ public class TourServiceImpl implements  TourService{
         newService.setAvailableSlots(Integer.parseInt(info.get("slot")));
         newService.setStatus("AVAILABLE");
         newService.setIsActive(true);
-        newService.setCreatedAt(Date.from(Instant.now()));
-        newService.setUpdatedAt(Date.from(Instant.now()));
+        newService.setCreatedAt(new Date());
+        newService.setUpdatedAt(new Date());
         newService.setProviderId(prov);
-        newService = this.serviceRepo.addService(newService);
-        
-        newTour.setDepartureTime(Timestamp.valueOf(info.get("departureTime")));
-        newTour.setDurationDays(Integer.parseInt(info.get("durationDays")));
-        newTour.setServices(newService);
-        newTour.setId(newService.getId());
 
+        System.out.println("SAVE SERVICE");
+
+        newService = this.serviceRepo.addService(newService);
+
+        System.out.println("SET TOUR INFO");
+
+        newTour.setDepartureTime(
+                Timestamp.valueOf(info.get("departureTime"))
+        );
+
+        newTour.setDurationDays(
+                Integer.parseInt(info.get("durationDays"))
+        );
+
+        newTour.setServices(newService);
+
+        System.out.println("BEFORE SAVE TOUR");
+        System.out.println("SERVICE ID = " + newService.getId());
+        System.out.println("TOUR SERVICE = " + newTour.getServices());
+        System.out.println("PROVIDER = " + prov);
         return this.tourRepo.addTourService(newTour);
     }
     

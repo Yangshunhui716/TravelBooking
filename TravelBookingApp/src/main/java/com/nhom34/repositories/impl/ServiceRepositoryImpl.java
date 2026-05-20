@@ -4,7 +4,6 @@
  */
 package com.nhom34.repositories.impl;
 
-
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.ServiceRepository;
 import org.hibernate.Session;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  *
  * @author QUANG AN
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class ServiceRepositoryImpl implements ServiceRepository {
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -30,9 +31,27 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public Services addService(Services service) {
-        Session s = this.factory.getObject().getCurrentSession();
-        s.persist(service);
-        
-        return service;
+
+        try {
+            Session s = this.factory.getObject().getCurrentSession();
+
+            s.persist(service);
+
+            System.out.println("PERSIST OK");
+
+            s.flush();
+
+            System.out.println("FLUSH OK");
+
+            System.out.println("SERVICE ID = " + service.getId());
+
+            return service;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            throw e;
+        }
     }
 }

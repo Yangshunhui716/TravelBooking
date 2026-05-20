@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.configs;
 
 import com.nhom34.filters.JwtFilter;
@@ -10,11 +6,8 @@ import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-/**
- *
- * @author QUANG AN
- */
-public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherServletInitializer{
+public class DispatcherServeletInit
+        extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -24,7 +17,6 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
             SpringSecurityConfigs.class
         };
     }
-    
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
@@ -35,15 +27,25 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
 
     @Override
     protected String[] getServletMappings() {
-        return new String[] {"/"};
+        return new String[]{"/"};
     }
+
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
-        registration.setMultipartConfig(new MultipartConfigElement("/", 5000000, 15000000, 0));
+
+        MultipartConfigElement multipartConfig =
+                new MultipartConfigElement(
+                        null,
+                        5 * 1024 * 1024,
+                        15 * 1024 * 1024,
+                        0
+                );
+
+        registration.setMultipartConfig(multipartConfig);
     }
-    
+
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
+        return new Filter[]{new JwtFilter()};
     }
 }
