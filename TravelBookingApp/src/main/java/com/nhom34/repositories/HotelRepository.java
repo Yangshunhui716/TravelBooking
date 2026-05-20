@@ -15,4 +15,5 @@ import java.util.Map;
 public interface HotelRepository {
     List<HotelRoomServices> getHotelRoomServices(Map<String, String> params);
     HotelRoomServices getHotelRoomServiceById(Long id);
+    HotelRoomServices addHotelRoomService(HotelRoomServices hotelRoom);
 }

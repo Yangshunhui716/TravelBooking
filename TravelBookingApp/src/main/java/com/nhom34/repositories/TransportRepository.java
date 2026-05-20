@@ -14,4 +14,5 @@ import java.util.Map;
 public interface TransportRepository {
     List<TransportServices> getTransportServices(Map<String, String> params);
     TransportServices getTransportServiceById(Long id);
+    TransportServices addTransportService(TransportServices transport);
 }

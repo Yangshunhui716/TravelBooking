@@ -55,4 +55,12 @@ public class HotelRepositoryImpl implements HotelRepository {
        Session s = this.factory.getObject().getCurrentSession();
         return s.get(HotelRoomServices.class, id);
     }
+
+    @Override
+    public HotelRoomServices addHotelRoomService(HotelRoomServices hotelRoom) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(hotelRoom);
+        
+        return hotelRoom;
+    }
 }

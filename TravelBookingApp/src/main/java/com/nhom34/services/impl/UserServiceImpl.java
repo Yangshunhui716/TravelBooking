@@ -6,8 +6,6 @@ package com.nhom34.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.nhom34.pojo.Admins;
-import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Users;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +48,6 @@ public class UserServiceImpl implements UserService{
         return this.userRepo.getUser();
     }
 
-    @Override
-    public List<Users> getUserProvider(List<Providers> p) {
-        return this.userRepo.getUserProvider(p);
-    }
      @Override
     public Users getUserById(int id) {
         return this.userRepo.getUserById(id);
