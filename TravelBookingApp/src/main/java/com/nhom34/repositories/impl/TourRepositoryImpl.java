@@ -65,4 +65,12 @@ public class TourRepositoryImpl implements TourRepository{
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(TourServices.class, id);
     }   
+
+    @Override
+    public TourServices addTourService(TourServices tour) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(tour);
+        
+        return tour;
+    }
 }
