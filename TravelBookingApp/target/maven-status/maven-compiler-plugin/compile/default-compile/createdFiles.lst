@@ -18,8 +18,10 @@ com\nhom34\controllers\ApiUserController.class
 com\nhom34\pojo\Services.class
 com\nhom34\controllers\UserController.class
 com\nhom34\pojo\Bookings.class
+com\nhom34\utils\JwtUtils.class
 com\nhom34\repositories\impl\ServiceRepositoryImpl.class
 com\nhom34\services\TourService.class
+com\nhom34\controllers\ApiProviderController.class
 com\nhom34\pojo\TransportServices.class
 com\nhom34\repositories\impl\CustomerRepositoryImpl.class
 com\nhom34\services\impl\ProviderServiceImpl.class

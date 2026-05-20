@@ -4,9 +4,11 @@
  */
 package com.nhom34.services;
 
+import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.TourServices;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -15,4 +17,5 @@ import java.util.Map;
 public interface TourService {
     List<TourServices> getTourServices(Map<String, String> params);
     TourServices getTourServiceById(Long id);
+    TourServices addTourService(Map<String, String> info, MultipartFile img, Providers prov);
 }

@@ -27,4 +27,12 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(Services.class, id);
     }
+
+    @Override
+    public Services addService(Services service) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(service);
+        
+        return service;
+    }
 }

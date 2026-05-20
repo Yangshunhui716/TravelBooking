@@ -15,4 +15,5 @@ import java.util.Map;
 public interface TourRepository {
     List<TourServices> getTourServices(Map<String, String> params);
     TourServices getTourServiceById(Long id);
+    TourServices addTourService(TourServices tour);
 }
