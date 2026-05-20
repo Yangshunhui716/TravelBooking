@@ -6,6 +6,8 @@ package com.nhom34.controllers;
 
 import com.nhom34.pojo.Users;
 import com.nhom34.services.UserService;
+import com.nhom34.utils.JwtUtils;
+import java.util.Collections;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,10 +44,24 @@ public class ApiUserController {
         }
     }
     
-    @PostMapping("/users")
+    @PostMapping("/auth/register")
     public ResponseEntity<Users> create(@RequestParam Map<String, String> info, 
             @RequestParam(value = "avatar") MultipartFile avatar) {
         Users u = this.userService.addUser(info, avatar);
         return new ResponseEntity<>(u, HttpStatus.CREATED);
+    }
+    
+    @PostMapping("/auth/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> login) {
+
+        if (this.userService.authenticate(login.get("username"), login.get("password"))) {
+            try {
+                String token = JwtUtils.generateToken(login.get("username"));
+                return ResponseEntity.ok().body(Collections.singletonMap("token", token));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body("Lỗi khi tạo JWT");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai thông tin đăng nhập");
     }
 }
