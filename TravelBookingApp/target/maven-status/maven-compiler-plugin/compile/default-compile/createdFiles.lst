@@ -44,6 +44,7 @@ com\nhom34\pojo\TourServices.class
 com\nhom34\repositories\TourRepository.class
 com\nhom34\pojo\TransferTransactions.class
 com\nhom34\controllers\ApiReviewController.class
+com\nhom34\filters\JwtFilter.class
 com\nhom34\services\CustomerService.class
 com\nhom34\pojo\BookingsServiceDetail.class
 com\nhom34\repositories\TransportRepository.class

@@ -53,7 +53,7 @@ public class TourServiceImpl implements  TourService{
     public TourServices addTourService(Map<String, String> info, MultipartFile img, Providers prov) {
         Services newService = new Services();
         TourServices newTour = new TourServices();
-        
+
         try {
             Map res = this.cloudinary.uploader().upload(img.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
             newService.setImgUrl(res.get("secure_url").toString());

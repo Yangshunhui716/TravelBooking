@@ -50,7 +50,6 @@ public class SpringSecurityConfigs {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/provider/**").hasRole("PROVIDER")
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/js/**").permitAll()
         ).formLogin(form -> form.loginPage("/admin/login") // Đường dẫn tới trang đăng nhập
@@ -67,7 +66,7 @@ public class SpringSecurityConfigs {
     public Cloudinary cloudinary() {
         Cloudinary cloudinary
                 = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", "DataBreak",
+                        "cloud_name", "databreak",
                         "api_key", "143511745215512",
                         "api_secret", "f35MCfbdfoIhB8Z6XSrQVTmGQBA",
                         "secure", true));
