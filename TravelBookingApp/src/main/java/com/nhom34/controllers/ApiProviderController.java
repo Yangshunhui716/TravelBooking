@@ -24,7 +24,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,24 +70,21 @@ public class ApiProviderController {
     @PostMapping("/tour-services")
     public ResponseEntity<TourServices> addTourService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
-        Users user = this.userService.getUserByUsername(principal.getName());
-        Providers provider = this.provService.getProvById(user.getId());
+        Providers provider = this.provService.getProvByUsername(principal.getName());
         return new ResponseEntity<>(this.tourService.addTourService(info, img, provider),HttpStatus.CREATED);
     }
     
     @PostMapping("/transport-services")
     public ResponseEntity<TransportServices> addTransportService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
-        Users user = this.userService.getUserByUsername(principal.getName());
-        Providers provider = this.provService.getProvById(user.getId());
+        Providers provider = this.provService.getProvByUsername(principal.getName());
         return new ResponseEntity<>(this.transpotService.addTransportService(info, img, provider),HttpStatus.CREATED);
     } 
     
     @PostMapping("/hotel-room-services")
     public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
-        Users user = this.userService.getUserByUsername(principal.getName());
-        Providers provider = this.provService.getProvById(user.getId());
+        Providers provider = this.provService.getProvByUsername(principal.getName());
         return new ResponseEntity<>(this.hotelRoomService.addHotelRoomService(info, img, provider),HttpStatus.CREATED);
     }
 }

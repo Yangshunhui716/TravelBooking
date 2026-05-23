@@ -4,7 +4,10 @@
  */
 package com.nhom34.services;
 
+import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
+import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -12,4 +15,5 @@ import com.nhom34.pojo.Services;
  */
 public interface ServiceService {
     Services getServiceById(Long id);
+    Services addService(Map<String, String> info, MultipartFile img, Providers prov);
 }

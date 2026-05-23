@@ -16,6 +16,7 @@ import java.util.List;
  * @author QUANG AN
  */
 public interface ProviderRepository {
+    Providers addProv(Providers newProv);
     List<Providers> getProv();
     Providers getProvById(Long id);
     List<Users> getProvUser(List<Providers> p);
