@@ -33,6 +33,14 @@ public class ProviderRepositoryImpl implements ProviderRepository{
     private LocalSessionFactoryBean factory;
     
     @Override
+    public Providers addProv(Providers newProv) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(newProv);
+        
+        return newProv;
+    }
+    
+    @Override
     public List<Providers> getProv() {
         Session s = this.factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM Providers", Providers.class);
@@ -42,6 +50,12 @@ public class ProviderRepositoryImpl implements ProviderRepository{
     @Override
     public List<Users> getProvUser(List<Providers> p) {
         return p.stream().map(Providers::getUsers).toList();
+    }
+    
+    @Override
+    public Providers getProvById(Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.get(Providers.class, id);
     }
 
     @Override
@@ -76,11 +90,4 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         Query q = s.createQuery(query);
         return q.getResultList();
     }
-
-    @Override
-    public Providers getProvById(Long id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Providers.class, id);
-    }
-    
 }

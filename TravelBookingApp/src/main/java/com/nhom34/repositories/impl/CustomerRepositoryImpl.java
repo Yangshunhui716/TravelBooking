@@ -22,6 +22,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     private LocalSessionFactoryBean factory;
     
     @Override
+    public Customers addCustomer(Customers newCustomer) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(newCustomer);
+        
+        return newCustomer;
+    }
+    
+    @Override
     public Customers getCustomerByUserId(Long userId) {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(Customers.class, userId);
