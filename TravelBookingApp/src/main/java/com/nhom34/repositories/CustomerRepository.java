@@ -11,6 +11,6 @@ import com.nhom34.pojo.Customers;
  * @author QUANG AN
  */
 public interface CustomerRepository {
+    Customers addCustomer(Customers newCustomer);
     Customers getCustomerByUserId(Long userId);
-    
 }

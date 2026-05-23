@@ -35,7 +35,8 @@ public class ApiSecurityConfigs {
                     .requestMatchers("/api/secure/**").authenticated()
                     .requestMatchers("/api/secure/provider/**").hasRole("PROVIDER")
                     .anyRequest().permitAll()
-            ).addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+            )
+            .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -33,6 +33,14 @@ public class ProviderRepositoryImpl implements ProviderRepository{
     private LocalSessionFactoryBean factory;
     
     @Override
+    public Providers addProv(Providers newProv) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(newProv);
+        
+        return newProv;
+    }
+    
+    @Override
     public List<Providers> getProv() {
         Session s = this.factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM Providers", Providers.class);
@@ -42,6 +50,12 @@ public class ProviderRepositoryImpl implements ProviderRepository{
     @Override
     public List<Users> getProvUser(List<Providers> p) {
         return p.stream().map(Providers::getUsers).toList();
+    }
+    
+    @Override
+    public Providers getProvById(Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.get(Providers.class, id);
     }
 
     @Override
@@ -60,8 +74,8 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<HotelRoomServices> query = builder.createQuery(HotelRoomServices.class);
-        Root rTS = query.from(TransportServices.class);
-        query.where(builder.equal(rTS.get("services").get("providerId").get("id"), provId));
+        Root rH = query.from(HotelRoomServices.class);
+        query.where(builder.equal(rH.get("services").get("providerId").get("id"), provId));
         Query q = s.createQuery(query);
         return q.getResultList();
     }
@@ -71,16 +85,9 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<TourServices> query = builder.createQuery(TourServices.class);
-        Root rTS = query.from(TransportServices.class);
-        query.where(builder.equal(rTS.get("services").get("providerId").get("id"), provId));
+        Root rT = query.from(TourServices.class);
+        query.where(builder.equal(rT.get("services").get("providerId").get("id"), provId));
         Query q = s.createQuery(query);
         return q.getResultList();
     }
-
-    @Override
-    public Providers getProvById(Long id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Providers.class, id);
-    }
-    
 }

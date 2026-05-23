@@ -4,34 +4,30 @@
  */
 package com.nhom34.repositories.impl;
 
-import com.nhom34.pojo.Customers;
-import com.nhom34.repositories.CustomerRepository;
+import com.nhom34.pojo.Admins;
+import com.nhom34.repositories.AdminRepository;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 @Repository
 @Transactional
-public class CustomerRepositoryImpl implements CustomerRepository {
+public class AdminRepositoryImpl implements AdminRepository{
     @Autowired
-    private LocalSessionFactoryBean factory;
-    
+    private LocalSessionFactoryBean factory; 
+
     @Override
-    public Customers addCustomer(Customers newCustomer) {
+    public Admins addAdmin(Admins newAdmin) {
         Session s = this.factory.getObject().getCurrentSession();
-        s.persist(newCustomer);
+        s.persist(newAdmin);
         
-        return newCustomer;
+        return newAdmin;
     }
     
-    @Override
-    public Customers getCustomerByUserId(Long userId) {
-        Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Customers.class, userId);
-    }
 }

@@ -38,7 +38,7 @@ public class ApiUserController {
     @PatchMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public void updatePartial(@PathVariable(value = "userId") int id, @RequestBody Map<String, String> params){
+    public void updatePartial(@PathVariable(value = "userId") Long id, @RequestBody Map<String, String> params){
         if (params.containsKey("is_active")) {
             String activeStr = params.get("is_active");
             boolean isActive = Boolean.parseBoolean(activeStr); 
@@ -59,6 +59,7 @@ public class ApiUserController {
         if (this.userService.authenticate(login.get("username"), login.get("password"))) {
             try {
                 String token = JwtUtils.generateToken(login.get("username"));
+                this.userService.updateLastLogin(login.get("username"));
                 return ResponseEntity.ok().body(Collections.singletonMap("token", token));
             } catch (Exception e) {
                 return ResponseEntity.status(500).body("Lỗi khi tạo JWT");
