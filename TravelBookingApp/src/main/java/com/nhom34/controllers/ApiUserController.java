@@ -38,7 +38,7 @@ public class ApiUserController {
     @PatchMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public void updatePartial(@PathVariable(value = "userId") int id, @RequestBody Map<String, String> params){
+    public void updatePartial(@PathVariable(value = "userId") Long id, @RequestBody Map<String, String> params){
         if (params.containsKey("is_active")) {
             String activeStr = params.get("is_active");
             boolean isActive = Boolean.parseBoolean(activeStr); 
