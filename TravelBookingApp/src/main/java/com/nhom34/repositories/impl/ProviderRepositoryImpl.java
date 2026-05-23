@@ -74,8 +74,8 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<HotelRoomServices> query = builder.createQuery(HotelRoomServices.class);
-        Root rTS = query.from(TransportServices.class);
-        query.where(builder.equal(rTS.get("services").get("providerId").get("id"), provId));
+        Root rH = query.from(HotelRoomServices.class);
+        query.where(builder.equal(rH.get("services").get("providerId").get("id"), provId));
         Query q = s.createQuery(query);
         return q.getResultList();
     }
@@ -85,8 +85,8 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<TourServices> query = builder.createQuery(TourServices.class);
-        Root rTS = query.from(TransportServices.class);
-        query.where(builder.equal(rTS.get("services").get("providerId").get("id"), provId));
+        Root rT = query.from(TourServices.class);
+        query.where(builder.equal(rT.get("services").get("providerId").get("id"), provId));
         Query q = s.createQuery(query);
         return q.getResultList();
     }
