@@ -10,11 +10,13 @@ import com.nhom34.repositories.AdminRepository;
 import com.nhom34.services.AdminService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author PC
  */
+@Service
 public class AdminServiceImpl implements AdminService{
     @Autowired
     private AdminRepository adminRepo;
