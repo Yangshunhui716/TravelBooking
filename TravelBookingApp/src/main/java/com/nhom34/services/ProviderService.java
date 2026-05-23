@@ -10,14 +10,17 @@ import com.nhom34.pojo.TourServices;
 import com.nhom34.pojo.TransportServices;
 import com.nhom34.pojo.Users;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author QUANG AN
  */
 public interface ProviderService {
+    Providers addProv(Map<String, String> info, Users u);
     List<Providers> getProv();
     Providers getProvById(Long id);
+    Providers getProvByUsername(String username);
     List<Users> getProvUser(List<Providers> p);
     List<TransportServices> getTransportServices(Long provId);
     List<HotelRoomServices> getHotelRoomServices(Long provId);

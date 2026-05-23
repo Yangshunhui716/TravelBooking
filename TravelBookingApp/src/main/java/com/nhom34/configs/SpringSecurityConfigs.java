@@ -50,7 +50,7 @@ public class SpringSecurityConfigs {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.securityMatcher("/admin/**", "/").csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
+        http.securityMatcher("/admin/**", "/","/logout").csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/admin").hasRole("ADMIN")
                 .anyRequest().permitAll()
         ).formLogin(form -> form.loginPage("/admin/login") // Đường dẫn tới trang đăng nhập
@@ -58,7 +58,7 @@ public class SpringSecurityConfigs {
                 .defaultSuccessUrl("/", true) // Chuyển hướng khi thành công
                 .failureUrl("/admin/login?error=true") // Chuyển hướng khi thất bại
                 .permitAll()
-        ).logout((logout) -> logout.logoutSuccessUrl("/admin/login").permitAll());
+        ).logout(logout -> logout.logoutSuccessUrl("/admin/login").permitAll());
         return http.build();
     }
     
