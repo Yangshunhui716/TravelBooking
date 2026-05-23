@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Users getUserById(int id) {
+    public Users getUserById(Long id) {
         return this.userRepo.getUserById(id);
     }
     
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService{
     }
     
     @Override
-    public void updateActive(int id, boolean active) {
+    public void updateActive(Long id, boolean active) {
          this.userRepo.updateActive(id, active);
     }
     
@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService{
             }
             case "ROLE_PROVIDER" -> {
                 this.provService.addProv(info, u);
+                this.userRepo.updateActive(u.getId(), false);
             }
             case "ROLE_ADMIN" -> {
                 this.adminService.addAdmin(info, u);

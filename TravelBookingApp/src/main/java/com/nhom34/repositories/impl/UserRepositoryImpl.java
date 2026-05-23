@@ -41,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository{
     }
     
     @Override
-    public Users getUserById(int id) {
+    public Users getUserById(Long id) {
        Session s = this.factory.getObject().getCurrentSession();
        return s.get(Users.class, id);
     }
@@ -56,7 +56,7 @@ public class UserRepositoryImpl implements UserRepository{
     }
     
     @Override
-    public void updateActive(int id, boolean active) {
+    public void updateActive(Long id, boolean active) {
         Session s = this.factory.getObject().getCurrentSession();
         Users u = this.getUserById(id);
         if (!u.getIsActive()==active){
