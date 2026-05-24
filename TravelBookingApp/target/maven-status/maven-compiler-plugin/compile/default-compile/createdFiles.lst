@@ -14,6 +14,7 @@ com\nhom34\pojo\Customers.class
 com\nhom34\configs\ApiSecurityConfigs.class
 com\nhom34\configs\ThymeleafConfigs.class
 com\nhom34\controllers\ApiTourController.class
+com\nhom34\utils\MomoUtils.class
 com\nhom34\configs\SpringSecurityConfigs.class
 com\nhom34\pojo\Users.class
 com\nhom34\controllers\ApiUserController.class
@@ -33,11 +34,14 @@ com\nhom34\repositories\impl\UserRepositoryImpl.class
 com\nhom34\repositories\CustomerRepository.class
 com\nhom34\configs\HibernateConfigs.class
 com\nhom34\repositories\UserRepository.class
+com\nhom34\services\PaymentService.class
 com\nhom34\repositories\impl\ProviderRepositoryImpl.class
+com\nhom34\services\impl\PaymentServiceImpl.class
 com\nhom34\pojo\HotelRoomServices.class
 com\nhom34\services\ReviewService.class
 com\nhom34\services\impl\ReviewServiceImpl.class
 com\nhom34\repositories\ServiceRepository.class
+com\nhom34\configs\MomoConfigs.class
 com\nhom34\services\TransportService.class
 com\nhom34\configs\SecurityWebApplicationInitializer.class
 com\nhom34\travelbookingapp\resources\JakartaEE11Resource.class
@@ -48,6 +52,7 @@ com\nhom34\services\impl\ServiceServiceImpl.class
 com\nhom34\pojo\TourServices.class
 com\nhom34\repositories\TourRepository.class
 com\nhom34\pojo\TransferTransactions.class
+com\nhom34\controllers\ApiPaymentController.class
 com\nhom34\controllers\ApiReviewController.class
 com\nhom34\filters\JwtFilter.class
 com\nhom34\services\CustomerService.class
