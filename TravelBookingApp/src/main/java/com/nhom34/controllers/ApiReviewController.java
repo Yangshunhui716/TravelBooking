@@ -75,7 +75,7 @@ public class ApiReviewController {
         Users currentUser = this.userService.getUserByUsername(principal.getName());
 
         if (!review.getCustomerId().getId().equals(currentUser.getId())) {
-            return new ResponseEntity<>("Bạn không có quyền sửa review này", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Ban khong co quyen sua review nay", HttpStatus.FORBIDDEN);
         }
         if (params.get("comment") != null) {
             review.setComment(params.get("comment"));
