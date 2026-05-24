@@ -30,7 +30,9 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
         basePackages = {
             "com.nhom34.controllers",
             "com.nhom34.repositories",
-            "com.nhom34.services",}
+            "com.nhom34.services",
+            "com.nhom34.filters"
+        }
 )
 @Order(2)
 public class SpringSecurityConfigs {
