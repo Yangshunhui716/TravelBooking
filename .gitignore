@@ -23,5 +23,5 @@
 hs_err_pid*
 replay_pid*
 
-TravelBookingApp/src/resources/databases.properties
-TravelBookingApp/src/resources/payments.properties
+TravelBookingApp/src/main/resources/databases.properties
+TravelBookingApp/src/main/resources/payments.properties
