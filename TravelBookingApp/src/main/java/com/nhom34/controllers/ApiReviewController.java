@@ -19,6 +19,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,7 +52,7 @@ public class ApiReviewController {
         );
     }
 
-    @PostMapping("/customer/services/{serviceId}/reviews")
+    @PostMapping("/secure/customer/services/{serviceId}/reviews")
     public ResponseEntity<Reviews> addReview(@PathVariable(value = "serviceId") Long serviceId, @RequestBody Map<String, String> params, Principal principal) {
         Services service = this.serviceService.getServiceById(serviceId);
         //principal lay user hien tai dang login
@@ -68,7 +69,7 @@ public class ApiReviewController {
         return new ResponseEntity<>(this.reviewService.addReview(review),HttpStatus.CREATED);
     }
 
-    @PatchMapping("/customer/reviews/{reviewId}")
+    @PatchMapping("/secure/customer/reviews/{reviewId}")
     public ResponseEntity<Reviews> updateReview( @PathVariable(value = "reviewId") Long reviewId, @RequestBody Map<String, String> params) {
         Reviews review = this.reviewService.getReviewById(reviewId);
         if (params.get("comment") != null) {
