@@ -70,14 +70,20 @@ public class ApiReviewController {
     }
 
     @PatchMapping("/secure/customer/reviews/{reviewId}")
-    public ResponseEntity<Reviews> updateReview( @PathVariable(value = "reviewId") Long reviewId, @RequestBody Map<String, String> params) {
+    public ResponseEntity<?> updateReview(@PathVariable("reviewId") Long reviewId,@RequestBody Map<String, String> params, Principal principal) {
         Reviews review = this.reviewService.getReviewById(reviewId);
+        Users currentUser = this.userService.getUserByUsername(principal.getName());
+
+        if (!review.getCustomerId().getId().equals(currentUser.getId())) {
+            return new ResponseEntity<>("Bạn không có quyền sửa review này", HttpStatus.FORBIDDEN);
+        }
         if (params.get("comment") != null) {
             review.setComment(params.get("comment"));
         }
         if (params.get("rating") != null) {
             review.setRating(Integer.valueOf(params.get("rating")));
         }
+
         return new ResponseEntity<>(this.reviewService.updateReview(review), HttpStatus.OK);
     }
 }
