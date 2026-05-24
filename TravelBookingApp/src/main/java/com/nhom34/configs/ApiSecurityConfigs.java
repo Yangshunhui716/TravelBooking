@@ -6,6 +6,7 @@ package com.nhom34.configs;
 
 import com.nhom34.filters.JwtFilter;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -24,6 +25,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @Order(1)
 public class ApiSecurityConfigs {
+    @Autowired
+    private JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 
@@ -32,11 +35,12 @@ public class ApiSecurityConfigs {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/secure/**").authenticated()
+                    .requestMatchers("/api/secure/customer/**").hasRole("CUSTOMER")
                     .requestMatchers("/api/secure/provider/**").hasRole("PROVIDER")
+                    .requestMatchers("/api/secure/**").authenticated()
                     .anyRequest().permitAll()
             )
-            .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
