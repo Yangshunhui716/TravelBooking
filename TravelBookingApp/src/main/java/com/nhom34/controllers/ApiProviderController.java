@@ -13,6 +13,7 @@ import com.nhom34.services.ProviderService;
 import com.nhom34.services.TourService;
 import com.nhom34.services.TransportService;
 import com.nhom34.services.HotelService;
+import com.nhom34.services.ServiceService;
 import com.nhom34.services.UserService;
 import java.security.Principal;
 import java.util.List;
@@ -23,7 +24,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +42,8 @@ import org.springframework.web.multipart.MultipartFile;
 @PreAuthorize("hasRole('PROVIDER')")
 @CrossOrigin
 public class ApiProviderController {
+    @Autowired
+    private ServiceService servService;
     @Autowired
     private ProviderService provService;
     @Autowired
@@ -86,5 +92,47 @@ public class ApiProviderController {
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
         return new ResponseEntity<>(this.hotelRoomService.addHotelRoomService(info, img, provider),HttpStatus.CREATED);
+    }
+    
+    @PatchMapping("/tour-services/{serviceId}")
+    public ResponseEntity<?> updateTourService(@PathVariable(value = "serviceId") Long servId, @RequestBody Map<String, String> params,
+            Principal principal){
+        if (params==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
+        }
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(this.servService.checkOwner(servId, provider.getId())){
+            return new ResponseEntity<>(this.tourService.updatePartial(params, servId),HttpStatus.CREATED);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
+        }
+    }
+    
+    @PatchMapping("/transport-services/{serviceId}")
+    public ResponseEntity<?> updateTransportService(@PathVariable(value = "serviceId") Long servId, @RequestBody Map<String, String> params,
+            Principal principal){
+        if (params==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
+        }
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(this.servService.checkOwner(servId, provider.getId())){
+            return new ResponseEntity<>(this.transpotService.updatePartial(params, servId),HttpStatus.CREATED);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
+        }
+    }
+    
+    @PatchMapping("/hotel-room-services/{serviceId}")
+    public ResponseEntity<?> updateHotelRoomService(@PathVariable(value = "serviceId") Long servId, @RequestBody Map<String, String> params,
+            Principal principal){
+        if (params==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
+        }
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(this.servService.checkOwner(servId, provider.getId())){
+            return new ResponseEntity<>(this.hotelRoomService.updatePartial(params, servId),HttpStatus.CREATED);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
+        }
     }
 }

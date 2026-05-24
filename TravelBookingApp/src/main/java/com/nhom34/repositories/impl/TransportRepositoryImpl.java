@@ -17,6 +17,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import jakarta.persistence.criteria.Order;
+import java.sql.Timestamp;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,6 +63,7 @@ public class TransportRepositoryImpl implements TransportRepository{
         return query.getResultList();
 
     }
+    
     @Override
     public TransportServices getTransportServiceById(Long id) {
         Session s = this.factory.getObject().getCurrentSession();
@@ -74,5 +76,48 @@ public class TransportRepositoryImpl implements TransportRepository{
         s.persist(transport);
         
         return transport;
+    }
+
+    @Override
+    public TransportServices updatePartial(Map<String, String> params, Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        TransportServices serv = this.getTransportServiceById(id);
+        
+        if(params.containsKey("name")){
+            serv.getServices().setName(params.get("name"));
+        }
+        if(params.containsKey("price")){
+            serv.getServices().setPrice(Double.parseDouble(params.get("price")));
+        }
+        if(params.containsKey("destination")){
+            serv.getServices().setDestination(params.get("destination"));
+        }
+        if(params.containsKey("slot")){
+            serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
+        }
+        if(params.containsKey("description")){
+            serv.getServices().setDescription(params.get("description"));
+        }
+        if(params.containsKey("departureLocation")){
+            serv.setDepartureLocation(params.get("departureLocation"));
+        }
+        if(params.containsKey("endLocation")){
+            serv.setEndLoaction(params.get("endLocation"));
+        }
+        if(params.containsKey("departureTime")){
+            serv.setDepartureTime(Timestamp.valueOf(params.get("departureTime")));
+        }
+        if(params.containsKey("endTime")){
+            serv.setEndTime(Timestamp.valueOf(params.get("endTime")));
+        }
+        if(params.containsKey("transportType")){
+            serv.setTransportType(params.get("transportType"));
+        }
+        if(params.containsKey("ticketType")){
+            serv.setTicketType(params.get("ticketType"));
+        }
+        
+        s.merge(serv);
+        return serv;
     }
 }

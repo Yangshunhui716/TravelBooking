@@ -16,6 +16,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Root;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,5 +73,36 @@ public class TourRepositoryImpl implements TourRepository{
         s.persist(tour);
         
         return tour;
+    }
+
+    @Override
+    public TourServices updatePartial(Map<String, String> params, Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        TourServices serv = this.getTourServiceById(id);
+        
+        if(params.containsKey("name")){
+            serv.getServices().setName(params.get("name"));
+        }
+        if(params.containsKey("price")){
+            serv.getServices().setPrice(Double.parseDouble(params.get("price")));
+        }
+        if(params.containsKey("destination")){
+            serv.getServices().setDestination(params.get("destination"));
+        }
+        if(params.containsKey("slot")){
+            serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
+        }
+        if(params.containsKey("description")){
+            serv.getServices().setDescription(params.get("description"));
+        }
+        if(params.containsKey("departureTime")){
+            serv.setDepartureTime(Timestamp.valueOf(params.get("departureTime")));
+        }
+        if(params.containsKey("durationDays")){
+            serv.setDurationDays(Integer.parseInt(params.get("durationDays")));
+        }
+        
+        s.merge(serv);
+        return serv;
     }
 }
