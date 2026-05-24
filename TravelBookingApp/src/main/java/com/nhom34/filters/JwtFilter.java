@@ -17,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author huu-thanhduong
  */
+@Component
 public class JwtFilter implements Filter{
     @Autowired
     private UserDetailsService userDetailsService;
@@ -45,8 +47,13 @@ public class JwtFilter implements Filter{
                     String username = JwtUtils.validateTokenAndGetUsername(token);
                     if (username != null) {
                         httpRequest.setAttribute("username", username);
-                        
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, null);
+                        var userDetails = userDetailsService.loadUserByUsername(username);
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails,
+                                        null,
+                                        userDetails.getAuthorities());
+
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         
                         chain.doFilter(request, response);
