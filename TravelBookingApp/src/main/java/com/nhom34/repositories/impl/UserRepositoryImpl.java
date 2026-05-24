@@ -59,7 +59,7 @@ public class UserRepositoryImpl implements UserRepository{
     public void updateActive(Long id, boolean active) {
         Session s = this.factory.getObject().getCurrentSession();
         Users u = this.getUserById(id);
-        if (!u.getIsActive()==active){
+        if (u.getIsActive()!=active){
             u.setIsActive(active);
         }
         s.merge(u);

@@ -55,4 +55,15 @@ public class TransportServiceImpl implements TransportService{
 
         return this.transportRepo.addTransportService(newTransport);
     }
+
+    @Override
+    public TransportServices updatePartial(Map<String, String> params, Long id) {
+        if(params.containsKey("status")){
+            this.serviceService.updateStatus(id, params.get("status"));
+            return this.transportRepo.getTransportServiceById(id);
+        }
+        else{
+            return this.transportRepo.updatePartial(params, id);
+        }
+    }
 }

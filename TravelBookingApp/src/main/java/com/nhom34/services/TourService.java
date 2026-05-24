@@ -18,4 +18,5 @@ public interface TourService {
     List<TourServices> getTourServices(Map<String, String> params);
     TourServices getTourServiceById(Long id);
     TourServices addTourService(Map<String, String> info, MultipartFile img, Providers prov);
+    TourServices updatePartial(Map<String, String> params, Long id);
 }
