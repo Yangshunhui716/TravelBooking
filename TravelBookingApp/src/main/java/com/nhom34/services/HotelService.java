@@ -18,4 +18,5 @@ public interface HotelService {
     List<HotelRoomServices> getHotelRoomServices(Map<String, String> params);
     HotelRoomServices getHotelRoomServiceById(Long id);
     HotelRoomServices addHotelRoomService(Map<String, String> info, MultipartFile img, Providers prov);
+    HotelRoomServices updatePartial(Map<String, String> params, Long id);
 }

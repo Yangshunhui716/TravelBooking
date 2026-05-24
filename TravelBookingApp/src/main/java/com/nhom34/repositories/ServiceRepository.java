@@ -13,4 +13,8 @@ import com.nhom34.pojo.Services;
 public interface ServiceRepository {
     Services getServiceById(Long id);
     Services addService(Services service);
+    void updateStatus(Long id, String status);
+    void updateActive(Long id, boolean active);
+    void deleteService(Long id);
+    boolean checkOwner(Long provId, Long id);
 }

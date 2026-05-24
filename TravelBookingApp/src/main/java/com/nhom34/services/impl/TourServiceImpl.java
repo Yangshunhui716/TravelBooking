@@ -52,4 +52,15 @@ public class TourServiceImpl implements  TourService{
 
         return this.tourRepo.addTourService(newTour);
     }
+    
+    @Override
+    public TourServices updatePartial(Map<String, String> params, Long id) {
+        if(params.containsKey("status")){
+            this.serviceService.updateStatus(id, params.get("status"));
+            return this.tourRepo.getTourServiceById(id);
+        }
+        else{
+            return this.tourRepo.updatePartial(params, id);
+        }
+    }
 }

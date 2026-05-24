@@ -87,4 +87,35 @@ public class HotelRepositoryImpl implements HotelRepository {
         
         return hotelRoom;
     }
+
+    @Override
+    public HotelRoomServices updatePartial(Map<String, String> params, Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        HotelRoomServices serv = this.getHotelRoomServiceById(id);
+        
+        if(params.containsKey("name")){
+            serv.getServices().setName(params.get("name"));
+        }
+        if(params.containsKey("price")){
+            serv.getServices().setPrice(Double.parseDouble(params.get("price")));
+        }
+        if(params.containsKey("destination")){
+            serv.getServices().setDestination(params.get("destination"));
+        }
+        if(params.containsKey("slot")){
+            serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
+        }
+        if(params.containsKey("description")){
+            serv.getServices().setDescription(params.get("description"));
+        }
+        if(params.containsKey("hotelName")){
+            serv.setHotelName(params.get("hotelName"));
+        }
+        if(params.containsKey("address")){
+            serv.setAddress(params.get("address"));
+        }
+        
+        s.merge(serv);
+        return serv;
+    }
 }
