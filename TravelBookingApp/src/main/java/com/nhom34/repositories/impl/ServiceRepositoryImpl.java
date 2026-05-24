@@ -35,4 +35,38 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         
         return service;
     }
+
+    @Override
+    public void updateStatus(Long id, String status) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Services service = this.getServiceById(id);
+        if (!service.getStatus().equals(status)){
+            service.setStatus(status);
+        }
+        s.merge(service);
+    }
+    
+    @Override
+    public void updateActive(Long id, boolean active) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Services service = this.getServiceById(id);
+        if (service.getIsActive()!=active){
+            service.setIsActive(active);
+        }
+        s.merge(service);
+    }
+
+    @Override
+    public boolean checkOwner(Long provId, Long id) {
+        Services service = this.getServiceById(id);
+        return service.getProviderId().getId().equals(provId);
+    }
+
+    @Override
+    public void deleteService(Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Services service = this.getServiceById(id);
+        
+        s.remove(service);
+    }
 }

@@ -11,6 +11,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.nhom34.repositories.UserRepository;
+import com.nhom34.services.AdminService;
+import com.nhom34.services.CustomerService;
+import com.nhom34.services.ProviderService;
 import com.nhom34.services.UserService;
 import java.io.IOException;
 import java.util.Date;
@@ -36,10 +39,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepo;
-    
+    @Autowired
+    private AdminService adminService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private ProviderService provService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    
     @Autowired
     private Cloudinary cloudinary;
 
@@ -48,21 +55,28 @@ public class UserServiceImpl implements UserService{
         return this.userRepo.getUser();
     }
 
-     @Override
-    public Users getUserById(int id) {
+    @Override
+    public Users getUserById(Long id) {
         return this.userRepo.getUserById(id);
     }
-
+    
     @Override
-    public void updateActive(int id, boolean active) {
-         this.userRepo.updateActive(id, active);
-    }
-        @Override
     public Users getUserByUsername(String username) {
         return this.userRepo.getUserByUserName(username);
     }
+    
+    @Override
+    public void updateActive(Long id, boolean active) {
+         this.userRepo.updateActive(id, active);
+    }
+    
+    @Override
+    public void updateLastLogin(String username) {
+        this.userRepo.updateLastLogin(username);
+    }
 
     @Override
+    @Transactional
     public Users addUser(Map<String, String> info, MultipartFile avatar) {
         Users u = new Users();
         u.setPhone(info.get("phone"));
@@ -79,12 +93,28 @@ public class UserServiceImpl implements UserService{
                 u.setAvatar(res.get("secure_url").toString());
             } catch (IOException ex) {
                 Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("Xảy ra lỗi khi tải ảnh lên hệ thống");
             }
-            
+        }
+        u = this.userRepo.addUser(u);
+        
+        switch (info.get("role")) {
+            case "ROLE_CUSTOMER" -> {
+                this.customerService.addCustomer(info, u);
+            }
+            case "ROLE_PROVIDER" -> {
+                this.provService.addProv(info, u);
+                this.userRepo.updateActive(u.getId(), false);
+            }
+            case "ROLE_ADMIN" -> {
+                this.adminService.addAdmin(info, u);
+            }
+            default -> throw new AssertionError("Role user không hợp lệ");
         }
         
-        return this.userRepo.addUser(u);
+        return u;
     }
+    
         @Override
     public boolean authenticate(String username, String password) {
         return this.userRepo.authenticate(username, password);
@@ -106,10 +136,4 @@ public class UserServiceImpl implements UserService{
 
     }
 
-       
-
-
-       
-    
-    
 }
