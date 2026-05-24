@@ -11,7 +11,9 @@ import com.nhom34.pojo.TransportServices;
 import com.nhom34.pojo.Users;
 import com.nhom34.repositories.ProviderRepository;
 import com.nhom34.services.ProviderService;
+import com.nhom34.services.UserService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,20 @@ import org.springframework.stereotype.Service;
 public class ProviderServiceImpl implements ProviderService{
     @Autowired
     private ProviderRepository provRepo;
+    @Autowired
+    private UserService userService;
+    
+    @Override
+    public Providers addProv(Map<String, String> info, Users u) {
+        Providers newProv = new Providers();
+        newProv.setId(u.getId());
+        newProv.setUsers(u);
+        newProv.setBusinessName(info.get("businessName"));
+        newProv.setAddress(info.get("address"));
+        newProv.setTax(info.get("tax"));
+        
+        return this.provRepo.addProv(newProv);
+    }
 
     @Override
     public List<Providers> getProv() {
@@ -32,6 +48,16 @@ public class ProviderServiceImpl implements ProviderService{
     @Override
     public List<Users> getProvUser(List<Providers> p) {
         return this.provRepo.getProvUser(p);
+    }
+    
+    @Override
+    public Providers getProvById(Long id) {
+        return this.provRepo.getProvById(id);
+    }
+    
+    @Override
+    public Providers getProvByUsername(String username) {
+        return this.provRepo.getProvById(this.userService.getUserByUsername(username).getId());
     }
 
     @Override
@@ -49,8 +75,4 @@ public class ProviderServiceImpl implements ProviderService{
         return this.provRepo.getTourServices(provId);
     }
 
-    @Override
-    public Providers getProvById(Long id) {
-        return this.provRepo.getProvById(id);
-    }
 }

@@ -16,4 +16,5 @@ public interface TourRepository {
     List<TourServices> getTourServices(Map<String, String> params);
     TourServices getTourServiceById(Long id);
     TourServices addTourService(TourServices tour);
+    TourServices updatePartial(Map<String, String> params, Long id);
 }

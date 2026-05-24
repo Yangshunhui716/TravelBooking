@@ -13,6 +13,8 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.nhom34.repositories.UserRepository;
+import java.time.Instant;
+import java.util.Date;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -39,19 +41,9 @@ public class UserRepositoryImpl implements UserRepository{
     }
     
     @Override
-    public Users getUserById(int id) {
+    public Users getUserById(Long id) {
        Session s = this.factory.getObject().getCurrentSession();
        return s.get(Users.class, id);
-    }
-
-    @Override
-    public void updateActive(int id, boolean active) {
-        Session s = this.factory.getObject().getCurrentSession();
-        Users u = this.getUserById(id);
-        if (!u.getIsActive()==active){
-            u.setIsActive(active);
-        }
-        s.merge(u);
     }
 
     @Override
@@ -61,6 +53,24 @@ public class UserRepositoryImpl implements UserRepository{
         query.setParameter("username", username);
 
         return (Users) query.getSingleResult();
+    }
+    
+    @Override
+    public void updateActive(Long id, boolean active) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Users u = this.getUserById(id);
+        if (u.getIsActive()!=active){
+            u.setIsActive(active);
+        }
+        s.merge(u);
+    }
+    
+    @Override
+    public void updateLastLogin(String username) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Users u = this.getUserByUserName(username);
+        u.setLastLogin(Date.from(Instant.now()));
+        s.merge(u);
     }
     
     @Override

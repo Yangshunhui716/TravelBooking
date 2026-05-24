@@ -18,4 +18,5 @@ public interface TransportService {
     List<TransportServices> getTransportServices(Map<String, String> params);
     TransportServices getTransportServiceById(Long id);
     TransportServices addTransportService(Map<String, String> info, MultipartFile img, Providers prov);
+    TransportServices updatePartial(Map<String, String> params, Long id);
 }
