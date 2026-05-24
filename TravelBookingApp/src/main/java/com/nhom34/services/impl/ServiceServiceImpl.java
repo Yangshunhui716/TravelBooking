@@ -62,4 +62,24 @@ public class ServiceServiceImpl implements ServiceService {
         
         return this.serviceRepo.addService(newService);
     }
+
+    @Override
+    public void updateStatus(Long id, String status) {
+        this.serviceRepo.updateStatus(id, status);
+    }
+    
+    @Override
+    public void updateActive(Long id, boolean active) {
+        this.serviceRepo.updateActive(id, active);
+    }
+
+    @Override
+    public boolean checkOwner(Long provId, Long id) {
+        return this.serviceRepo.checkOwner(provId, id);
+    }
+
+    @Override
+    public void deleteService(Long id) {
+        this.serviceRepo.deleteService(id);
+    }
 }
