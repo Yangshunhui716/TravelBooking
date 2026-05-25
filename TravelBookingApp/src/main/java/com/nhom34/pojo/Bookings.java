@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -77,6 +78,7 @@ public class Bookings implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+    @JsonIgnore
     @OneToMany(mappedBy = "bookingId")
     private Collection<TransferTransactions> transferTransactionsCollection;
     @JoinColumn(name = "customer_id", referencedColumnName = "id")

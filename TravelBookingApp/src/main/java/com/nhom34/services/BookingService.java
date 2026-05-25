@@ -1,0 +1,18 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
+package com.nhom34.services;
+
+import com.nhom34.pojo.Bookings;
+import java.util.List;
+
+/**
+ *
+ * @author QUANG AN
+ */
+public interface BookingService {
+    List<Bookings> getBookingsByCustomerId(Long customerId);
+    Bookings getBookingById(Long id);
+    
+}
