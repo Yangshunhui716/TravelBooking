@@ -4,6 +4,7 @@
  */
 package com.nhom34.services;
 
+
 import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.TourServices;
@@ -25,4 +26,5 @@ public interface ProviderService {
     List<TransportServices> getTransportServices(Long provId);
     List<HotelRoomServices> getHotelRoomServices(Long provId);
     List<TourServices> getTourServices(Long provId);
+    Providers updateProfile(Map<String, String> params, Long id);
 }

@@ -4,6 +4,7 @@
  */
 package com.nhom34.controllers;
 
+import com.nhom34.pojo.Customers;
 import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.TourServices;
@@ -135,4 +136,19 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }
     }
+    
+    @GetMapping("/profile")
+    public ResponseEntity<Providers> getProfile(Principal principal) {
+        Users user = this.userService.getUserByUsername(principal.getName());
+        Providers provider = this.provService.getProvById(user.getId());
+        return new ResponseEntity<>(provider, HttpStatus.OK);
+    }
+    
+    @PatchMapping("/profile")
+    public ResponseEntity<Providers> updateProfile(@RequestBody Map<String, String> params,Principal principal) {
+        Users user = this.userService.getUserByUsername(principal.getName());
+        Providers provider = this.provService.updateProfile(params, user.getId());
+        return new ResponseEntity<>(provider, HttpStatus.OK);
+    }
+
 }

@@ -25,5 +25,4 @@ public interface UserService extends UserDetailsService{
     void updateLastLogin(String username);
     Users addUser(Map<String, String> info, MultipartFile avatar);
     boolean authenticate(String username, String password);
-    
 }
