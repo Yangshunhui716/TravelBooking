@@ -16,6 +16,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -89,5 +90,22 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         query.where(builder.equal(rT.get("services").get("providerId").get("id"), provId));
         Query q = s.createQuery(query);
         return q.getResultList();
+    }
+
+    @Override
+    public Providers updatePartial(Map<String, String> params, Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Providers provider = s.get(Providers.class, id);
+        if (params.containsKey("tax")) {
+            provider.setTax(params.get("tax"));
+        }
+        if (params.containsKey("business_name")) {
+            provider.setBusinessName(params.get("business_name"));
+        }
+        if (params.containsKey("address")) {
+            provider.setAddress(params.get("address"));
+        }
+        s.merge(provider);
+        return provider;
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nhom34.repositories.UserRepository;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Map;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -88,6 +89,21 @@ public class UserRepositoryImpl implements UserRepository{
         return this.passwordEncoder.matches(password, u.getPassword());
     }
 
-
-    
+    @Override
+    public Users updateProfile(Map<String, String> params, Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Users user = s.get(Users.class, id);
+        if (params.containsKey("phone")) {
+            user.setPhone(params.get("phone"));
+        }
+        if (params.containsKey("email")) {
+            user.setEmail(params.get("email"));
+        }
+        if (params.containsKey("avatar")) {
+            user.setAvatar(params.get("avatar"));
+        }
+        user.setUpdatedAt(new Date());
+        s.merge(user);
+        return user;
+    }
 }

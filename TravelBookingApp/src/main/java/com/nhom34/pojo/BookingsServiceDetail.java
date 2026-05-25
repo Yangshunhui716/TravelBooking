@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +51,7 @@ public class BookingsServiceDetail implements Serializable {
     @NotNull
     @Column(name = "quantity")
     private int quantity;
+    @JsonIgnore
     @JoinColumn(name = "booking_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Bookings bookingId;
