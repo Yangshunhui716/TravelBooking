@@ -8,6 +8,7 @@ import com.nhom34.pojo.Customers;
 import com.nhom34.pojo.Users;
 import com.nhom34.repositories.CustomerRepository;
 import com.nhom34.services.CustomerService;
+import com.nhom34.services.UserService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepo;
+    @Autowired
+    private UserService userService;
     
     @Override
     public Customers addCustomer(Map<String, String> info, Users u) {
@@ -35,5 +38,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customers getCustomerByUserId(Long userId) {
         return this.customerRepo.getCustomerByUserId(userId);
+    }
+
+    @Override
+    public Customers getCustomerByUsername(String username) {
+        return this.customerRepo.getCustomerByUserId(this.userService.getUserByUsername(username).getId());
     }
 }
