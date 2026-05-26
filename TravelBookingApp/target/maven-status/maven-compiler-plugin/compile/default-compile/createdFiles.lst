@@ -18,6 +18,7 @@ com\nhom34\configs\ThymeleafConfigs.class
 com\nhom34\services\impl\BookingServiceImpl.class
 com\nhom34\controllers\ApiTourController.class
 com\nhom34\utils\MomoUtils.class
+com\nhom34\repositories\impl\BookingRepositoryImpl.class
 com\nhom34\configs\SpringSecurityConfigs.class
 com\nhom34\pojo\Users.class
 com\nhom34\controllers\ApiUserController.class
@@ -48,6 +49,7 @@ com\nhom34\configs\MomoConfigs.class
 com\nhom34\services\TransportService.class
 com\nhom34\configs\SecurityWebApplicationInitializer.class
 com\nhom34\repositories\impl\BookingRepositoyImpl.class
+com\nhom34\controllers\ApiCustomerController.class
 com\nhom34\travelbookingapp\resources\JakartaEE11Resource.class
 com\nhom34\repositories\impl\TourRepositoryImpl.class
 com\nhom34\services\impl\HotelServiceImpl.class
