@@ -10,6 +10,7 @@ import com.nhom34.pojo.TourServices;
 import com.nhom34.pojo.TransportServices;
 import com.nhom34.pojo.Users;
 import com.nhom34.repositories.ProviderRepository;
+import com.nhom34.repositories.UserRepository;
 import com.nhom34.services.ProviderService;
 import com.nhom34.services.UserService;
 import java.util.List;
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 public class ProviderServiceImpl implements ProviderService{
     @Autowired
     private ProviderRepository provRepo;
+    @Autowired
+    private UserRepository userRepo;
     @Autowired
     private UserService userService;
     
@@ -73,6 +76,12 @@ public class ProviderServiceImpl implements ProviderService{
     @Override
     public List<TourServices> getTourServices(Long provId) {
         return this.provRepo.getTourServices(provId);
+    }
+
+    @Override
+    public Providers updateProfile(Map<String, String> params, Long id) {
+        this.userRepo.updateProfile(params, id);
+        return this.provRepo.updatePartial(params, id);
     }
 
 }

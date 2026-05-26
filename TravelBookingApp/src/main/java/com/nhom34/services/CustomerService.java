@@ -16,4 +16,5 @@ public interface CustomerService {
     Customers addCustomer(Map<String, String> info, Users u);
     Customers getCustomerByUserId(Long userId);
     Customers getCustomerByUsername(String username);
+    Customers updateProfile(Map<String, String> params, Long id);
 }
