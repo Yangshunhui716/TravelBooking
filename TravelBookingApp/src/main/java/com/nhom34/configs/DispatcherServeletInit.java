@@ -22,7 +22,9 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
             ThymeleafConfigs.class,
             HibernateConfigs.class,
             SpringSecurityConfigs.class,
-            ApiSecurityConfigs.class
+            ApiSecurityConfigs.class,
+            MomoConfigs.class,
+            PaypalConfigs.class
         };
     }
 
@@ -48,8 +50,4 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
         registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
     }
     
-//    @Override
-//    protected Filter[] getServletFilters() {
-//        return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
-//    }
 }

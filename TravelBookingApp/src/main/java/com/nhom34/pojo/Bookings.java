@@ -9,6 +9,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -78,9 +79,6 @@ public class Bookings implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @JsonIgnore
-    @OneToMany(mappedBy = "bookingId")
-    private Collection<TransferTransactions> transferTransactionsCollection;
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @ManyToOne
     private Customers customerId;
@@ -158,14 +156,6 @@ public class Bookings implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Collection<TransferTransactions> getTransferTransactionsCollection() {
-        return transferTransactionsCollection;
-    }
-
-    public void setTransferTransactionsCollection(Collection<TransferTransactions> transferTransactionsCollection) {
-        this.transferTransactionsCollection = transferTransactionsCollection;
     }
 
     public Customers getCustomerId() {

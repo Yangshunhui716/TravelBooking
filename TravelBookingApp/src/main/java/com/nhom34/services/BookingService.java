@@ -5,14 +5,18 @@
 package com.nhom34.services;
 
 import com.nhom34.pojo.Bookings;
+import com.nhom34.pojo.Customers;
+import com.nhom34.pojo.RequestOrder;
 import java.util.List;
-
 /**
  *
- * @author QUANG AN
+ * @author PC
  */
 public interface BookingService {
-    List<Bookings> getBookingsByCustomerId(Long customerId);
+    Bookings addBooking(RequestOrder requestPayload, Customers customer);
     Bookings getBookingById(Long id);
-    
+    void changePaymentStatus(Long id, String paymentStatus);
+    void changeBookingStatus(Long id, String bookingStatus);
+    void bookingPaySuccess(String transactionCode, String transStatus, Long id, String paymentStatus, String bookingStatus);
+    List<Bookings> getBookingsByCustomerId(Long customerId);
 }
