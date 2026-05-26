@@ -57,6 +57,7 @@ public class BookingServiceImpl implements BookingService{
         this.bookingRepo.addBookingDetail(booking, newBooking);
         
         return newBooking;
+    }
 
     @Override
     public List<Bookings> getBookingsByCustomerId(Long customerId) {
