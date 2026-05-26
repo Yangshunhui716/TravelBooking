@@ -22,4 +22,5 @@ public interface UserRepository {
     boolean authenticate(String username, String password);
     Users updateProfile(Map<String, String> params, Long id);
     
+    
 }
