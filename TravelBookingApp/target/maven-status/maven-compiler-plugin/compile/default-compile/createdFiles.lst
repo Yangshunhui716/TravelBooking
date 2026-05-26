@@ -1,5 +1,6 @@
 com\nhom34\repositories\HotelRepository.class
 com\nhom34\services\impl\TourServiceImpl.class
+com\nhom34\components\PaymentFactory.class
 com\nhom34\repositories\ProviderRepository.class
 com\nhom34\pojo\Admins.class
 com\nhom34\services\UserService.class
@@ -10,9 +11,11 @@ com\nhom34\repositories\impl\AdminRepositoryImpl.class
 com\nhom34\controllers\ApiHotelController.class
 com\nhom34\pojo\Providers.class
 com\nhom34\services\impl\UserServiceImpl.class
+com\nhom34\pojo\OrderServices.class
 com\nhom34\pojo\Customers.class
 com\nhom34\configs\ApiSecurityConfigs.class
 com\nhom34\configs\ThymeleafConfigs.class
+com\nhom34\services\impl\BookingServiceImpl.class
 com\nhom34\controllers\ApiTourController.class
 com\nhom34\utils\MomoUtils.class
 com\nhom34\configs\SpringSecurityConfigs.class
@@ -25,6 +28,7 @@ com\nhom34\pojo\Bookings.class
 com\nhom34\utils\JwtUtils.class
 com\nhom34\repositories\impl\ServiceRepositoryImpl.class
 com\nhom34\services\TourService.class
+com\nhom34\pojo\Order.class
 com\nhom34\controllers\ApiProviderController.class
 com\nhom34\pojo\TransportServices.class
 com\nhom34\repositories\impl\CustomerRepositoryImpl.class
@@ -36,7 +40,6 @@ com\nhom34\configs\HibernateConfigs.class
 com\nhom34\repositories\UserRepository.class
 com\nhom34\services\PaymentService.class
 com\nhom34\repositories\impl\ProviderRepositoryImpl.class
-com\nhom34\services\impl\PaymentServiceImpl.class
 com\nhom34\pojo\HotelRoomServices.class
 com\nhom34\services\ReviewService.class
 com\nhom34\services\impl\ReviewServiceImpl.class
@@ -44,11 +47,14 @@ com\nhom34\repositories\ServiceRepository.class
 com\nhom34\configs\MomoConfigs.class
 com\nhom34\services\TransportService.class
 com\nhom34\configs\SecurityWebApplicationInitializer.class
+com\nhom34\repositories\impl\BookingRepositoyImpl.class
 com\nhom34\travelbookingapp\resources\JakartaEE11Resource.class
 com\nhom34\repositories\impl\TourRepositoryImpl.class
 com\nhom34\services\impl\HotelServiceImpl.class
+com\nhom34\services\BookingService.class
 com\nhom34\repositories\AdminRepository.class
 com\nhom34\services\impl\ServiceServiceImpl.class
+com\nhom34\repositories\BookingRepository.class
 com\nhom34\pojo\TourServices.class
 com\nhom34\repositories\TourRepository.class
 com\nhom34\pojo\TransferTransactions.class
@@ -66,6 +72,7 @@ com\nhom34\configs\DispatcherServeletInit.class
 com\nhom34\services\ProviderService.class
 com\nhom34\services\impl\CustomerServiceImpl.class
 com\nhom34\services\ServiceService.class
+com\nhom34\services\impl\payment\MomoServiceImpl.class
 com\nhom34\configs\WebAppContextConfigs.class
 com\nhom34\repositories\impl\ReviewRepositoryImpl.class
 com\nhom34\repositories\impl\TransportRepositoryImpl.class

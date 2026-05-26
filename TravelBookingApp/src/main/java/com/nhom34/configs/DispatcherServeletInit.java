@@ -23,7 +23,8 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
             HibernateConfigs.class,
             SpringSecurityConfigs.class,
             ApiSecurityConfigs.class,
-            MomoConfigs.class
+            MomoConfigs.class,
+            PaypalConfigs.class
         };
     }
 
