@@ -11,7 +11,6 @@ import com.nhom34.pojo.Services;
 import com.nhom34.repositories.ServiceRepository;
 import com.nhom34.services.ServiceService;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
@@ -56,8 +55,8 @@ public class ServiceServiceImpl implements ServiceService {
         newService.setAvailableSlots(Integer.parseInt(info.get("slot")));
         newService.setStatus("AVAILABLE");
         newService.setIsActive(true);
-        newService.setCreatedAt(Date.from(Instant.now()));
-        newService.setUpdatedAt(Date.from(Instant.now()));
+        newService.setCreatedAt(new Date());
+        newService.setUpdatedAt(new Date());
         newService.setProviderId(prov);
         
         return this.serviceRepo.addService(newService);
