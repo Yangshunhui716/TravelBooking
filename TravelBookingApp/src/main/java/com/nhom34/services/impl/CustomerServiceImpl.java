@@ -48,11 +48,13 @@ public class CustomerServiceImpl implements CustomerService {
     public Customers getCustomerByUsername(String username) {
         return this.customerRepo.getCustomerByUserId(this.userService.getUserByUsername(username).getId());
     }
+    
+    @Override
     @Transactional
     public Customers updateProfile(Map<String, String> params, Long id) {
         this.userRepo.updateProfile(params, id);
         return this.customerRepo.updatePartial(params, id);
     }
-
- 
+    
+    
 }
