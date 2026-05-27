@@ -7,21 +7,25 @@ import Footer from "./components/Footer";
 import Home from "./screens/Home/Home";
 import Login from "./screens/User/Login";
 import Register from "./screens/User/Register";
+import TransportService from "./screens/Service/TransportService";
+import HotelRoomService from "./screens/Service/HotelRoomService";
+import TourService from "./screens/Service/TourService";
 
-function App() {
+const App = () => {
 
     return (
         <BrowserRouter>
 
             <Header />
 
-            <div className="container mt-4 mb-4">
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                </Routes>
-            </div>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/tour-service" element={<TourService/>} />
+                <Route path="/hotel-room-service" element={<HotelRoomService/>} />
+                <Route path="/transport-service" element={<TransportService/>} />
+            </Routes>
 
             <Footer />
 
