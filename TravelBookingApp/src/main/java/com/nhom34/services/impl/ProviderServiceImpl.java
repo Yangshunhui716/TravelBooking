@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -79,6 +80,7 @@ public class ProviderServiceImpl implements ProviderService{
     }
 
     @Override
+    @Transactional
     public Providers updateProfile(Map<String, String> params, Long id) {
         this.userRepo.updateProfile(params, id);
         return this.provRepo.updatePartial(params, id);
