@@ -33,43 +33,42 @@ public class JwtFilter implements Filter{
         
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         
-        if (httpRequest.getRequestURI().startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true) {
+        if (httpRequest.getRequestURI().startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == false) {
+            chain.doFilter(request, response);
+            return;
+        }
            
-            String header = httpRequest.getHeader("Authorization");
+        String header = httpRequest.getHeader("Authorization");
+
+        if (header == null || !header.startsWith("Bearer ")) {
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+            return;
+        }
             
-            if (header == null || !header.startsWith("Bearer ")) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+        try {
+            String token = header.substring(7);
+            String username = JwtUtils.validateTokenAndGetUsername(token);
+            if (username == null) {
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token không hợp lệ hoặc hết hạn");
                 return;
             }
-            else {
-                String token = header.substring(7);
-                try {
-                    String username = JwtUtils.validateTokenAndGetUsername(token);
-                    if (username != null) {
-                        httpRequest.setAttribute("username", username);
-                        var userDetails = userDetailsService.loadUserByUsername(username);
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails,
-                                        null,
-                                        userDetails.getAuthorities());
+            
+            httpRequest.setAttribute("username", username);
+            var userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities());
+            SecurityContextHolder.clearContext();
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        
-                        chain.doFilter(request, response);
-                        return;
-                    }
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                    // Log lỗi
-                }
-            }
-
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, 
-                    "Token không hợp lệ hoặc hết hạn");
+            chain.doFilter(request, response);
+            return;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return;
+            // Log lỗi
         }
-        
-        chain.doFilter(request, response);
     }
-    
 }

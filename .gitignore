@@ -25,3 +25,6 @@ replay_pid*
 
 TravelBookingApp/src/main/resources/databases.properties
 TravelBookingApp/src/main/resources/payments.properties
+
+TravelBookingApp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+TravelBookingApp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

@@ -6,6 +6,12 @@ package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Customers;
 import com.nhom34.repositories.CustomerRepository;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;

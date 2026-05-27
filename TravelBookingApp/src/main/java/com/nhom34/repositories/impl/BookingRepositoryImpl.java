@@ -10,6 +10,8 @@ import com.nhom34.repositories.BookingRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import java.util.List;
 import org.hibernate.Session;
@@ -98,5 +100,23 @@ public class BookingRepositoryImpl implements BookingRepository{
             b.setBookingStatus(bookingStatus);
             s.merge(b);
         }
+    }
+
+    @Override
+    public List<Object[]> getCustomerByServiceId(Long serviceId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder builder = s.getCriteriaBuilder();
+        CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
+        Root rBD = query.from(BookingsServiceDetail.class);
+        Join<BookingsServiceDetail, Bookings> join = rBD.join("bookingId", JoinType.LEFT);
+        
+        query.multiselect(join.get("customerId").get("fullname"), join.get("customerId").get("gender"),
+                join.get("customerId").get("users").get("phone"), join.get("customerId").get("users").get("email"),
+                join.get("customerId").get("users").get("avatar"));
+        query.where(builder.equal(rBD.get("serviceId").get("id"), serviceId));
+        query.distinct(true);
+        Query q = s.createQuery(query);
+        
+        return q.getResultList();
     }
 }
