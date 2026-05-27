@@ -28,6 +28,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableTransactionManagement
 @ComponentScan(
         basePackages = {
+            "com.nhom34.components",
             "com.nhom34.controllers",
             "com.nhom34.repositories",
             "com.nhom34.services",
