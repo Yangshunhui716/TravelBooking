@@ -24,6 +24,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
             "com.nhom34.controllers",
             "com.nhom34.repositories",
             "com.nhom34.services",
+            "com.nhom34.components"
         }
 )
 @EnableWebMvc
