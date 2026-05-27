@@ -20,4 +20,5 @@ public interface BookingRepository {
     void changePaymentStatus(Long id, String paymentStatus);
     void changeBookingStatus(Long id, String bookingStatus);
     List<Bookings> getBookingsByCustomerId(Long customerId);
+    List<Object[]> getCustomerByServiceId(Long serviceId);
 }

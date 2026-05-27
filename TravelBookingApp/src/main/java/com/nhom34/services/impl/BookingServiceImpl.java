@@ -86,5 +86,10 @@ public class BookingServiceImpl implements BookingService{
         this.bookingRepo.changePaymentStatus(id, paymentStatus);
         this.bookingRepo.changeBookingStatus(id, bookingStatus);
     }
+
+    @Override
+    public List<Object[]> getCustomerByServiceId(Long serviceId) {
+        return this.bookingRepo.getCustomerByServiceId(serviceId);
+    }
     
 }
