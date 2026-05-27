@@ -4,12 +4,12 @@
  */
 package com.nhom34.controllers;
 
-import com.nhom34.pojo.Customers;
 import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.TourServices;
 import com.nhom34.pojo.TransportServices;
 import com.nhom34.pojo.Users;
+import com.nhom34.services.BookingService;
 import com.nhom34.services.ProviderService;
 import com.nhom34.services.TourService;
 import com.nhom34.services.TransportService;
@@ -22,7 +22,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,7 +40,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/api/secure/provider")
-@PreAuthorize("hasRole('PROVIDER')")
 @CrossOrigin
 public class ApiProviderController {
     @Autowired
@@ -55,6 +54,8 @@ public class ApiProviderController {
     private HotelService hotelRoomService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BookingService bookingService;
     
     @GetMapping("/tour-services")
     public ResponseEntity<List<TourServices>> getTourServices(Principal principal) {
@@ -102,7 +103,7 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        if(this.servService.checkOwner(servId, provider.getId())){
+        if(this.servService.checkOwner(provider.getId(),servId)){
             return new ResponseEntity<>(this.tourService.updatePartial(params, servId),HttpStatus.CREATED);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
@@ -116,7 +117,7 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        if(this.servService.checkOwner(servId, provider.getId())){
+        if(this.servService.checkOwner(provider.getId(),servId)){
             return new ResponseEntity<>(this.transpotService.updatePartial(params, servId),HttpStatus.CREATED);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
@@ -130,8 +131,18 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        if(this.servService.checkOwner(servId, provider.getId())){
+        if(this.servService.checkOwner(provider.getId(),servId)){
             return new ResponseEntity<>(this.hotelRoomService.updatePartial(params, servId),HttpStatus.CREATED);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
+        }
+    }
+    
+    @GetMapping("/services/{serviceId}/customers")
+    public ResponseEntity<?> getServiceCustomer(@PathVariable(value = "serviceId") Long servId ,Principal principal){
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(this.servService.checkOwner(provider.getId(),servId)){
+            return new ResponseEntity<>(this.bookingService.getCustomerByServiceId(servId),HttpStatus.OK);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }
@@ -150,5 +161,5 @@ public class ApiProviderController {
         Providers provider = this.provService.updateProfile(params, user.getId());
         return new ResponseEntity<>(provider, HttpStatus.OK);
     }
-
+    
 }

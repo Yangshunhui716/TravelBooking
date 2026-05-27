@@ -18,11 +18,13 @@ import com.paypal.orders.PurchaseUnitRequest;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author PC
  */
+@Service
 public class PaypalServiceImpl implements PaymentService{
     @Autowired
     private PaypalConfigs paypalConfigs;
