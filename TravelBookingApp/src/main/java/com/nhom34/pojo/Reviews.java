@@ -7,6 +7,7 @@ package com.nhom34.pojo;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -58,7 +59,7 @@ public class Reviews implements Serializable {
     @ManyToOne
     private Customers customerId;
     @JoinColumn(name = "service_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Services serviceId;
 
     public Reviews() {

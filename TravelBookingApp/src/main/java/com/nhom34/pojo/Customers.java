@@ -4,8 +4,8 @@
  */
 package com.nhom34.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -49,16 +49,10 @@ public class Customers implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "gender")
     private String gender;
-    @JsonIgnore
-    @OneToMany(mappedBy = "customerId")
-    private Collection<Reviews> reviewsCollection;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Users users;
-    @JsonIgnore
-    @OneToMany(mappedBy = "customerId")
-    private Collection<Bookings> bookingsCollection;
-
+    
     public Customers() {
     }
 
@@ -96,28 +90,12 @@ public class Customers implements Serializable {
         this.gender = gender;
     }
 
-    public Collection<Reviews> getReviewsCollection() {
-        return reviewsCollection;
-    }
-
-    public void setReviewsCollection(Collection<Reviews> reviewsCollection) {
-        this.reviewsCollection = reviewsCollection;
-    }
-
     public Users getUsers() {
         return users;
     }
 
     public void setUsers(Users users) {
         this.users = users;
-    }
-
-    public Collection<Bookings> getBookingsCollection() {
-        return bookingsCollection;
-    }
-
-    public void setBookingsCollection(Collection<Bookings> bookingsCollection) {
-        this.bookingsCollection = bookingsCollection;
     }
 
     @Override

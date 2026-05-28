@@ -37,21 +37,11 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
-    public void updateStatus(Long id, String status) {
+    public void updateStatus(Long id, boolean status) {
         Session s = this.factory.getObject().getCurrentSession();
         Services service = this.getServiceById(id);
-        if (!service.getStatus().equals(status)){
+        if (service.getStatus()!=status){
             service.setStatus(status);
-        }
-        s.merge(service);
-    }
-    
-    @Override
-    public void updateActive(Long id, boolean active) {
-        Session s = this.factory.getObject().getCurrentSession();
-        Services service = this.getServiceById(id);
-        if (service.getIsActive()!=active){
-            service.setIsActive(active);
         }
         s.merge(service);
     }

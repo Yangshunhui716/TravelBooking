@@ -8,12 +8,17 @@ import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TransportServices;
 import com.nhom34.repositories.TransportRepository;
+import com.nhom34.repositories.impl.TransportRepositoryImpl;
+import com.nhom34.services.AutoUpdateServiceService;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TransportService;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
  * @author QUANG AN
  */
 @Service
-public class TransportServiceImpl implements TransportService{
+public class TransportServiceImpl implements TransportService, AutoUpdateServiceService{
     @Autowired
-    private TransportRepository transportRepo;
+    private TransportRepositoryImpl transportRepo;
     @Autowired
     private ServiceService serviceService;
     
@@ -57,13 +62,22 @@ public class TransportServiceImpl implements TransportService{
     }
 
     @Override
+    @Transactional
     public TransportServices updatePartial(Map<String, String> params, Long id) {
         if(params.containsKey("status")){
-            this.serviceService.updateStatus(id, params.get("status"));
+            this.serviceService.updateStatus(id, Boolean.parseBoolean(params.get("status")));
             return this.transportRepo.getTransportServiceById(id);
         }
         else{
             return this.transportRepo.updatePartial(params, id);
         }
+    }
+
+    @Override
+    @EventListener(ContextRefreshedEvent.class)
+    @Scheduled(cron = "0 0/10 * * ?")
+    @Transactional
+    public void autoUpdateStatusByCheckDate() {
+        this.transportRepo.autoUpdateStatusByCheckDate();
     }
 }

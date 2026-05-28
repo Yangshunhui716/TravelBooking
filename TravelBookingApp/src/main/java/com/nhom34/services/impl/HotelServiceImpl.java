@@ -58,9 +58,10 @@ public class HotelServiceImpl implements HotelService{
     }
     
     @Override
+    @Transactional
     public HotelRoomServices updatePartial(Map<String, String> params, Long id) {
         if(params.containsKey("status")){
-            this.serviceService.updateStatus(id, params.get("status"));
+            this.serviceService.updateStatus(id, Boolean.parseBoolean(params.get("status")));
             return this.hotelRepo.getHotelRoomServiceById(id);
         }
         else{

@@ -20,5 +20,6 @@
     <class>com.nhom34.pojo.TransferTransactions</class>
     <class>com.nhom34.pojo.BookingsServiceDetail</class>
     <class>com.nhom34.pojo.TourServices</class>
+    <class>com.nhom34.pojo.Conversation</class>
   </persistence-unit>
 </persistence>
