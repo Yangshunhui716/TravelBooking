@@ -1,17 +1,17 @@
 import axios from "axios";
-
+import cookies from 'react-cookies'
 export const endpoints={
     'register': 'auth/register',
     'login': 'auth/login',
 
-    'customerProfile': 'secure/customer/profile',
-    'customerBookings': 'secure/customer/bookings',
+    'customer-profile': 'secure/customer/profile',
+    'customer-bookings': 'secure/customer/bookings',
     'customerBooking': 'secure/customer/bookings/{bookingId}',
     'customerReview': 'secure/customer/reviews/{reviewId}',
     'customerCreateReview': 'secure/customer/services/{serviceId}/reviews',
 
-    'providerProfile': 'secure/provider/profile',
-    'providerTourServices': 'secure/provider/tour-services',
+    'provider-profile': 'secure/provider/profile',
+    'provider-services': 'secure/provider/tour-services',
     'providerTourService': 'secure/provider/tour-services/{tourServiceId}',
     'providerHotelRoomServices': 'secure/provider/hotel-room-services',
     'providerHotelRoomService': 'secure/provider/hotel-room-services/{hotelRoomServiceId}',
@@ -28,7 +28,14 @@ export const endpoints={
     'serviceCustomers': 'secure/provider/service/{serviceId}/cutomers',
     'serviceReviews': '/services/{serviceId}/reviews',
 }
-
+export const authApis = () => {
+    return axios.create({
+        baseURL: 'http://localhost:8000/TravelBookingApp/api',
+        headers: {
+            'Authorization': `Bearer ${cookies.load('token')}`
+        }
+    })
+}
 export default axios.create({
     baseURL: "http://localhost:8000/TravelBookingApp/api"
 });

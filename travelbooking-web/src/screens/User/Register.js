@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import { Alert,Button,Col, Form, Row
-} from "react-bootstrap";
+import { Alert,Button,Col, Form, Row} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import styles from "./UserStyle";
 import Apis from "../../configs/Api";
@@ -15,10 +14,7 @@ const Register = () => {
     });
 
     const setState = (value, field) => {
-        setUser({
-            ...user,
-            [field]: value
-        });
+        setUser({ ...user, [field]: value});
     }
     const validate = () => {
         if (!user.username || user.username.length < 4) {
@@ -29,9 +25,7 @@ const Register = () => {
             setErr("Mật khẩu phải từ 6 ký tự!");
             return false;
         }
-        const emailRegex =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!user.email || !emailRegex.test(user.email)) {
             setErr("Email không hợp lệ!");
             return false;
@@ -42,31 +36,25 @@ const Register = () => {
             return false;
         }
         if (user.role === "ROLE_CUSTOMER") {
-
-            if (!user.fullName ||
-                user.fullName.length < 2) {
-
+            if (!user.fullname ||
+                user.fullname.length < 2) {
                 setErr("Họ và tên không hợp lệ!");
                 return false;
             }
-
             if (!user.gender) {
                 setErr("Vui lòng chọn giới tính!");
                 return false;
             }
         }
         if (user.role === "ROLE_PROVIDER") {
-
             if (!user.tax || user.tax.length < 10) {
                 setErr("Mã số thuế không hợp lệ!");
                 return false;
             }
-
             if (!user.businessName) {
                 setErr("Vui lòng nhập tên doanh nghiệp!");
                 return false;
             }
-
             if (!user.address) {
                 setErr("Vui lòng nhập địa chỉ!");
                 return false;
@@ -92,14 +80,9 @@ const Register = () => {
                     form.append(key, user[key]);
                 }
                 if (avatar.current.files.length > 0) {
-                    form.append(
-                        "avatar",
-                        avatar.current.files[0]
-                    );
+                    form.append( "avatar",avatar.current.files[0] );
                 }
-                const res = await Apis.post(
-                    "/auth/register",
-                    form,
+                const res = await Apis.post( "/auth/register", form,
                     {
                         headers: {
                             "Content-Type": "multipart/form-data"
@@ -113,8 +96,7 @@ const Register = () => {
                 }
             } catch (ex) {
                 console.error(ex);
-                if (ex.response &&
-                    ex.response.data) {
+                if (ex.response && ex.response.data) {
                     setErr(ex.response.data);
                 } else {
                     setErr("Đăng ký thất bại!");
@@ -135,24 +117,14 @@ const Register = () => {
                 <Form.Group className="mb-3">
                     <Form.Label> Tên đăng nhập </Form.Label>
                     <Form.Control type="text" required  minLength={4} placeholder="Nhập username..."  value={user.username || ""}
-                        onChange={(e) =>
-                            setState(
-                                e.target.value,
-                                "username"
-                            )
-                        }
+                        onChange={(e) => setState( e.target.value,"username" )}
                     />
                 </Form.Group>
                 {/* PASSWORD */}
                 <Form.Group className="mb-3">
                     <Form.Label> Mật khẩu   </Form.Label>
                     <Form.Control    type="password"    required   minLength={6}    placeholder="Nhập password..."    value={user.password || ""}
-                        onChange={(e) =>
-                            setState(
-                                e.target.value,
-                                "password"
-                            )
-                        }
+                        onChange={(e) =>setState( e.target.value, "password" )}
                     />
                 </Form.Group>
                 <Row>
@@ -161,12 +133,7 @@ const Register = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>  Số điện thoại </Form.Label>
                             <Form.Control  type="tel"    required    pattern="[0-9]{10}"  maxLength={10}     placeholder="Nhập số điện thoại..."       value={user.phone || ""}
-                                onChange={(e) =>
-                                    setState(
-                                        e.target.value.replace(/\D/g, ""),
-                                        "phone"
-                                    )
-                                }
+                                onChange={(e) => setState(  e.target.value.replace(/\D/g, ""), "phone" )}
                             />
                         </Form.Group>
                     </Col>
@@ -175,12 +142,7 @@ const Register = () => {
                         <Form.Group className="mb-3">
                             <Form.Label> Email  </Form.Label>
                             <Form.Control  type="email" required  placeholder="Nhập email..."  value={user.email || ""}
-                                onChange={(e) =>
-                                    setState(
-                                        e.target.value,
-                                        "email"
-                                    )
-                                }
+                                onChange={(e) =>setState( e.target.value, "email" )}
                             />
                         </Form.Group>
                     </Col>
@@ -189,12 +151,7 @@ const Register = () => {
                 <Form.Group className="mb-3">
                     <Form.Label> Vai trò  </Form.Label>
                     <Form.Select  value={user.role}
-                        onChange={(e) =>
-                            setState(
-                                e.target.value,
-                                "role"
-                            )
-                        }
+                        onChange={(e) => setState( e.target.value, "role" )}
                     >
                         <option value="ROLE_CUSTOMER"> Khách hàng </option>
                         <option value="ROLE_PROVIDER">   Nhà cung cấp  </option>
@@ -205,23 +162,13 @@ const Register = () => {
                     <>
                         <Form.Group className="mb-3">
                             <Form.Label> Họ và tên     </Form.Label>
-                            <Form.Control type="text"    required  placeholder="Nhập họ và tên..."     value={user.fullName || ""}
-                                onChange={(e) =>
-                                    setState(
-                                        e.target.value,
-                                        "fullName"
-                                    )
-                                }
+                            <Form.Control type="text"    required  placeholder="Nhập họ và tên..."     value={user.fullname || ""}
+                                onChange={(e) =>setState(e.target.value, "fullname" ) }
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label> Giới tính</Form.Label>
-                            <Form.Select  required   value={user.gender || ""}   onChange={(e) =>
-                                    setState(
-                                        e.target.value,
-                                        "gender"
-                                    )
-                                }
+                            <Form.Select required value={user.gender || ""} onChange={(e) => setState(  e.target.value,  "gender")}
                             >
                                 <option value="">  Chọn giới tính  </option>
                                 <option value="MALE"> Nam  </option>
@@ -236,33 +183,19 @@ const Register = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>  Mã số thuế  </Form.Label>
                             <Form.Control  type="text"    required   placeholder="Nhập mã số thuế..."      value={user.tax || ""}
-                                onChange={(e) =>
-                                    setState(
-                                        e.target.value,
-                                        "tax"
-                                    )
-                                }
+                                onChange={(e) =>setState( e.target.value, "tax")}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>  Tên nhà cung cấp </Form.Label>
                             <Form.Control  type="text" required placeholder="Nhập tên doanh nghiệp..."  value={user.businessName || ""}
-                                onChange={(e) =>
-                                    setState(
-                                        e.target.value,
-                                        "businessName"
-                                    )
-                                }
+                                onChange={(e) =>setState( e.target.value, "businessName" )}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>  Địa chỉ  </Form.Label>
                             <Form.Control type="text" required   placeholder="Nhập địa chỉ..."      value={user.address || ""}
-                                onChange={(e) =>
-                                    setState(
-                                        e.target.value,
-                                        "address"
-                                    )
+                                onChange={(e) => setState(  e.target.value, "address")
                                 }
                             />
                         </Form.Group>
@@ -271,11 +204,11 @@ const Register = () => {
                 {/* AVATAR */}
                 <Form.Group className="mb-4">
                     <Form.Label>  Ảnh đại diện </Form.Label>
-                    <Form.Control   type="file"   accept=".jpg,.jpeg,.png"    ref={avatar}   />
+                    <Form.Control type="file" accept=".jpg,.jpeg,.png" ref={avatar}   />
                 </Form.Group>
                 {/* BUTTON */}
-                <Button  type="submit"    variant="info"      disabled={loading}          style={styles.button} >
-                    {loading  ? "Đang đăng ký..."    : "Đăng ký"}
+                <Button  type="submit" variant="info" disabled={loading} style={styles.button} >
+                    {loading  ? "Đang đăng ký...": "Đăng ký"}
                 </Button>
             </Form>
         </div>

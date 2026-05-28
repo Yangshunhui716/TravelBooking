@@ -1,3 +1,5 @@
+import { Spinner } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 const MySpinner = () => {
     return 
     <Button variant="primary" disabled>
