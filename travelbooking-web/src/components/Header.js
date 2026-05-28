@@ -1,7 +1,25 @@
 import { Link } from "react-router-dom";
 import { Container, Nav, Navbar, Button } from "react-bootstrap";
 
+import { useContext } from "react";
+
+import cookies from "react-cookies";
+
+import { MyUserContext } from "../configs/Context";
+
 const Header = () => {
+
+    const [user, dispatch] = useContext(MyUserContext);
+
+    const logout = () => {
+
+        cookies.remove("token");
+
+        dispatch({
+            type: "LOGOUT"
+        });
+    }
+
     return (
         <Navbar
             expand="lg"
@@ -33,7 +51,7 @@ const Header = () => {
 
                 <Navbar.Collapse id="basic-navbar-nav">
 
-                    {/* Menu */}
+                    {/* MENU */}
                     <Nav className="mx-auto">
 
                         <Nav.Link
@@ -70,29 +88,54 @@ const Header = () => {
 
                     </Nav>
 
-                    {/* Buttons */}
-                    <div className="d-flex">
+                    {/* RIGHT SIDE */}
+                    <div className="d-flex align-items-center">
 
-                        <Button
-                            as={Link}
-                            to="/login"
-                            variant="light"
-                            className="me-2 px-4 rounded-pill fw-bold"
-                        >
-                            Đăng nhập
-                        </Button>
+                        {user === null ? (
+                            <>
+                                <Button
+                                    as={Link}
+                                    to="/login"
+                                    variant="light"
+                                    className="me-2 px-4 rounded-pill fw-bold"
+                                >
+                                    Đăng nhập
+                                </Button>
 
-                        <Button
-                            as={Link}
-                            to="/register"
-                            className="px-4 rounded-pill fw-bold"
-                            style={{
-                                backgroundColor: "#f97316",
-                                border: "none"
-                            }}
-                        >
-                            Đăng ký
-                        </Button>
+                                <Button
+                                    as={Link}
+                                    to="/register"
+                                    className="px-4 rounded-pill fw-bold"
+                                    style={{
+                                        backgroundColor: "#f97316",
+                                        border: "none"
+                                    }}
+                                >
+                                    Đăng ký
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                    <Link
+                                        to="/profile"
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "bold",
+                                            marginRight: "15px",
+                                            textDecoration: "none",
+                                            fontSize: "18px"
+                                        }}
+                                    >
+                                        Xin chào, {
+                                            user.fullname ||
+                                            user.businessName ||
+                                            user.users?.username
+                                        }
+                                    </Link>
+
+
+                            </>
+                        )}
 
                     </div>
 
