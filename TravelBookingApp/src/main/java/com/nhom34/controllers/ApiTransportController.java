@@ -31,11 +31,11 @@ public class ApiTransportController {
     
     @GetMapping("/transport-services")
     public ResponseEntity<List<TransportServices>> list( @RequestParam Map<String, String> params) {
-        return new ResponseEntity<>(this.transportService.getTransportServices(params),HttpStatus.OK);
+        return new ResponseEntity<>(this.transportService.getDetailServices(params),HttpStatus.OK);
     }
     
     @GetMapping("/transport-services/{serviceId}")
     public ResponseEntity<TransportServices> retrieve(@PathVariable(value = "serviceId") Long id) {
-        return new ResponseEntity<>(this.transportService.getTransportServiceById(id),HttpStatus.OK);
+        return new ResponseEntity<>((TransportServices)this.transportService.getDetailServiceById(id),HttpStatus.OK);
     }   
 }
