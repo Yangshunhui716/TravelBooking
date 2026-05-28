@@ -14,6 +14,7 @@ import TourService from "./screens/Service/TourService";
 import { MyUserContext } from "./configs/Context";
 import MyUserReducer from "./reducers/MyUserReducer";
 import Profile from "./screens/User/Profile";
+import BookingDetail from "./screens/Profile/customer/BookingDetail";
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, null);
     return (
@@ -27,6 +28,7 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                      <Route path="/profile" element={<Profile />} />
+                    <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
                     <Route path="/tour-services" element={<TourService/>} />
                     <Route path="/hotel-room-services" element={<HotelRoomService/>} />
                     <Route path="/transport-services" element={<TransportService/>} />

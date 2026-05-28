@@ -1,12 +1,13 @@
 import axios from "axios";
 import cookies from 'react-cookies'
 export const endpoints={
-    'register': 'auth/register',
-    'login': 'auth/login',
+    'register': '/auth/register',
+    'login': '/auth/login',
 
-    'customer-profile': 'secure/customer/profile',
-    'customer-bookings': 'secure/customer/bookings',
-    'customerBooking': 'secure/customer/bookings/{bookingId}',
+    'customer-profile': '/secure/customer/profile',
+    'customer-bookings': '/secure/customer/bookings',
+    'customer-bookings-detail': (bookingId) => `secure/customer/bookings/${bookingId}`,
+
     'customerReview': 'secure/customer/reviews/{reviewId}',
     'customerCreateReview': 'secure/customer/services/{serviceId}/reviews',
 
