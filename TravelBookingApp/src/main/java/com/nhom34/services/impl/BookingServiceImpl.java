@@ -11,6 +11,7 @@ import com.nhom34.pojo.RequestOrder;
 import com.nhom34.pojo.OrderServices;
 import com.nhom34.repositories.BookingRepository;
 import com.nhom34.services.BookingService;
+import com.nhom34.services.ServiceService;
 import com.nhom34.services.TransferTransactionService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,8 @@ public class BookingServiceImpl implements BookingService{
     private BookingRepository bookingRepo;
     @Autowired
     private TransferTransactionService ttService;
+    @Autowired
+    private ServiceService serviceService;
 
     @Override
     @Transactional
@@ -38,9 +41,12 @@ public class BookingServiceImpl implements BookingService{
         double total = 0;
         for(OrderServices o: bookingDetails){
             BookingsServiceDetail detail = new BookingsServiceDetail();
+            detail.setServiceId(this.serviceService.getServiceById(o.getId()));
             detail.setQuantity(o.getQuantity());
             detail.setUnitPrice(o.getUnitPrice());
-            detail.setSubtotal(o.getUnitPrice()*o.getQuantity());
+            detail.setSubtotal(o.getUnitPrice()*o.getQuantity()*o.getServiceDuration());
+            detail.setServiceStartDate(o.getServiceStartDate());
+            detail.setServiceDuration(o.getServiceDuration());
             total += detail.getSubtotal();
         }
         
@@ -70,11 +76,13 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
+    @Transactional
     public void changePaymentStatus(Long id, String paymentStatus) {
         this.bookingRepo.changePaymentStatus(id, paymentStatus);
     }
 
     @Override
+    @Transactional
     public void changeBookingStatus(Long id, String bookingStatus) {
         this.bookingRepo.changeBookingStatus(id, bookingStatus);
     }

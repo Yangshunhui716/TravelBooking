@@ -37,6 +37,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
+    @Transactional
     public Services addService(Map<String, String> info, MultipartFile img, Providers prov) {
         Services newService = new Services();
         
@@ -53,8 +54,7 @@ public class ServiceServiceImpl implements ServiceService {
         newService.setDescription(info.get("description"));
         newService.setDestination(info.get("destination"));
         newService.setAvailableSlots(Integer.parseInt(info.get("slot")));
-        newService.setStatus("AVAILABLE");
-        newService.setIsActive(true);
+        newService.setStatus(true);
         newService.setCreatedAt(new Date());
         newService.setUpdatedAt(new Date());
         newService.setProviderId(prov);
@@ -63,13 +63,9 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public void updateStatus(Long id, String status) {
+    @Transactional
+    public void updateStatus(Long id, boolean status) {
         this.serviceRepo.updateStatus(id, status);
-    }
-    
-    @Override
-    public void updateActive(Long id, boolean active) {
-        this.serviceRepo.updateActive(id, active);
     }
 
     @Override
@@ -78,7 +74,13 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
+    @Transactional
     public void deleteService(Long id) {
         this.serviceRepo.deleteService(id);
+    }
+
+    @Override
+    public boolean checkAvailableSlots(int slotsOrder, Long id) {
+        return slotsOrder>=this.serviceRepo.getServiceById(id).getAvailableSlots();
     }
 }

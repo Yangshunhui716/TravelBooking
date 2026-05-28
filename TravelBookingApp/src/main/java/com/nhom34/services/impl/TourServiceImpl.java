@@ -7,25 +7,31 @@ package com.nhom34.services.impl;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TourServices;
+import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TourRepository;
+import com.nhom34.repositories.impl.TourRepositoryImpl;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TourService;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.nhom34.services.AutoUpdateServiceService;
 
 /**
  *
  * @author QUANG AN
  */
 @Service
-public class TourServiceImpl implements  TourService{
+public class TourServiceImpl implements  TourService, AutoUpdateServiceService{
     @Autowired
-    private TourRepository tourRepo;
+    private TourRepositoryImpl tourRepo;
     @Autowired
     private ServiceService serviceService;
     
@@ -54,13 +60,22 @@ public class TourServiceImpl implements  TourService{
     }
     
     @Override
+    @Transactional
     public TourServices updatePartial(Map<String, String> params, Long id) {
         if(params.containsKey("status")){
-            this.serviceService.updateStatus(id, params.get("status"));
+            this.serviceService.updateStatus(id, Boolean.parseBoolean(params.get("status")));
             return this.tourRepo.getTourServiceById(id);
         }
         else{
             return this.tourRepo.updatePartial(params, id);
         }
+    }
+
+    @Override
+    @EventListener(ContextRefreshedEvent.class)
+    @Scheduled(cron = "0 0/10 * * ?")
+    @Transactional
+    public void autoUpdateStatusByCheckDate() {
+        this.tourRepo.autoUpdateStatusByCheckDate();
     }
 }

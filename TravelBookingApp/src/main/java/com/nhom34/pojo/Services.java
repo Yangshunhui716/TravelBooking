@@ -4,7 +4,6 @@
  */
 package com.nhom34.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,13 +41,14 @@ import org.hibernate.annotations.BatchSize;
     @NamedQuery(name = "Services.findByPrice", query = "SELECT s FROM Services s WHERE s.price = :price"),
     @NamedQuery(name = "Services.findByDestination", query = "SELECT s FROM Services s WHERE s.destination = :destination"),
     @NamedQuery(name = "Services.findByAvailableSlots", query = "SELECT s FROM Services s WHERE s.availableSlots = :availableSlots"),
-    @NamedQuery(name = "Services.findByStatus", query = "SELECT s FROM Services s WHERE s.status = :status"),
+    @NamedQuery(name = "Services.findBySlots", query = "SELECT s FROM Services s WHERE s.slots = :slots"),
     @NamedQuery(name = "Services.findByCreatedAt", query = "SELECT s FROM Services s WHERE s.createdAt = :createdAt"),
     @NamedQuery(name = "Services.findByUpdatedAt", query = "SELECT s FROM Services s WHERE s.updatedAt = :updatedAt"),
-    @NamedQuery(name = "Services.findByIsActive", query = "SELECT s FROM Services s WHERE s.isActive = :isActive"),
+    @NamedQuery(name = "Services.findByStatus", query = "SELECT s FROM Services s WHERE s.status = :status"),
     @NamedQuery(name = "Services.findByImgUrl", query = "SELECT s FROM Services s WHERE s.imgUrl = :imgUrl")})
 @BatchSize(size=20)
 public class Services implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,15 +75,14 @@ public class Services implements Serializable {
     private int availableSlots;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "slots")
+    private int slots;
+    @Basic(optional = false)
+    @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "description")
     private String description;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "status")
-    private String status;
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_at")
@@ -96,24 +95,18 @@ public class Services implements Serializable {
     private Date updatedAt;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "is_active")
-    private boolean isActive;
-    @Size(max = 255)
+    @Column(name = "status")
+    private boolean status;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "img_url")
     private String imgUrl;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "serviceId")
-    private Collection<Reviews> reviewsCollection;
-
     @JoinColumn(name = "provider_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Providers providerId;
-    @JsonIgnore
-    @OneToMany(mappedBy = "serviceId")
-    private Collection<BookingsServiceDetail> bookingsServiceDetailCollection;
 
-
+    
     public Services() {
     }
 
@@ -121,17 +114,18 @@ public class Services implements Serializable {
         this.id = id;
     }
 
-    public Services(Long id, String name, double price, String destination, int availableSlots, String description, String status, Date createdAt, Date updatedAt, boolean isActive) {
+    public Services(Long id, String name, double price, String destination, int availableSlots, int slots, String description, Date createdAt, Date updatedAt, boolean status, String imgUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.destination = destination;
         this.availableSlots = availableSlots;
+        this.slots = slots;
         this.description = description;
-        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.isActive = isActive;
+        this.status = status;
+        this.imgUrl = imgUrl;
     }
 
     public Long getId() {
@@ -174,20 +168,20 @@ public class Services implements Serializable {
         this.availableSlots = availableSlots;
     }
 
+    public int getSlots() {
+        return slots;
+    }
+
+    public void setSlots(int slots) {
+        this.slots = slots;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Date getCreatedAt() {
@@ -206,12 +200,12 @@ public class Services implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public boolean getIsActive() {
-        return isActive;
+    public boolean getStatus() {
+        return status;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getImgUrl() {
@@ -222,21 +216,6 @@ public class Services implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-
-
-
-
-    public Collection<Reviews> getReviewsCollection() {
-        return reviewsCollection;
-    }
-
-    public void setReviewsCollection(Collection<Reviews> reviewsCollection) {
-        this.reviewsCollection = reviewsCollection;
-    }
-
-
-
-
     public Providers getProviderId() {
         return providerId;
     }
@@ -244,16 +223,6 @@ public class Services implements Serializable {
     public void setProviderId(Providers providerId) {
         this.providerId = providerId;
     }
-
-    public Collection<BookingsServiceDetail> getBookingsServiceDetailCollection() {
-        return bookingsServiceDetailCollection;
-    }
-
-    public void setBookingsServiceDetailCollection(Collection<BookingsServiceDetail> bookingsServiceDetailCollection) {
-        this.bookingsServiceDetailCollection = bookingsServiceDetailCollection;
-    }
-
-
 
     @Override
     public int hashCode() {

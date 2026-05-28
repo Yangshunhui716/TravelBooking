@@ -66,11 +66,13 @@ public class UserServiceImpl implements UserService{
     }
     
     @Override
+    @Transactional
     public void updateActive(Long id, boolean active) {
          this.userRepo.updateActive(id, active);
     }
     
     @Override
+    @Transactional
     public void updateLastLogin(String username) {
         this.userRepo.updateLastLogin(username);
     }
@@ -115,7 +117,7 @@ public class UserServiceImpl implements UserService{
         return u;
     }
     
-        @Override
+    @Override
     public boolean authenticate(String username, String password) {
         return this.userRepo.authenticate(username, password);
     }

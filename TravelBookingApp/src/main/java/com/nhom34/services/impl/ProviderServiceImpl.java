@@ -33,6 +33,7 @@ public class ProviderServiceImpl implements ProviderService{
     private UserService userService;
     
     @Override
+    @Transactional
     public Providers addProv(Map<String, String> info, Users u) {
         Providers newProv = new Providers();
         newProv.setId(u.getId());

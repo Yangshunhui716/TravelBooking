@@ -4,10 +4,10 @@
  */
 package com.nhom34.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,8 +16,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -30,7 +33,9 @@ import java.io.Serializable;
     @NamedQuery(name = "BookingsServiceDetail.findById", query = "SELECT b FROM BookingsServiceDetail b WHERE b.id = :id"),
     @NamedQuery(name = "BookingsServiceDetail.findByUnitPrice", query = "SELECT b FROM BookingsServiceDetail b WHERE b.unitPrice = :unitPrice"),
     @NamedQuery(name = "BookingsServiceDetail.findBySubtotal", query = "SELECT b FROM BookingsServiceDetail b WHERE b.subtotal = :subtotal"),
-    @NamedQuery(name = "BookingsServiceDetail.findByQuantity", query = "SELECT b FROM BookingsServiceDetail b WHERE b.quantity = :quantity")})
+    @NamedQuery(name = "BookingsServiceDetail.findByQuantity", query = "SELECT b FROM BookingsServiceDetail b WHERE b.quantity = :quantity"),
+    @NamedQuery(name = "BookingsServiceDetail.findByServiceStartDate", query = "SELECT b FROM BookingsServiceDetail b WHERE b.serviceStartDate = :serviceStartDate"),
+    @NamedQuery(name = "BookingsServiceDetail.findByServiceDuration", query = "SELECT b FROM BookingsServiceDetail b WHERE b.serviceDuration = :serviceDuration")})
 public class BookingsServiceDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,9 +56,17 @@ public class BookingsServiceDetail implements Serializable {
     @NotNull
     @Column(name = "quantity")
     private int quantity;
-    @JsonIgnore
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "service_start_date")
+    @Temporal(TemporalType.DATE)
+    private Date serviceStartDate;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "service_duration")
+    private int serviceDuration;
     @JoinColumn(name = "booking_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Bookings bookingId;
     @JoinColumn(name = "service_id", referencedColumnName = "id")
     @ManyToOne
@@ -66,11 +79,13 @@ public class BookingsServiceDetail implements Serializable {
         this.id = id;
     }
 
-    public BookingsServiceDetail(Long id, double unitPrice, double subtotal, int quantity) {
+    public BookingsServiceDetail(Long id, double unitPrice, double subtotal, int quantity, Date serviceStartDate, int serviceDuration) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.subtotal = subtotal;
         this.quantity = quantity;
+        this.serviceStartDate = serviceStartDate;
+        this.serviceDuration = serviceDuration;
     }
 
     public Long getId() {
@@ -103,6 +118,22 @@ public class BookingsServiceDetail implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Date getServiceStartDate() {
+        return serviceStartDate;
+    }
+
+    public void setServiceStartDate(Date serviceStartDate) {
+        this.serviceStartDate = serviceStartDate;
+    }
+
+    public int getServiceDuration() {
+        return serviceDuration;
+    }
+
+    public void setServiceDuration(int serviceDuration) {
+        this.serviceDuration = serviceDuration;
     }
 
     public Bookings getBookingId() {

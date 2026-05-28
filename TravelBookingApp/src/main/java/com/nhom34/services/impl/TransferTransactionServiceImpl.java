@@ -12,6 +12,7 @@ import com.nhom34.services.TransferTransactionService;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -25,6 +26,7 @@ public class TransferTransactionServiceImpl implements TransferTransactionServic
     private BookingService bookingService;
 
     @Override
+    @Transactional
     public void addTransferTransaction(String transactionCode, String status, Long id) {
         Bookings b = this.bookingService.getBookingById(id);
         
