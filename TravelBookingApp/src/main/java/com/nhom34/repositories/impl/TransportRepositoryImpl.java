@@ -6,7 +6,6 @@ package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TransportServices;
-import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TransportRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -23,7 +22,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Subquery;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,12 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class TransportRepositoryImpl implements TransportRepository, AutoUpdateServiceRepository{
+public class TransportRepositoryImpl implements TransportRepository{
     @Autowired
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<TransportServices> getTransportServices(Map<String, String> params) {
+    public List<TransportServices> getDetailServices(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<TransportServices> q =  b.createQuery(TransportServices.class);
@@ -122,13 +120,13 @@ public class TransportRepositoryImpl implements TransportRepository, AutoUpdateS
     }
     
     @Override
-    public TransportServices getTransportServiceById(Long id) {
+    public TransportServices getDetailServiceById(Long id) {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(TransportServices.class, id);
     }  
 
     @Override
-    public TransportServices addTransportService(TransportServices transport) {
+    public TransportServices addDetailService(TransportServices transport) {
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(transport);
         
@@ -138,7 +136,7 @@ public class TransportRepositoryImpl implements TransportRepository, AutoUpdateS
     @Override
     public TransportServices updatePartial(Map<String, String> params, Long id) {
         Session s = this.factory.getObject().getCurrentSession();
-        TransportServices serv = this.getTransportServiceById(id);
+        TransportServices serv = this.getDetailServiceById(id);
         
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));

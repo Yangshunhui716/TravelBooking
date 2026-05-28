@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookingRepositoryImpl implements BookingRepository{
     @Autowired
     private LocalSessionFactoryBean factory;
+    
     @Override
     public List<Bookings> getBookingsByCustomerId(Long customerId) {
         Session s = this.factory.getObject().getCurrentSession();
