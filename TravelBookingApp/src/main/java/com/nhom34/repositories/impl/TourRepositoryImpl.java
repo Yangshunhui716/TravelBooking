@@ -4,7 +4,9 @@
  */
 package com.nhom34.repositories.impl;
 
+import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TourServices;
+import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TourRepository;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +16,18 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 /**
@@ -26,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class TourRepositoryImpl implements TourRepository{
+public class TourRepositoryImpl implements TourRepository, AutoUpdateServiceRepository {
     @Autowired
     private LocalSessionFactoryBean factory;
     
@@ -36,10 +46,45 @@ public class TourRepositoryImpl implements TourRepository{
         CriteriaBuilder b= s.getCriteriaBuilder();
         CriteriaQuery<TourServices> q = b.createQuery(TourServices.class);
         Root root = q.from(TourServices.class);
+        
+        Join<TourServices, Services> services = root.join("services");
         q.select(root);
+        
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(services.get("status"), true));
         
         List<Order> orders = new ArrayList<>();
         if(params != null){
+            String destination = params.get("destination");
+            if (destination != null && !destination.isEmpty()) {
+                predicates.add(b.like(services.get("destination"), "%" + destination + "%"));
+            }
+            
+            String departureDateStr = params.get("departureTime");
+            if (departureDateStr != null && !departureDateStr.isEmpty()) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date parsedDate = sdf.parse(departureDateStr);
+
+                    Calendar calStart = Calendar.getInstance();
+                    calStart.setTime(parsedDate);
+                    calStart.set(Calendar.HOUR_OF_DAY, 0);
+                    calStart.set(Calendar.MINUTE, 0);
+                    calStart.set(Calendar.SECOND, 0);
+
+                    Calendar calEnd = Calendar.getInstance();
+                    calEnd.setTime(parsedDate);
+                    calEnd.set(Calendar.HOUR_OF_DAY, 23);
+                    calEnd.set(Calendar.MINUTE, 59);
+                    calEnd.set(Calendar.SECOND, 59);
+
+                    predicates.add(b.between(root.get("departureTime"), calStart.getTime(), calEnd.getTime()));
+
+                } catch (ParseException e) {
+                    System.out.println("Lỗi ngày khởi hành: " + e.getMessage());
+                }
+            }
+            
             String slot = params.get("slot");
             if(slot !=null && !slot.isEmpty()){
                 if(slot.equals("asc")){orders.add(b.asc(root.get("services").get("availableSlots")));}
@@ -56,7 +101,11 @@ public class TourRepositoryImpl implements TourRepository{
                 }
             }
         }
+        
+        q.where(predicates.toArray(new Predicate[0]));
+        
         if(!orders.isEmpty()) q.orderBy(orders);
+        
         Query query = s.createQuery(q);
         return query.getResultList();
     }
@@ -80,14 +129,8 @@ public class TourRepositoryImpl implements TourRepository{
         Session s = this.factory.getObject().getCurrentSession();
         TourServices serv = this.getTourServiceById(id);
         
-        if(params.containsKey("name")){
-            serv.getServices().setName(params.get("name"));
-        }
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));
-        }
-        if(params.containsKey("destination")){
-            serv.getServices().setDestination(params.get("destination"));
         }
         if(params.containsKey("slot")){
             serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
@@ -98,11 +141,40 @@ public class TourRepositoryImpl implements TourRepository{
         if(params.containsKey("departureTime")){
             serv.setDepartureTime(Timestamp.valueOf(params.get("departureTime")));
         }
-        if(params.containsKey("durationDays")){
-            serv.setDurationDays(Integer.parseInt(params.get("durationDays")));
-        }
         
         s.merge(serv);
         return serv;
+    }
+
+    @Override
+    public void autoUpdateStatusByCheckDate() {
+        try {
+            Session s = this.factory.getObject().getCurrentSession();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            Date closingDate = cal.getTime();
+            
+
+            CriteriaBuilder cb = s.getCriteriaBuilder();
+            CriteriaUpdate<Services> update = cb.createCriteriaUpdate(Services.class);
+            Root root = update.from(Services.class);
+            update.set(root.get("status"), false);
+
+            Subquery<Long> subquery = update.subquery(Long.class);
+            Root<TourServices> tourRoot = subquery.from(TourServices.class);
+            subquery.select(tourRoot.get("services").get("id")); 
+            subquery.where(cb.lessThanOrEqualTo(tourRoot.get("departureTime"), closingDate));
+
+            update.where(root.get("id").in(subquery));
+
+
+            int rowCount = s.createMutationQuery(update).executeUpdate();
+
+            System.out.println("Đã cập nhật thành công " + rowCount + " Tour Services.");
+
+        } catch (Exception e) {
+            System.out.println("Xảy ra lỗi khi chạy Auto Update TourServices: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

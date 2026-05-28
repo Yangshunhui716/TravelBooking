@@ -4,11 +4,15 @@
  */
 package com.nhom34.repositories.impl;
 
+import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TransportServices;
+import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TransportRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +21,13 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Subquery;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class TransportRepositoryImpl implements TransportRepository{
+public class TransportRepositoryImpl implements TransportRepository, AutoUpdateServiceRepository{
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -38,10 +48,54 @@ public class TransportRepositoryImpl implements TransportRepository{
         CriteriaQuery<TransportServices> q =  b.createQuery(TransportServices.class);
         Root root = q.from(TransportServices.class);
         
+        Join<TransportServices, Services> services = root.join("services");
         q.select(root);
+        
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(services.get("status"), true));
 
         List<Order> orders = new ArrayList<>();
         if (params != null) {
+            String destination = params.get("destination");
+            if (destination != null && !destination.isEmpty()) {
+                predicates.add(b.like(services.get("destination"), "%" + destination + "%"));
+            }
+            
+            String departureLocation = params.get("departureLocation");
+            if (departureLocation != null && !departureLocation.isEmpty()) {
+                predicates.add(b.like(root.get("departureLocation"), "%" + departureLocation + "%"));
+            }
+            
+            String transportType = params.get("transportType");
+            if (transportType != null && !transportType.isEmpty()) {
+                predicates.add(b.equal(root.get("transportType"), transportType)); 
+            }
+            
+            String departureDateStr = params.get("departureTime");
+            if (departureDateStr != null && !departureDateStr.isEmpty()) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date parsedDate = sdf.parse(departureDateStr);
+
+                    Calendar calStart = Calendar.getInstance();
+                    calStart.setTime(parsedDate);
+                    calStart.set(Calendar.HOUR_OF_DAY, 0);
+                    calStart.set(Calendar.MINUTE, 0);
+                    calStart.set(Calendar.SECOND, 0);
+
+                    Calendar calEnd = Calendar.getInstance();
+                    calEnd.setTime(parsedDate);
+                    calEnd.set(Calendar.HOUR_OF_DAY, 23);
+                    calEnd.set(Calendar.MINUTE, 59);
+                    calEnd.set(Calendar.SECOND, 59);
+
+                    predicates.add(b.between(root.get("departureTime"), calStart.getTime(), calEnd.getTime()));
+
+                } catch (ParseException e) {
+                    System.out.println("Lỗi ngày khởi hành: " + e.getMessage());
+                }
+            }
+            
             String slot = params.get("slot");
             if (slot != null && !slot.isEmpty()) {
                 if (slot.equals("asc"))
@@ -57,6 +111,9 @@ public class TransportRepositoryImpl implements TransportRepository{
                     orders.add(b.desc(root.get("services").get("price")));
             }
         }
+        
+        q.where(predicates.toArray(new Predicate[0]));
+        
         if (!orders.isEmpty()) q.orderBy(orders);
         
         Query query = s.createQuery(q);
@@ -83,14 +140,8 @@ public class TransportRepositoryImpl implements TransportRepository{
         Session s = this.factory.getObject().getCurrentSession();
         TransportServices serv = this.getTransportServiceById(id);
         
-        if(params.containsKey("name")){
-            serv.getServices().setName(params.get("name"));
-        }
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));
-        }
-        if(params.containsKey("destination")){
-            serv.getServices().setDestination(params.get("destination"));
         }
         if(params.containsKey("slot")){
             serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
@@ -104,20 +155,40 @@ public class TransportRepositoryImpl implements TransportRepository{
         if(params.containsKey("endLocation")){
             serv.setEndLoaction(params.get("endLocation"));
         }
-        if(params.containsKey("departureTime")){
-            serv.setDepartureTime(Timestamp.valueOf(params.get("departureTime")));
-        }
-        if(params.containsKey("endTime")){
-            serv.setEndTime(Timestamp.valueOf(params.get("endTime")));
-        }
-        if(params.containsKey("transportType")){
-            serv.setTransportType(params.get("transportType"));
-        }
-        if(params.containsKey("ticketType")){
-            serv.setTicketType(params.get("ticketType"));
-        }
         
         s.merge(serv);
         return serv;
+    }
+
+    @Override
+    public void autoUpdateStatusByCheckDate() {
+        try {
+            Session s = this.factory.getObject().getCurrentSession();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MINUTE, 30);
+            Date closingTime = cal.getTime();
+            
+
+            CriteriaBuilder cb = s.getCriteriaBuilder();
+            CriteriaUpdate<Services> update = cb.createCriteriaUpdate(Services.class);
+            Root root = update.from(Services.class);
+            update.set(root.get("status"), false);
+
+            Subquery<Long> subquery = update.subquery(Long.class);
+            Root<TransportServices> transportRoot = subquery.from(TransportServices.class);
+            subquery.select(transportRoot.get("services").get("id")); 
+            subquery.where(cb.lessThanOrEqualTo(transportRoot.get("departureTime"), closingTime));
+
+            update.where(root.get("id").in(subquery));
+
+
+            int rowCount = s.createMutationQuery(update).executeUpdate();
+
+            System.out.println("Đã cập nhật thành công " + rowCount + " Transport Services.");
+
+        } catch (Exception e) {
+            System.out.println("Xảy ra lỗi khi chạy Auto Update TourServices: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

@@ -29,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
     private UserRepository userRepo;
   
     @Override
+    @Transactional
     public Customers addCustomer(Map<String, String> info, Users u) {
         Customers newCustomer = new Customers();
         newCustomer.setId(u.getId());

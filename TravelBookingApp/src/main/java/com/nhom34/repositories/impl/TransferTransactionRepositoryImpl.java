@@ -10,12 +10,14 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author PC
  */
 @Repository
+@Transactional
 public class TransferTransactionRepositoryImpl implements TransferTransactionRepository{
     @Autowired
     private LocalSessionFactoryBean factory;
