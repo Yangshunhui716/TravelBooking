@@ -1,10 +1,10 @@
 const styles = {
 
     container: {
-        maxWidth: "800px",
+        maxWidth: "400px",
         margin: "50px auto",
         backgroundColor: "white",
-        padding: "50px",
+        padding: "20px",
         borderRadius: "25px",
         boxShadow: "0 5px 20px rgba(0,0,0,0.1)"
     },
