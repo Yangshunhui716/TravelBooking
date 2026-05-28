@@ -75,6 +75,7 @@ public class TourServiceImpl implements  TourService, AutoUpdateServiceService{
     }
 
     @Override
+    @EventListener(ContextRefreshedEvent.class)
     @Scheduled(cron = "0 0/10 * * * ?")
     @Transactional
     public void autoUpdateStatusByCheckDate() {

@@ -33,7 +33,7 @@ const ProfileSidebar = () => {
 
             <div className="text-center mb-3">
                 <img
-                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    src={user?.users?.avatar}
                     alt="avatar"
                     width="100"
                 />

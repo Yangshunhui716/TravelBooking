@@ -1,78 +1,145 @@
-import React from 'react';
-import DynamicFilter from '../../components/DynamicFilter';
-import ServiceList from '../../components/ServiceList';
+import React, { useEffect, useState } from "react";
+import { Spinner } from "react-bootstrap";
+
+import DynamicFilter from "../../components/DynamicFilter";
+import ServiceList from "../../components/ServiceList";
+
+import Apis, { endpoints } from "../../configs/Api";
 
 const TransportService = () => {
-    const mockTours = [
-    {
-      id: 1,
-      badgeText: "3 Ngày 2 Đêm",
-      title: "Tour Đà Lạt - Săn mây",
-      details: ["Điểm đến: Đà Lạt", "Ngày kh: 15/07/2026"],
-      price: "2.500.000đ"
-    },
-    {
-      id: 2,
-      badgeText: "2 Ngày 1 Đêm",
-      title: "Tour Vũng Tàu - Tắm biển",
-      details: ["Điểm đến: Vũng Tàu", "Ngày kh: 20/07/2026"],
-      price: "1.200.000đ"
-    },
-    {
-      id: 3,
-      badgeText: "4 Ngày 3 Đêm",
-      title: "Tour Phú Quốc - Lặn ngắm san hô",
-      details: ["Điểm đến: Phú Quốc", "Ngày kh: 01/08/2026"],
-      price: "5.500.000đ"
-    },
-    {
-      id: 4,
-      badgeText: "5 Ngày 4 Đêm",
-      title: "Tour Sapa - Chinh phục Fansipan",
-      details: ["Điểm đến: Sapa", "Ngày kh: 10/08/2026"],
-      price: "4.800.000đ"
-    },
-    {
-      id: 5,
-      badgeText: "1 Ngày",
-      title: "Tour Cần Giờ - Rừng ngập mặn",
-      details: ["Điểm đến: Cần Giờ", "Ngày kh: Chủ nhật hàng tuần"],
-      price: "600.000đ"
-    }
-  ];
-    
-    // Cấu hình mảng cho trang Phương tiện
+
+    const [transports, setTransports] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    // format tiền
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+    };
+
+    // format ngày
+    const formatDate = (timestamp) => {
+        return new Date(timestamp).toLocaleDateString("vi-VN");
+    };
+
+    // format giờ
+    const formatTime = (timestamp) => {
+        return new Date(timestamp).toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+
+    const loadTransports = async () => {
+
+        try {
+
+            setLoading(true);
+
+            let res = await Apis.get(endpoints['transport-services']);
+
+            // MAP API -> CARD DATA
+            const mappedTransports = res.data.map((transport) => ({
+
+                id: transport.id,
+
+                title: transport.services?.name,
+
+                badge: transport.transportType,
+
+                image: transport.services?.imgUrl,
+
+                price: formatPrice(transport.services?.price),
+
+                details: [
+                    `Tuyến: ${transport.departureLocation} → ${transport.endLoaction}`,
+                    `Khởi hành: ${formatDate(transport.departureTime)} ${formatTime(transport.departureTime)}`,
+                    `Số chỗ còn: ${transport.services?.availableSlots}`
+                ],
+
+                onView: () => {
+                    console.log("Xem phương tiện:", transport.id);
+                }
+
+            }));
+
+            setTransports(mappedTransports);
+
+        } catch (err) {
+
+            console.error(err);
+
+        } finally {
+
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadTransports();
+    }, []);
+
+    // FILTER
     const transportConfig = [
-    { key: 'departure', label: 'Điểm khởi hành', type: 'text' },
-    { key: 'destination', label: 'Điểm đến', type: 'text' },
-    { key: 'date', label: 'Ngày khởi hành', type: 'date' },
-    { 
-        key: 'vehicleType', 
-        label: 'Loại phương tiện', 
-        type: 'select',
-        options: [
-        { label: 'Xe khách', value: 'bus' },
-        { label: 'Máy bay', value: 'plane' },
-        { label: 'Tàu hỏa', value: 'train' }
-        ]
-    },
+        {
+            key: "departureLocation",
+            label: "Điểm khởi hành",
+            type: "text"
+        },
+        {
+            key: "destination",
+            label: "Điểm đến",
+            type: "text"
+        },
+        {
+            key: "departureDate",
+            label: "Ngày khởi hành",
+            type: "date"
+        },
+        {
+            key: "transportType",
+            label: "Loại phương tiện",
+            type: "select",
+            options: [
+                { label: "Xe khách", value: "BUS" },
+                { label: "Máy bay", value: "PLANE" },
+                { label: "Tàu hỏa", value: "TRAIN" }
+            ]
+        }
     ];
 
     const handleFilter = (values) => {
-    console.log("Lọc phương tiện với:", values);
+        console.log(values);
     };
 
+    if (loading)
+        return (
+            <div className="text-center mt-5">
+                <Spinner animation="border" />
+            </div>
+        );
+
     return (
-    <div className="d-flex p-4">
-        <DynamicFilter 
-        config={transportConfig} 
-        onFilterSubmit={handleFilter} 
-        />
-        
-        <div className="ms-4 flex-grow-1">
-            <ServiceList title="Danh sách các TOUR" items={mockTours} sortCategory="slot" />
+
+        <div className="d-flex p-4 gap-4">
+
+            {/* FILTER */}
+            <DynamicFilter
+                config={transportConfig}
+                onFilterSubmit={handleFilter}
+            />
+
+            {/* LIST */}
+            <div className="flex-grow-1">
+
+                <ServiceList
+                    title="Danh sách Phương tiện"
+                    items={transports}
+                    sortCategory="slot" 
+                />
+
+            </div>
+
         </div>
-    </div>
     );
 };
 
