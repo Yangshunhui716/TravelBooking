@@ -1,13 +1,20 @@
 import { Col, Row } from "react-bootstrap";
 import ServiceCard from "./ServiceCard";
+import SortDropdown from "./SortDropdown";
 
-const ServiceList = ({ title, items }) => {
+const ServiceList = ({ title, items, sortCategory, sortValue }) => {
   return (
     <div className="service-list-container">
       {/* Tiêu đề danh sách */}
       <h3 className="mb-4 text-uppercase fs-4 fw-bold text-secondary">
         {title}
       </h3>
+
+      <SortDropdown 
+        sortCategory={sortCategory} 
+        currentSort={null} 
+        onSortChange={(sortValue)} 
+      />
 
       {/* Hệ thống Grid: 
         - xs={1}: Màn hình điện thoại hiện 1 cột

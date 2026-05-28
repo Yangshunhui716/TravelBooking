@@ -9,7 +9,6 @@ import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TourServices;
 import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TourRepository;
-import com.nhom34.repositories.impl.TourRepositoryImpl;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TourService;
 import java.sql.Timestamp;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.nhom34.services.AutoUpdateServiceService;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  *
@@ -31,9 +31,12 @@ import com.nhom34.services.AutoUpdateServiceService;
 @Service
 public class TourServiceImpl implements  TourService, AutoUpdateServiceService{
     @Autowired
-    private TourRepositoryImpl tourRepo;
+    private TourRepository tourRepo;
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    @Qualifier("tourRepositoryImpl")
+    private AutoUpdateServiceRepository autoUpdateRepo;
     
     @Override
     public List<TourServices> getTourServices(Map<String, String> params) {
@@ -72,10 +75,9 @@ public class TourServiceImpl implements  TourService, AutoUpdateServiceService{
     }
 
     @Override
-    @EventListener(ContextRefreshedEvent.class)
-    @Scheduled(cron = "0 0/10 * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     @Transactional
     public void autoUpdateStatusByCheckDate() {
-        this.tourRepo.autoUpdateStatusByCheckDate();
+        this.autoUpdateRepo.autoUpdateStatusByCheckDate();
     }
 }

@@ -7,8 +7,8 @@ package com.nhom34.services.impl;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TransportServices;
+import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TransportRepository;
-import com.nhom34.repositories.impl.TransportRepositoryImpl;
 import com.nhom34.services.AutoUpdateServiceService;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TransportService;
@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,9 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class TransportServiceImpl implements TransportService, AutoUpdateServiceService{
     @Autowired
-    private TransportRepositoryImpl transportRepo;
+    private TransportRepository transportRepo;
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    @Qualifier("transportRepositoryImpl")
+    private AutoUpdateServiceRepository autoUpdateRepo;
     
     @Override
     public List<TransportServices> getTransportServices(Map<String, String> params) {
@@ -74,10 +78,9 @@ public class TransportServiceImpl implements TransportService, AutoUpdateService
     }
 
     @Override
-    @EventListener(ContextRefreshedEvent.class)
-    @Scheduled(cron = "0 0/10 * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     @Transactional
     public void autoUpdateStatusByCheckDate() {
-        this.transportRepo.autoUpdateStatusByCheckDate();
+        this.autoUpdateRepo.autoUpdateStatusByCheckDate();
     }
 }
