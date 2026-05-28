@@ -148,10 +148,10 @@ public class TransportRepositoryImpl implements TransportRepository{
             serv.getServices().setDescription(params.get("description"));
         }
         if(params.containsKey("departureLocation")){
-            serv.setDepartureLocation(params.get("departureLocation"));
+            serv.setDeparture(params.get("departure"));
         }
         if(params.containsKey("endLocation")){
-            serv.setEndLoaction(params.get("endLocation"));
+            serv.setLoactionDetail(params.get("locationDetail"));
         }
         
         s.merge(serv);
