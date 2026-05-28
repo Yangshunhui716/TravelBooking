@@ -49,8 +49,8 @@ public class TransportServiceImpl implements TransportService{
         
         newTransport.setDepartureTime(Timestamp.valueOf(info.get("departureTime")));
         newTransport.setEndTime(Timestamp.valueOf(info.get("endTime")));
-        newTransport.setDepartureLocation(info.get("departureLocation"));
-        newTransport.setEndLoaction(info.get("endLocation"));
+        newTransport.setDeparture(info.get("departure"));
+        newTransport.setLoactionDetail(info.get("locationDetail"));
         newTransport.setTicketType(info.get("ticketType"));
         newTransport.setTransportType(info.get("transportType"));
         newTransport.setServices(newService);

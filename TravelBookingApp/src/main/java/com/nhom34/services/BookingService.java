@@ -6,7 +6,7 @@ package com.nhom34.services;
 
 import com.nhom34.pojo.Bookings;
 import com.nhom34.pojo.Customers;
-import com.nhom34.pojo.RequestOrder;
+import com.nhom34.dto.RequestOrder;
 import java.util.List;
 /**
  *
