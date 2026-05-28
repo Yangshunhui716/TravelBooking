@@ -70,7 +70,7 @@ const TourService = () => {
         />
         
         <div className="ms-4 flex-grow-1">
-            <ServiceList title="Danh sách các TOUR" items={mockTours} />
+            <ServiceList title="Danh sách các TOUR" items={mockTours} sortCategory="slot" />
         </div>
     </div>
     );
