@@ -1,36 +1,25 @@
 import { useContext } from "react";
-
 import { Card, Button } from "react-bootstrap";
-
 import cookies from "react-cookies";
-
 import { useNavigate } from "react-router-dom";
-
 import { MyUserContext } from "../../configs/Context";
 
 const ProfileSidebar = () => {
 
     const [user, dispatch] = useContext(MyUserContext);
-
     const nav = useNavigate();
-
-    if (user === null)
-        return null;
-
+    if (!user) return null;
+    const isProvider = user?.users?.role === "ROLE_PROVIDER";
     const logout = () => {
-
         cookies.remove("token");
-
         dispatch({
             type: "LOGOUT"
         });
-
         nav("/");
     }
-
     return (
         <Card className="shadow p-4 rounded-4">
-
+            {/* AVATAR */}
             <div className="text-center mb-3">
                 <img
                     src={user?.users?.avatar}
@@ -38,28 +27,12 @@ const ProfileSidebar = () => {
                     width="100"
                 />
             </div>
-
+            {/* NAME */}
             <h4 className="text-center mb-4">
-
-                {user?.fullname ||
-                    user?.businessName ||
-                    user?.users?.username}
-
+                {isProvider ? user?.businessName: user?.fullname || user?.users?.username}
             </h4>
-
-            {user?.fullname && (
-                <>
-                    <p>
-                        <b>Họ tên:</b> {user?.fullname}
-                    </p>
-
-                    <p>
-                        <b>Giới tính:</b> {user?.gender}
-                    </p>
-                </>
-            )}
-
-            {user?.businessName && (
+            {/* ROLE BASED INFO */}
+            {isProvider ? (
                 <>
                     <p>
                         <b>Tên công ty:</b> {user?.businessName}
@@ -73,8 +46,19 @@ const ProfileSidebar = () => {
                         <b>Địa chỉ:</b> {user?.address}
                     </p>
                 </>
+            ) : (
+                <>
+                    <p>
+                        <b>Họ tên:</b> {user?.fullname}
+                    </p>
+
+                    <p>
+                        <b>Giới tính:</b> {user?.gender}
+                    </p>
+                </>
             )}
 
+            {/* COMMON INFO */}
             <p>
                 <b>SĐT:</b> {user?.users?.phone}
             </p>
@@ -83,6 +67,7 @@ const ProfileSidebar = () => {
                 <b>Email:</b> {user?.users?.email}
             </p>
 
+            {/* ACTIONS */}
             <div className="d-flex justify-content-between mt-3">
 
                 <Button variant="primary">
