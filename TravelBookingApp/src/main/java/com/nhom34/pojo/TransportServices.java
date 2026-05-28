@@ -30,8 +30,8 @@ import java.util.Date;
     @NamedQuery(name = "TransportServices.findAll", query = "SELECT t FROM TransportServices t"),
     @NamedQuery(name = "TransportServices.findById", query = "SELECT t FROM TransportServices t WHERE t.id = :id"),
     @NamedQuery(name = "TransportServices.findByTransportType", query = "SELECT t FROM TransportServices t WHERE t.transportType = :transportType"),
-    @NamedQuery(name = "TransportServices.findByDepartureLocation", query = "SELECT t FROM TransportServices t WHERE t.departureLocation = :departureLocation"),
-    @NamedQuery(name = "TransportServices.findByEndLoaction", query = "SELECT t FROM TransportServices t WHERE t.endLoaction = :endLoaction"),
+    @NamedQuery(name = "TransportServices.findByDeparture", query = "SELECT t FROM TransportServices t WHERE t.departure = :departure"),
+    @NamedQuery(name = "TransportServices.findByLoactionDetail", query = "SELECT t FROM TransportServices t WHERE t.loactionDetail = :loactionDetail"),
     @NamedQuery(name = "TransportServices.findByTicketType", query = "SELECT t FROM TransportServices t WHERE t.ticketType = :ticketType"),
     @NamedQuery(name = "TransportServices.findByDepartureTime", query = "SELECT t FROM TransportServices t WHERE t.departureTime = :departureTime"),
     @NamedQuery(name = "TransportServices.findByEndTime", query = "SELECT t FROM TransportServices t WHERE t.endTime = :endTime")})
@@ -51,13 +51,13 @@ public class TransportServices implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "departure_location")
-    private String departureLocation;
+    @Column(name = "departure")
+    private String departure;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "end_loaction")
-    private String endLoaction;
+    @Size(min = 1, max = 255)
+    @Column(name = "loaction_detail")
+    private String loactionDetail;
     @Size(max = 100)
     @Column(name = "ticket_type")
     private String ticketType;
@@ -82,11 +82,11 @@ public class TransportServices implements Serializable {
         this.id = id;
     }
 
-    public TransportServices(Long id, String transportType, String departureLocation, String endLoaction, Date departureTime, Date endTime) {
+    public TransportServices(Long id, String transportType, String departure, String loactionDetail, Date departureTime, Date endTime) {
         this.id = id;
         this.transportType = transportType;
-        this.departureLocation = departureLocation;
-        this.endLoaction = endLoaction;
+        this.departure = departure;
+        this.loactionDetail = loactionDetail;
         this.departureTime = departureTime;
         this.endTime = endTime;
     }
@@ -107,20 +107,20 @@ public class TransportServices implements Serializable {
         this.transportType = transportType;
     }
 
-    public String getDepartureLocation() {
-        return departureLocation;
+    public String getDeparture() {
+        return departure;
     }
 
-    public void setDepartureLocation(String departureLocation) {
-        this.departureLocation = departureLocation;
+    public void setDeparture(String departure) {
+        this.departure = departure;
     }
 
-    public String getEndLoaction() {
-        return endLoaction;
+    public String getLoactionDetail() {
+        return loactionDetail;
     }
 
-    public void setEndLoaction(String endLoaction) {
-        this.endLoaction = endLoaction;
+    public void setLoactionDetail(String loactionDetail) {
+        this.loactionDetail = loactionDetail;
     }
 
     public String getTicketType() {
