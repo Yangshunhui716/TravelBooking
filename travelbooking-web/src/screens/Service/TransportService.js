@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
+import MySpinner from "../../components/MySpinner";
 
 import Apis, { endpoints } from "../../configs/Api";
-
 const TransportService = () => {
-
     const [transports, setTransports] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    // FILTER + SORT
+    const [filters, setFilters] = useState({});
+    const [sort, setSort] = useState("");
     // format tiền
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
-
     // format ngày
     const formatDate = (timestamp) => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
-
     // format giờ
     const formatTime = (timestamp) => {
         return new Date(timestamp).toLocaleTimeString("vi-VN", {
@@ -28,31 +26,55 @@ const TransportService = () => {
             minute: "2-digit"
         });
     };
-
     const loadTransports = async () => {
-
         try {
-
             setLoading(true);
-
-            let res = await Apis.get(endpoints['transport-services']);
-
+            let params = {};
+            // ================= FILTER =================
+            if (filters.departureLocation)
+                params.departureLocation = filters.departureLocation;
+            if (filters.destination)
+                params.destination = filters.destination;
+            if (filters.departureDate)
+                params.departureTime = filters.departureDate;
+            if (filters.transportType)
+                params.transportType = filters.transportType;
+            // ================= SORT =================
+            switch (sort) {
+                case "price_asc":
+                    params.price = "asc";
+                    break;
+                case "price_desc":
+                    params.price = "desc";
+                    break;
+                case "slot_asc":
+                    params.slot = "asc";
+                    break;
+                case "slot_desc":
+                    params.slot = "desc";
+                    break;
+                default:
+                    break;
+            }
+            let res = await Apis.get(
+                endpoints['transport-services'],
+                {
+                    params: params
+                }
+            );
+            console.log("PARAMS:", params);
+            console.log("DATA:", res.data);
             // MAP API -> CARD DATA
             const mappedTransports = res.data.map((transport) => ({
-
                 id: transport.id,
-
                 title: transport.services?.name,
-
                 badge: transport.transportType,
-
                 image: transport.services?.imgUrl,
-
                 price: formatPrice(transport.services?.price),
-
                 details: [
                     `Tuyến: ${transport.departureLocation} → ${transport.endLoaction}`,
                     `Khởi hành: ${formatDate(transport.departureTime)} ${formatTime(transport.departureTime)}`,
+                    `Điểm đến: ${transport.services?.destination}`,
                     `Số chỗ còn: ${transport.services?.availableSlots}`
                 ],
 
@@ -61,24 +83,19 @@ const TransportService = () => {
                 }
 
             }));
-
             setTransports(mappedTransports);
-
         } catch (err) {
-
             console.error(err);
-
         } finally {
-
             setLoading(false);
         }
     };
 
     useEffect(() => {
         loadTransports();
-    }, []);
+    }, [filters, sort]);
 
-    // FILTER
+    // FILTER CONFIG
     const transportConfig = [
         {
             key: "departureLocation",
@@ -106,39 +123,29 @@ const TransportService = () => {
             ]
         }
     ];
-
+    // FILTER
     const handleFilter = (values) => {
-        console.log(values);
+        setFilters(values);
     };
-
-    if (loading)
-        return (
-            <div className="text-center mt-5">
-                <Spinner animation="border" />
-            </div>
-        );
-
     return (
 
         <div className="d-flex p-4 gap-4">
-
             {/* FILTER */}
             <DynamicFilter
                 config={transportConfig}
                 onFilterSubmit={handleFilter}
             />
-
             {/* LIST */}
             <div className="flex-grow-1">
-
+                 {loading && <MySpinner />}
                 <ServiceList
                     title="Danh sách Phương tiện"
                     items={transports}
-                    sortCategory="slot" 
+                    sortCategory="slot"
+                    currentSort={sort}
+                    onSortChange={setSort}
                 />
-
             </div>
-
         </div>
     );
 };
