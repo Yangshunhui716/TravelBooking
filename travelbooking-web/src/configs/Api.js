@@ -18,11 +18,11 @@ export const endpoints={
     'providerTransportServices': 'secure/provider/transport-services',
     'providerTransportService': 'secure/provider/transport-services/{transportServiceId}',
 
-    'hotelRoomServices': '/hotel-room-services',
+    'hotel-room-services': '/hotel-room-services',
     'hotelRoomService': '/hotel-room-services/{hotelRoomServiceId}',
-    'tourServices': '/tour-services',
+    'tour-services': '/tour-services',
     'tourService': '/tour-services/{tourServiceId}',
-    'transportServices': '/transport-services',
+    'transport-services': '/transport-services',
     'transportService': '/transport-services/{transportServiceId}',
 
     'serviceCustomers': 'secure/provider/service/{serviceId}/cutomers',
@@ -30,7 +30,7 @@ export const endpoints={
 }
 export const authApis = () => {
     return axios.create({
-        baseURL: 'http://localhost:8000/TravelBookingApp/api',
+        baseURL: 'http://localhost:8000/TravelBookingApp/api/',
         headers: {
             'Authorization': `Bearer ${cookies.load('token')}`
         }
