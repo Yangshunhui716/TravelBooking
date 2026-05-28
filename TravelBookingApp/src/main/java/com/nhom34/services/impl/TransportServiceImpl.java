@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,6 +72,7 @@ public class TransportServiceImpl implements TransportService{
     }
 
     @Override
+    @EventListener(ContextRefreshedEvent.class)
     @Scheduled(cron = "0 0/10 * * * ?")
     @Transactional
     public void autoUpdateStatusByCheckDate() {

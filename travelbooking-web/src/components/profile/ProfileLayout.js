@@ -7,7 +7,7 @@ const ProfileLayout = ({ children }) => {
     return (
         <Row className="mt-4">
 
-            <Col className="ml-4" md={3}>
+            <Col md={3}>
                 <ProfileSidebar />
             </Col>
 

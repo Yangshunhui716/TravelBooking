@@ -140,20 +140,8 @@ const Login = () => {
                     </Form.Group>
                 ))}
 
-                <Form.Group>
-
-                    {loading === true ?
-                        <MySpinner />
-                        :
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            style={styles.button}
-                        >
-                            Đăng nhập
-                        </Button>
-                    }
-
+                <Form.Group className="mb-3" controlId="button">
+                    {loading === true ? <MySpinner />:<Button variant="success" type="submit">Đăng nhập</Button>}
                 </Form.Group>
 
             </Form>
