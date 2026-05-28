@@ -93,7 +93,7 @@ public class HotelRepositoryImpl implements HotelRepository {
             if (price != null && !price.isEmpty()) {
                 if (price.equals("asc")) {
                     orders.add(b.asc(services.get("price")));
-                } else {
+                } if (price.equals("desc")){
                     orders.add(b.desc(services.get("price")));
                 }
             }
@@ -111,7 +111,7 @@ public class HotelRepositoryImpl implements HotelRepository {
 
                 if (rate.equals("asc")) {
                     orders.add(b.asc(sub));
-                } else {
+                } if (rate.equals("desc")) {
                     orders.add(b.desc(sub));
                 }
             }

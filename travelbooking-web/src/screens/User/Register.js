@@ -3,6 +3,7 @@ import { Alert,Button,Col, Form, Row} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import styles from "./UserStyle";
 import Apis from "../../configs/Api";
+import MySpinner from "../../components/MySpinner";
 
 const Register = () => {
     const nav = useNavigate();
@@ -207,9 +208,15 @@ const Register = () => {
                     <Form.Control type="file" accept=".jpg,.jpeg,.png" ref={avatar}   />
                 </Form.Group>
                 {/* BUTTON */}
-                <Button  type="submit" variant="info" disabled={loading} style={styles.button} >
+                {/* <Button  type="submit" variant="info" disabled={loading} style={styles.button} >
                     {loading  ? "Đang đăng ký...": "Đăng ký"}
-                </Button>
+                </Button> */}
+                                <Form.Group className="mb-3" controlId="button">
+                    {loading === true ? <MySpinner />:<Button variant="success" type="submit">Đăng ký</Button>}
+                </Form.Group>
+                
+        
+ 
             </Form>
         </div>
     );
