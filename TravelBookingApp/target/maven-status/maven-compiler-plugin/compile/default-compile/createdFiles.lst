@@ -39,6 +39,7 @@ com\nhom34\services\ProviderService.class
 com\nhom34\configs\WebAppContextConfigs.class
 com\nhom34\repositories\impl\ReviewRepositoryImpl.class
 com\nhom34\repositories\impl\TransportRepositoryImpl.class
+com\nhom34\repositories\AutoUpdateServiceRepository.class
 com\nhom34\repositories\HotelRepository.class
 com\nhom34\components\PaymentFactory.class
 com\nhom34\repositories\ProviderRepository.class
@@ -53,6 +54,7 @@ com\nhom34\configs\ThymeleafConfigs.class
 com\nhom34\services\impl\BookingServiceImpl.class
 com\nhom34\controllers\ApiTourController.class
 com\nhom34\repositories\impl\BookingRepositoryImpl.class
+com\nhom34\services\AutoUpdateServiceService.class
 com\nhom34\utils\MomoUtils.class
 com\nhom34\configs\SpringSecurityConfigs.class
 com\nhom34\controllers\ApiUserController.class
@@ -82,6 +84,7 @@ com\nhom34\controllers\HomeController.class
 com\nhom34\controllers\ApiTransportController.class
 com\nhom34\services\impl\CustomerServiceImpl.class
 com\nhom34\services\ServiceService.class
+com\nhom34\pojo\Conversation.class
 com\nhom34\services\impl\payment\MomoServiceImpl.class
 com\nhom34\services\impl\AdminServiceImpl.class
 com\nhom34\services\HotelService.class

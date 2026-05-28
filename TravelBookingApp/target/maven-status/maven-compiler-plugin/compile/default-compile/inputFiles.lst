@@ -23,6 +23,7 @@ D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\filters\JwtFilter.jav
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Admins.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Bookings.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\BookingsServiceDetail.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Conversation.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Customers.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\HotelRoomServices.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\OrderServices.java
@@ -35,6 +36,7 @@ D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\TransferTransact
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\TransportServices.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Users.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\AdminRepository.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\AutoUpdateServiceRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\BookingRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\CustomerRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\HotelRepository.java
@@ -57,6 +59,7 @@ D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\Transfer
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\TransportRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\UserRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\AdminService.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\AutoUpdateServiceService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\BookingService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\CustomerService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\HotelService.java

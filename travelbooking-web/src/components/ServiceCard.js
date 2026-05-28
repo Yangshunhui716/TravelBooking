@@ -1,55 +1,75 @@
 import { Badge, Button, Card } from "react-bootstrap";
 
 const ServiceCard = ({ data }) => {
-  return (
-    // h-100 giúp các card trong cùng 1 hàng có chiều cao bằng nhau
-    <Card className="h-100 shadow-sm border-secondary rounded-4 overflow-hidden">
-      
-      {/* Vùng hình ảnh (Màu xanh dương như wireframe) */}
-      <div 
-        style={{ 
-          height: '160px', 
-          backgroundColor: '#93C5FD', 
-          position: 'relative' 
-        }}
-      >
-        {/* Badge xanh lá nằm ở góc trên phải */}
-        <Badge 
-          bg="success" 
-          className="position-absolute rounded-pill px-3 py-2"
-          style={{ top: '12px', right: '12px' }}
-        >
-          {data.badgeText}
-        </Badge>
-      </div>
 
-      <Card.Body className="d-flex flex-column">
-        {/* Tiêu đề */}
-        <Card.Title className="fs-6 fw-bold mb-3">
-          {data.title}
-        </Card.Title>
+    return (
+        <Card className="h-100 shadow-sm rounded-4 overflow-hidden border-0">
 
-        {/* Cụm thông tin chi tiết */}
-        <div className="mb-3 text-muted" style={{ fontSize: '0.85rem' }}>
-          {data.details.map((detailLine, index) => (
-            <div key={index} className="mb-1">
-              {detailLine}
+            {/* IMAGE */}
+            <div
+                style={{
+                    height: "200px",
+                    backgroundImage: `url(${data.image || "https://via.placeholder.com/300"})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    position: "relative"
+                }}
+            >
+
+                {data.badge && (
+                    <Badge
+                        bg="success"
+                        className="position-absolute px-3 py-2 rounded-pill"
+                        style={{
+                            top: 12,
+                            right: 12
+                        }}
+                    >
+                        {data.badge}
+                    </Badge>
+                )}
+
             </div>
-          ))}
-        </div>
 
-        {/* Phần Giá và nút Xem (đẩy xuống đáy card nhờ mt-auto) */}
-        <div className="mt-auto d-flex justify-content-between align-items-center">
-          <span className="fw-bold" style={{ fontSize: '0.9rem' }}>
-            Giá: <span className="text-danger">{data.price}</span>
-          </span>
-          <Button variant="outline-primary" size="sm" className="px-3 rounded-pill">
-            Xem
-          </Button>
-        </div>
-      </Card.Body>
-    </Card>
-  );
+            {/* BODY */}
+            <Card.Body className="d-flex flex-column">
+
+                <Card.Title className="fw-bold fs-5">
+                    {data.title}
+                </Card.Title>
+
+                {/* DETAILS */}
+                <div className="text-muted mb-3">
+
+                    {data.details?.map((item, index) => (
+                        <div key={index} className="mb-1">
+                            {item}
+                        </div>
+                    ))}
+
+                </div>
+
+                {/* FOOTER */}
+                <div className="mt-auto d-flex justify-content-between align-items-center">
+
+                    <span className="fw-bold text-danger fs-5">
+                        {data.price}
+                    </span>
+
+                    <Button
+                        variant="outline-primary"
+                        className="rounded-pill px-3"
+                        onClick={data.onView}
+                    >
+                        Xem
+                    </Button>
+
+                </div>
+
+            </Card.Body>
+
+        </Card>
+    );
 };
 
 export default ServiceCard;
