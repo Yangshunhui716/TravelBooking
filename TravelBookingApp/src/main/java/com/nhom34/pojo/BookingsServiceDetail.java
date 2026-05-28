@@ -4,6 +4,7 @@
  */
 package com.nhom34.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,9 +68,10 @@ public class BookingsServiceDetail implements Serializable {
     private int serviceDuration;
     @JoinColumn(name = "booking_id", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Bookings bookingId;
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_id", referencedColumnName = "id")
-    @ManyToOne
     private Services serviceId;
 
     public BookingsServiceDetail() {

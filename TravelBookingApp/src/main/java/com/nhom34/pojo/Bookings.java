@@ -163,6 +163,14 @@ public class Bookings implements Serializable {
     public void setCustomerId(Customers customerId) {
         this.customerId = customerId;
     }
+    public Collection<BookingsServiceDetail> getBookingsServiceDetailCollection() {
+    return bookingsServiceDetailCollection;
+}
+
+    public void setBookingsServiceDetailCollection(
+            Collection<BookingsServiceDetail> bookingsServiceDetailCollection) {
+        this.bookingsServiceDetailCollection = bookingsServiceDetailCollection;
+    }
 
     @Override
     public int hashCode() {
@@ -188,5 +196,6 @@ public class Bookings implements Serializable {
     public String toString() {
         return "com.nhom34.pojo.Bookings[ id=" + id + " ]";
     }
+    
     
 }
