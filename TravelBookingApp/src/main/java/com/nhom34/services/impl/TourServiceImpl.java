@@ -9,7 +9,6 @@ import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TourServices;
 import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TourRepository;
-import com.nhom34.repositories.impl.TourRepositoryImpl;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TourService;
 import java.sql.Timestamp;

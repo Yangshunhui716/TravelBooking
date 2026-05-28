@@ -112,6 +112,7 @@ const TourService = () => {
                 <ServiceList
                     title="Danh sách Tour"
                     items={tours}
+                    sortCategory="slot" 
                 />
 
             </div>

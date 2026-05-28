@@ -173,14 +173,16 @@ public class TransportRepositoryImpl implements TransportRepository, AutoUpdateS
             CriteriaUpdate<Services> update = cb.createCriteriaUpdate(Services.class);
             Root root = update.from(Services.class);
             update.set(root.get("status"), false);
+            update.set(root.get("updatedAt"), new Date());
 
             Subquery<Long> subquery = update.subquery(Long.class);
             Root<TransportServices> transportRoot = subquery.from(TransportServices.class);
             subquery.select(transportRoot.get("services").get("id")); 
             subquery.where(cb.lessThanOrEqualTo(transportRoot.get("departureTime"), closingTime));
 
-            update.where(root.get("id").in(subquery));
-
+            update.where(
+                cb.and(root.get("id").in(subquery),cb.equal(root.get("status"), true))
+            );
 
             int rowCount = s.createMutationQuery(update).executeUpdate();
 

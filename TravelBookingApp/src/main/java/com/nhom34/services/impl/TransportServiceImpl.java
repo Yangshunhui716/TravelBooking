@@ -9,7 +9,6 @@ import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TransportServices;
 import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TransportRepository;
-import com.nhom34.repositories.impl.TransportRepositoryImpl;
 import com.nhom34.services.AutoUpdateServiceService;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TransportService;

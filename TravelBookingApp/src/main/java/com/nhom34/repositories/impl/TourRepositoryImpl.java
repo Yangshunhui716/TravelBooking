@@ -151,7 +151,7 @@ public class TourRepositoryImpl implements TourRepository, AutoUpdateServiceRepo
         try {
             Session s = this.factory.getObject().getCurrentSession();
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_MONTH, 1);
+            cal.add(Calendar.HOUR, 12);
             Date closingDate = cal.getTime();
             
 
@@ -159,14 +159,16 @@ public class TourRepositoryImpl implements TourRepository, AutoUpdateServiceRepo
             CriteriaUpdate<Services> update = cb.createCriteriaUpdate(Services.class);
             Root root = update.from(Services.class);
             update.set(root.get("status"), false);
+            update.set(root.get("updatedAt"), new Date());
 
             Subquery<Long> subquery = update.subquery(Long.class);
             Root<TourServices> tourRoot = subquery.from(TourServices.class);
             subquery.select(tourRoot.get("services").get("id")); 
             subquery.where(cb.lessThanOrEqualTo(tourRoot.get("departureTime"), closingDate));
 
-            update.where(root.get("id").in(subquery));
-
+            update.where(
+                cb.and(root.get("id").in(subquery),cb.equal(root.get("status"), true))
+            );
 
             int rowCount = s.createMutationQuery(update).executeUpdate();
 
