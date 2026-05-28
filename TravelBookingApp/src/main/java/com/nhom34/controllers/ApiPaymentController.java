@@ -8,7 +8,7 @@ package com.nhom34.controllers;
 import com.nhom34.components.PaymentFactory;
 import com.nhom34.pojo.Bookings;
 import com.nhom34.pojo.Customers;
-import com.nhom34.pojo.RequestOrder;
+import com.nhom34.dto.RequestOrder;
 import com.paypal.orders.Order;
 import com.nhom34.services.BookingService;
 import com.nhom34.services.CustomerService;

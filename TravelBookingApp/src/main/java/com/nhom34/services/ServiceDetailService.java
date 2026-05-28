@@ -18,4 +18,5 @@ public interface ServiceDetailService<T> {
     T getDetailServiceById(Long id);
     T addDetailService(Map<String, String> info, MultipartFile img, Providers prov);
     T updatePartial(Map<String, String> params, Long id);
+    
 }

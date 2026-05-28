@@ -43,7 +43,7 @@ public class Conversation implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "id")
     private String id;
-    @Size(max = 45)
+    @Size(max = 255)
     @Column(name = "last_message")
     private String lastMessage;
     @Basic(optional = false)

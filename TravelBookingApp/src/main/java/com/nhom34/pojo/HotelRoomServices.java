@@ -27,7 +27,8 @@ import java.io.Serializable;
     @NamedQuery(name = "HotelRoomServices.findAll", query = "SELECT h FROM HotelRoomServices h"),
     @NamedQuery(name = "HotelRoomServices.findById", query = "SELECT h FROM HotelRoomServices h WHERE h.id = :id"),
     @NamedQuery(name = "HotelRoomServices.findByHotelName", query = "SELECT h FROM HotelRoomServices h WHERE h.hotelName = :hotelName"),
-    @NamedQuery(name = "HotelRoomServices.findByAddress", query = "SELECT h FROM HotelRoomServices h WHERE h.address = :address")})
+    @NamedQuery(name = "HotelRoomServices.findByAddress", query = "SELECT h FROM HotelRoomServices h WHERE h.address = :address"),
+    @NamedQuery(name = "HotelRoomServices.findByRate", query = "SELECT h FROM HotelRoomServices h WHERE h.rate = :rate")})
 public class HotelRoomServices implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,6 +47,9 @@ public class HotelRoomServices implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "address")
     private String address;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "rate")
+    private Double rate;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Services services;
@@ -85,6 +89,14 @@ public class HotelRoomServices implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Double getRate() {
+        return rate;
+    }
+
+    public void setRate(Double rate) {
+        this.rate = rate;
     }
 
     public Services getServices() {
