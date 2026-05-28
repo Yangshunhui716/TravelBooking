@@ -111,6 +111,7 @@ const HotelRoomService = () => {
                 <ServiceList
                     title="Danh sách Phòng khách sạn"
                     items={rooms}
+                    sortCategory="rating" 
                 />
 
             </div>

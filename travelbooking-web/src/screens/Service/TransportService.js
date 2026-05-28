@@ -134,6 +134,7 @@ const TransportService = () => {
                 <ServiceList
                     title="Danh sách Phương tiện"
                     items={transports}
+                    sortCategory="slot" 
                 />
 
             </div>
