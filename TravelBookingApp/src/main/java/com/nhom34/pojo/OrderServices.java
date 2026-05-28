@@ -4,26 +4,30 @@
  */
 package com.nhom34.pojo;
 
+import java.util.Date;
+
 /**
  *
  * @author PC
  */
 public class OrderServices {
-    private int id;
+    private Long id;
     private double unitPrice;
     private int quantity;
+    private Date serviceStartDate;
+    private int serviceDuration;
 
     /**
      * @return the id
      */
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -53,6 +57,34 @@ public class OrderServices {
      */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    /**
+     * @return the serviceStartDate
+     */
+    public Date getServiceStartDate() {
+        return serviceStartDate;
+    }
+
+    /**
+     * @param serviceStartDate the serviceStartDate to set
+     */
+    public void setServiceStartDate(Date serviceStartDate) {
+        this.serviceStartDate = serviceStartDate;
+    }
+
+    /**
+     * @return the serviceDuration
+     */
+    public int getServiceDuration() {
+        return serviceDuration;
+    }
+
+    /**
+     * @param serviceDuration the serviceDuration to set
+     */
+    public void setServiceDuration(int serviceDuration) {
+        this.serviceDuration = serviceDuration;
     }
 
     

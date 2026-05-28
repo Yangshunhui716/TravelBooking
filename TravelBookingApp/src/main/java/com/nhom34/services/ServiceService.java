@@ -16,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ServiceService {
     Services getServiceById(Long id);
     Services addService(Map<String, String> info, MultipartFile img, Providers prov);
-    void updateStatus(Long id, String status);
-    void updateActive(Long id, boolean active);
+    void updateStatus(Long id, boolean status);
     void deleteService(Long id);
     boolean checkOwner(Long provId, Long id);
+    boolean checkAvailableSlots(int slotsOrder,Long id);
 }

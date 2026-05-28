@@ -4,8 +4,6 @@
  */
 package com.nhom34.configs;
 
-import com.nhom34.filters.JwtFilter;
-import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
