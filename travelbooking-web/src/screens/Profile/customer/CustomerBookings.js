@@ -1,103 +1,103 @@
 import { useEffect, useState } from "react";
-
-import { Card, Spinner, Alert } from "react-bootstrap";
-
+import { Spinner, Alert } from "react-bootstrap";
 import { authApis, endpoints } from "../../../configs/Api";
-
+import BookingStyle from "./CustomerBookingsStyle";
+import { useNavigate } from "react-router-dom";
+import MySpinner from "../../../components/MySpinner";
 const CustomerBookings = () => {
-
     const [bookings, setBookings] = useState([]);
-
     const [loading, setLoading] = useState(false);
-
+    const navigate = useNavigate();
     const loadBookings = async () => {
-
         try {
-
             setLoading(true);
-
             let res = await authApis().get(
                 endpoints["customer-bookings"]
             );
-
             console.log(res.data);
-
             if (Array.isArray(res.data))
                 setBookings(res.data);
             else
                 setBookings([]);
-
         } catch (ex) {
-
             console.error(ex);
-
             setBookings([]);
-
         } finally {
-
             setLoading(false);
         }
     }
-
     useEffect(() => {
         loadBookings();
     }, []);
-
+    const formatPrice = (price) => {
+        return price.toLocaleString("vi-VN");
+    };
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString("vi-VN");
+    };
     return (
-        <Card className="shadow rounded-4 p-4">
+        <div style={BookingStyle.container}>
+            <h2 style={BookingStyle.pageTitle}>Lịch sử booking</h2>
+            {loading && (  <MySpinner /> )}
+            {!loading &&  bookings.length === 0 && (  <Alert variant="info"> Chưa có booking nào! </Alert>)}
+            {Array.isArray(bookings) &&
+                bookings.flatMap((booking) =>
+                    booking.bookingsServiceDetailCollection.map((detail) => {
+                        const service = detail.serviceId;
+                        return (
+                            <div key={detail.id} style={BookingStyle.card}>
+                                <div style={BookingStyle.header}>
+                                    <div style={BookingStyle.serviceSection}>
+                                        <img
+                                            src={service.imgUrl}
+                                            alt={service.name}
+                                            style={BookingStyle.image}
+                                        />
+                                    <div>
+                                        <div style={BookingStyle.topRow}>
+                                            <h5 style={BookingStyle.title}>
+                                                {service.name}
+                                            </h5>
+                                        <button style={BookingStyle.detailBtn} 
+                                            onClick={() => navigate(`/customer/bookings/${booking.id}`) } > Xem chi tiết 
+                                        </button>   
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div style={BookingStyle.date}>
+                                        {formatDate(booking.createdAt)}
+                                    </div>
+                                </div>
 
-            <h3 className="mb-4">
-                Lịch sử booking
-            </h3>
+                                <div style={BookingStyle.body}>
+                                    <div style={BookingStyle.item}>
+                                        <span style={BookingStyle.label}>Đơn giá</span>
+                                        <p style={BookingStyle.value}>
+                                            {formatPrice(detail.unitPrice)} đ
+                                        </p>
+                                    </div>
 
-            {loading && (
-                <Spinner animation="border" />
-            )}
+                                    <div style={BookingStyle.divider}></div>
+                                    <div style={BookingStyle.item}>
+                                        <span style={BookingStyle.label}>  Số lượng</span>
+                                        <p style={BookingStyle.value}> {detail.quantity}</p>
+                                    </div>
+                                    <div style={BookingStyle.divider}></div>
+                                    <div style={BookingStyle.item}>
+                                        <span style={BookingStyle.label}>  Tổng cộng  </span>
+                                        <p style={BookingStyle.value}>
+                                            {formatPrice(detail.subtotal)} đ
+                                        </p>
+                                    </div>
+                                </div>
 
-            {!loading &&
-                bookings.length === 0 && (
-                    <Alert variant="info">
-                        Chưa có booking nào!
-                    </Alert>
+                            </div>
+                        );
+                    })
                 )
             }
-
-            {Array.isArray(bookings) &&
-                bookings.map(b => (
-
-                    <Card
-                        key={b.id}
-                        className="p-3 mb-3"
-                    >
-
-                        <h5>
-                            Booking #{b.id}
-                        </h5>
-
-                        <p>
-                            Tổng tiền:
-                            {" "}
-                            {b.totalAmount}
-                        </p>
-
-                        <p>
-                            Trạng thái:
-                            {" "}
-                            {b.bookingStatus}
-                        </p>
-
-                        <p>
-                            Thanh toán:
-                            {" "}
-                            {b.paymentStatus}
-                        </p>
-
-                    </Card>
-                ))
-            }
-
-        </Card>
+        </div>
     );
 }
-
 export default CustomerBookings;
+
