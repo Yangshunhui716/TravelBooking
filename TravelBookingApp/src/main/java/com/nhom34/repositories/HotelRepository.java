@@ -12,9 +12,6 @@ import java.util.Map;
  *
  * @author QUANG AN
  */
-public interface HotelRepository {
-    List<HotelRoomServices> getHotelRoomServices(Map<String, String> params);
-    HotelRoomServices getHotelRoomServiceById(Long id);
-    HotelRoomServices addHotelRoomService(HotelRoomServices hotelRoom);
-    HotelRoomServices updatePartial(Map<String, String> params, Long id);
+public interface HotelRepository extends ServiceDetailRepository<HotelRoomServices>{
+
 }

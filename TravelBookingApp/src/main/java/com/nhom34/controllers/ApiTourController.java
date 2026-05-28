@@ -31,11 +31,11 @@ public class ApiTourController {
     
     @GetMapping("/tour-services")
     public ResponseEntity<List<TourServices>> list(@RequestParam Map<String, String> params) {
-        return new ResponseEntity<>(this.tourService.getTourServices(params), HttpStatus.OK);
+        return new ResponseEntity<>(this.tourService.getDetailServices(params), HttpStatus.OK);
     }
     
     @GetMapping("/tour-services/{serviceId}")
     public ResponseEntity<TourServices> retrieve(@PathVariable(value = "serviceId") Long id) {
-        return new ResponseEntity<>( this.tourService.getTourServiceById(id), HttpStatus.OK);
+        return new ResponseEntity<>((TourServices)this.tourService.getDetailServiceById(id), HttpStatus.OK);
     }
 }

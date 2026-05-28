@@ -7,6 +7,11 @@ package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.ServiceRepository;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import java.util.List;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -58,5 +63,17 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         Services service = this.getServiceById(id);
         
         s.remove(service);
+    }
+
+    @Override
+    public List<Services> getServicesByProviderId(Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Services> query = b.createQuery(Services.class);
+        Root root = query.from(Services.class);
+        query.where(b.equal(root.get("providerId").get("id"), id));
+        Query q = s.createQuery(query);
+        
+        return q.getResultList();
     }
 }

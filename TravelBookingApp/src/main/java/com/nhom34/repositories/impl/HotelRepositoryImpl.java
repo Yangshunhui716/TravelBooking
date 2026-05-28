@@ -33,7 +33,7 @@ public class HotelRepositoryImpl implements HotelRepository {
     private LocalSessionFactoryBean factory;
     
     @Override
-    public List<HotelRoomServices> getHotelRoomServices(Map<String, String> params) {
+    public List<HotelRoomServices> getDetailServices(Map<String, String> params) {
         Session s = factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<HotelRoomServices> q = b.createQuery(HotelRoomServices.class);
@@ -125,13 +125,13 @@ public class HotelRepositoryImpl implements HotelRepository {
     }
     
     @Override
-    public HotelRoomServices getHotelRoomServiceById(Long id) {
+    public HotelRoomServices getDetailServiceById(Long id) {
        Session s = this.factory.getObject().getCurrentSession();
         return s.get(HotelRoomServices.class, id);
     }
 
     @Override
-    public HotelRoomServices addHotelRoomService(HotelRoomServices hotelRoom) {
+    public HotelRoomServices addDetailService(HotelRoomServices hotelRoom) {
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(hotelRoom);
         
@@ -141,7 +141,7 @@ public class HotelRepositoryImpl implements HotelRepository {
     @Override
     public HotelRoomServices updatePartial(Map<String, String> params, Long id) {
         Session s = this.factory.getObject().getCurrentSession();
-        HotelRoomServices serv = this.getHotelRoomServiceById(id);
+        HotelRoomServices serv = this.getDetailServiceById(id);
         
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));

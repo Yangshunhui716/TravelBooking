@@ -5,16 +5,11 @@
 package com.nhom34.repositories;
 
 import com.nhom34.pojo.TourServices;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author QUANG AN
  */
-public interface TourRepository {
-    List<TourServices> getTourServices(Map<String, String> params);
-    TourServices getTourServiceById(Long id);
-    TourServices addTourService(TourServices tour);
-    TourServices updatePartial(Map<String, String> params, Long id);
+public interface TourRepository extends ServiceDetailRepository<TourServices>, AutoUpdateServiceRepository{
+
 }
