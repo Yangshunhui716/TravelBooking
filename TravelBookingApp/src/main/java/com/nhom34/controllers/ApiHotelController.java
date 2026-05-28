@@ -31,11 +31,11 @@ public class ApiHotelController {
     
     @GetMapping("/hotel-room-services")
     public ResponseEntity<List<HotelRoomServices>> list( @RequestParam Map<String, String> params) {
-        return new ResponseEntity<>(this.hotelService.getHotelRoomServices(params),HttpStatus.OK);
+        return new ResponseEntity<>(this.hotelService.getDetailServices(params),HttpStatus.OK);
     }
     
     @GetMapping("/hotel-room-services/{serviceId}")
     public ResponseEntity<HotelRoomServices> retrieve(@PathVariable(value = "serviceId") Long id) {
-        return new ResponseEntity<>(this.hotelService.getHotelRoomServiceById(id), HttpStatus.OK);
+        return new ResponseEntity<>((HotelRoomServices)this.hotelService.getDetailServiceById(id), HttpStatus.OK);
     }   
 }

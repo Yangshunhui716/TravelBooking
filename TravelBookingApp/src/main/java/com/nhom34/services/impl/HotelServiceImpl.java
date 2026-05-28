@@ -4,20 +4,14 @@
  */
 package com.nhom34.services.impl;
 
-import com.cloudinary.utils.ObjectUtils;
 import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.HotelRepository;
 import com.nhom34.services.HotelService;
 import com.nhom34.services.ServiceService;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,17 +29,18 @@ public class HotelServiceImpl implements HotelService{
     private ServiceService serviceService;
     
     @Override
-    public List<HotelRoomServices> getHotelRoomServices(Map<String, String> params) {
-        return this.hotelRepo.getHotelRoomServices(params);
+    public List<HotelRoomServices> getDetailServices(Map<String, String> params) {
+        return this.hotelRepo.getDetailServices(params);
     }
+
     @Override
-    public HotelRoomServices getHotelRoomServiceById(Long id) {
-        return this.hotelRepo.getHotelRoomServiceById(id);
+    public HotelRoomServices getDetailServiceById(Long id) {
+        return this.hotelRepo.getDetailServiceById(id);
     }
 
     @Override
     @Transactional
-    public HotelRoomServices addHotelRoomService(Map<String, String> info, MultipartFile img, Providers prov) {
+    public HotelRoomServices addDetailService(Map<String, String> info, MultipartFile img, Providers prov) {
         HotelRoomServices newHotelRoom = new HotelRoomServices();
         Services newService = this.serviceService.addService(info, img, prov);
         
@@ -54,7 +49,7 @@ public class HotelServiceImpl implements HotelService{
         newHotelRoom.setServices(newService);
         newHotelRoom.setId(newService.getId());
 
-        return this.hotelRepo.addHotelRoomService(newHotelRoom);
+        return this.hotelRepo.addDetailService(newHotelRoom);
     }
     
     @Override
@@ -62,7 +57,7 @@ public class HotelServiceImpl implements HotelService{
     public HotelRoomServices updatePartial(Map<String, String> params, Long id) {
         if(params.containsKey("status")){
             this.serviceService.updateStatus(id, Boolean.parseBoolean(params.get("status")));
-            return this.hotelRepo.getHotelRoomServiceById(id);
+            return this.hotelRepo.getDetailServiceById(id);
         }
         else{
             return this.hotelRepo.updatePartial(params, id);

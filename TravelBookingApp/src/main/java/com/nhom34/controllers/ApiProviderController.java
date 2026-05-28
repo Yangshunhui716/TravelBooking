@@ -22,7 +22,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -49,7 +48,7 @@ public class ApiProviderController {
     @Autowired
     private TourService tourService;
     @Autowired
-    private TransportService transpotService;
+    private TransportService transportService;
     @Autowired
     private HotelService hotelRoomService;
     @Autowired
@@ -79,21 +78,21 @@ public class ApiProviderController {
     public ResponseEntity<TourServices> addTourService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        return new ResponseEntity<>(this.tourService.addTourService(info, img, provider),HttpStatus.CREATED);
+        return new ResponseEntity<>(this.tourService.addDetailService(info, img, provider),HttpStatus.CREATED);
     }
     
     @PostMapping("/transport-services")
     public ResponseEntity<TransportServices> addTransportService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        return new ResponseEntity<>(this.transpotService.addTransportService(info, img, provider),HttpStatus.CREATED);
+        return new ResponseEntity<>(this.transportService.addDetailService(info, img, provider),HttpStatus.CREATED);
     } 
     
     @PostMapping("/hotel-room-services")
     public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestParam Map<String, String> info, 
             @RequestParam(value = "img") MultipartFile img, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        return new ResponseEntity<>(this.hotelRoomService.addHotelRoomService(info, img, provider),HttpStatus.CREATED);
+        return new ResponseEntity<>(this.hotelRoomService.addDetailService(info, img, provider),HttpStatus.CREATED);
     }
     
     @PatchMapping("/tour-services/{serviceId}")
@@ -118,7 +117,7 @@ public class ApiProviderController {
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(this.servService.checkOwner(provider.getId(),servId)){
-            return new ResponseEntity<>(this.transpotService.updatePartial(params, servId),HttpStatus.CREATED);
+            return new ResponseEntity<>(this.transportService.updatePartial(params, servId),HttpStatus.CREATED);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }
@@ -150,8 +149,7 @@ public class ApiProviderController {
     
     @GetMapping("/profile")
     public ResponseEntity<Providers> getProfile(Principal principal) {
-        Users user = this.userService.getUserByUsername(principal.getName());
-        Providers provider = this.provService.getProvById(user.getId());
+        Providers provider = this.provService.getProvByUsername(principal.getName());
         return new ResponseEntity<>(provider, HttpStatus.OK);
     }
     

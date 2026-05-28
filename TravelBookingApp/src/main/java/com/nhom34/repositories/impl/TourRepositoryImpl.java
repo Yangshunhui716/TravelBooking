@@ -6,7 +6,6 @@ package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Services;
 import com.nhom34.pojo.TourServices;
-import com.nhom34.repositories.AutoUpdateServiceRepository;
 import com.nhom34.repositories.TourRepository;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class TourRepositoryImpl implements TourRepository, AutoUpdateServiceRepository {
+public class TourRepositoryImpl implements TourRepository {
     @Autowired
     private LocalSessionFactoryBean factory;
     
     @Override
-    public List<TourServices> getTourServices(Map<String, String> params) {
+    public List<TourServices> getDetailServices(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b= s.getCriteriaBuilder();
         CriteriaQuery<TourServices> q = b.createQuery(TourServices.class);
@@ -111,13 +110,13 @@ public class TourRepositoryImpl implements TourRepository, AutoUpdateServiceRepo
     }
     
     @Override
-    public TourServices getTourServiceById(Long id) {
+    public TourServices getDetailServiceById(Long id) {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(TourServices.class, id);
     }   
 
     @Override
-    public TourServices addTourService(TourServices tour) {
+    public TourServices addDetailService(TourServices tour) {
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(tour);
         
@@ -127,7 +126,7 @@ public class TourRepositoryImpl implements TourRepository, AutoUpdateServiceRepo
     @Override
     public TourServices updatePartial(Map<String, String> params, Long id) {
         Session s = this.factory.getObject().getCurrentSession();
-        TourServices serv = this.getTourServiceById(id);
+        TourServices serv = this.getDetailServiceById(id);
         
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));

@@ -11,9 +11,6 @@ import java.util.Map;
  *
  * @author QUANG AN
  */
-public interface TransportRepository {
-    List<TransportServices> getTransportServices(Map<String, String> params);
-    TransportServices getTransportServiceById(Long id);
-    TransportServices addTransportService(TransportServices transport);
-    TransportServices updatePartial(Map<String, String> params, Long id);
+public interface TransportRepository extends ServiceDetailRepository<TransportServices>, AutoUpdateServiceRepository{
+
 }
