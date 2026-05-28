@@ -64,7 +64,7 @@ const Header = () => {
 
                         <Nav.Link
                             as={Link}
-                            to="/tour-service"
+                            to="/tour-services"
                             style={styles.navLink}
                         >
                             Tour
@@ -72,7 +72,7 @@ const Header = () => {
 
                         <Nav.Link
                             as={Link}
-                            to="/hotel-room-service"
+                            to="/hotel-room-services"
                             style={styles.navLink}
                         >
                             Phòng khách sạn
@@ -80,7 +80,7 @@ const Header = () => {
 
                         <Nav.Link
                             as={Link}
-                            to="/transport-service"
+                            to="/transport-services"
                             style={styles.navLink}
                         >
                             Phương tiện

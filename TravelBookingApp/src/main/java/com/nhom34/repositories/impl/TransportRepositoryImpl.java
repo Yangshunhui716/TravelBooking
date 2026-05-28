@@ -100,14 +100,14 @@ public class TransportRepositoryImpl implements TransportRepository, AutoUpdateS
             if (slot != null && !slot.isEmpty()) {
                 if (slot.equals("asc"))
                     orders.add(b.asc(root.get("services").get("availableSlots")));
-                else
+                if (slot.equals("desc"))
                     orders.add(b.desc(root.get("services").get("availableSlots")));
             }
             String price = params.get("price");
             if (price != null && !price.isEmpty()) {
                 if (price.equals("asc"))
                     orders.add(b.asc(root.get("services").get("price")));
-                else
+                if (price.equals("desc"))
                     orders.add(b.desc(root.get("services").get("price")));
             }
         }

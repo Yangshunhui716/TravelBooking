@@ -78,6 +78,7 @@ public class TransportServiceImpl implements TransportService, AutoUpdateService
     }
 
     @Override
+    @EventListener(ContextRefreshedEvent.class)
     @Scheduled(cron = "0 0/10 * * * ?")
     @Transactional
     public void autoUpdateStatusByCheckDate() {
