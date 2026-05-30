@@ -103,7 +103,7 @@ public class ApiProviderController {
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(this.servService.checkOwner(provider.getId(),servId)){
-            return new ResponseEntity<>(this.tourService.updatePartial(params, servId),HttpStatus.CREATED);
+            return new ResponseEntity<>(this.tourService.updatePartial(params, servId),HttpStatus.OK);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }
@@ -117,7 +117,7 @@ public class ApiProviderController {
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(this.servService.checkOwner(provider.getId(),servId)){
-            return new ResponseEntity<>(this.transportService.updatePartial(params, servId),HttpStatus.CREATED);
+            return new ResponseEntity<>(this.transportService.updatePartial(params, servId),HttpStatus.OK);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }
@@ -131,7 +131,7 @@ public class ApiProviderController {
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(this.servService.checkOwner(provider.getId(),servId)){
-            return new ResponseEntity<>(this.hotelRoomService.updatePartial(params, servId),HttpStatus.CREATED);
+            return new ResponseEntity<>(this.hotelRoomService.updatePartial(params, servId),HttpStatus.OK);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }

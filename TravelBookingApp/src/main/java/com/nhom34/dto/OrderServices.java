@@ -4,13 +4,14 @@
  */
 package com.nhom34.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author PC
  */
-public class OrderServices {
+public class OrderServices implements Serializable{
     private Long id;
     private double unitPrice;
     private int quantity;

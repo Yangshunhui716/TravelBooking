@@ -30,8 +30,8 @@ import java.util.Date;
     @NamedQuery(name = "Conversation.findAll", query = "SELECT c FROM Conversation c"),
     @NamedQuery(name = "Conversation.findById", query = "SELECT c FROM Conversation c WHERE c.id = :id"),
     @NamedQuery(name = "Conversation.findByLastMessage", query = "SELECT c FROM Conversation c WHERE c.lastMessage = :lastMessage"),
-    @NamedQuery(name = "Conversation.findByProviderSeen", query = "SELECT c FROM Conversation c WHERE c.providerSeen = :providerSeen"),
-    @NamedQuery(name = "Conversation.findByCustomerSeen", query = "SELECT c FROM Conversation c WHERE c.customerSeen = :customerSeen"),
+    @NamedQuery(name = "Conversation.findByProviderUnread", query = "SELECT c FROM Conversation c WHERE c.providerUnread = :providerUnread"),
+    @NamedQuery(name = "Conversation.findByCustomerUnread", query = "SELECT c FROM Conversation c WHERE c.customerUnread = :customerUnread"),
     @NamedQuery(name = "Conversation.findByCreatedAt", query = "SELECT c FROM Conversation c WHERE c.createdAt = :createdAt"),
     @NamedQuery(name = "Conversation.findByUpdatedAt", query = "SELECT c FROM Conversation c WHERE c.updatedAt = :updatedAt")})
 public class Conversation implements Serializable {
@@ -46,14 +46,10 @@ public class Conversation implements Serializable {
     @Size(max = 255)
     @Column(name = "last_message")
     private String lastMessage;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "provider_seen")
-    private short providerSeen;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "customer_seen")
-    private short customerSeen;
+    @Column(name = "provider_unread")
+    private Integer providerUnread;
+    @Column(name = "customer_unread")
+    private Integer customerUnread;
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_at")
@@ -78,14 +74,14 @@ public class Conversation implements Serializable {
         this.id = id;
     }
 
-    public Conversation(String id, short providerSeen, short customerSeen, Date createdAt, Date updatedAt) {
+    public Conversation(String id, int providerUnread, int customerUnread, Date createdAt, Date updatedAt) {
         this.id = id;
-        this.providerSeen = providerSeen;
-        this.customerSeen = customerSeen;
+        this.providerUnread = providerUnread;
+        this.customerUnread = customerUnread;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
+    
     public String getId() {
         return id;
     }
@@ -102,20 +98,20 @@ public class Conversation implements Serializable {
         this.lastMessage = lastMessage;
     }
 
-    public short getProviderSeen() {
-        return providerSeen;
+    public Integer getProviderUnread() {
+        return providerUnread;
     }
 
-    public void setProviderSeen(short providerSeen) {
-        this.providerSeen = providerSeen;
+    public void setProviderUnread(Integer providerUnread) {
+        this.providerUnread = providerUnread;
     }
 
-    public short getCustomerSeen() {
-        return customerSeen;
+    public Integer getCustomerUnread() {
+        return customerUnread;
     }
 
-    public void setCustomerSeen(short customerSeen) {
-        this.customerSeen = customerSeen;
+    public void setCustomerUnread(Integer customerUnread) {
+        this.customerUnread = customerUnread;
     }
 
     public Date getCreatedAt() {
@@ -174,5 +170,5 @@ public class Conversation implements Serializable {
     public String toString() {
         return "com.nhom34.pojo.Conversation[ id=" + id + " ]";
     }
-    
+
 }
