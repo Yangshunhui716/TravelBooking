@@ -32,6 +32,7 @@ com\nhom34\services\impl\ServiceServiceImpl.class
 com\nhom34\dto\RequestOrder.class
 com\nhom34\repositories\BookingRepository.class
 com\nhom34\services\TransferTransactionService.class
+com\nhom34\controllers\ApiConversationController.class
 com\nhom34\repositories\impl\TransferTransactionRepositoryImpl.class
 com\nhom34\controllers\ApiPaymentController.class
 com\nhom34\services\CustomerService.class

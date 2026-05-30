@@ -4,8 +4,6 @@
  */
 package com.nhom34.configs;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -40,7 +38,7 @@ public class SpringSecurityConfigs {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
+    
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -65,14 +63,4 @@ public class SpringSecurityConfigs {
         return http.build();
     }
     
-    @Bean
-    public Cloudinary cloudinary() {
-        Cloudinary cloudinary
-                = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", "databreak",
-                        "api_key", "143511745215512",
-                        "api_secret", "f35MCfbdfoIhB8Z6XSrQVTmGQBA",
-                        "secure", true));
-        return cloudinary;
-    }
 }
