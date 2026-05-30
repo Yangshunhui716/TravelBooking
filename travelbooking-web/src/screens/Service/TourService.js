@@ -1,34 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
+import React, { useEffect, useState, useCallback } from "react"; // 1. Thêm useCallback ở đây
+import { useNavigate } from "react-router-dom";
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
 import MySpinner from "../../components/MySpinner";
 import Apis, { endpoints } from "../../configs/Api";
-import SortDropdown from "../../components/SortDropdown";
+// Xóa bớt import Spinner và SortDropdown thừa tại đây
 
 const TourService = () => {
     const [tours, setTours] = useState([]);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({});
     const [sort, setSort] = useState("");
+    
+    const navigate = useNavigate();
+
     // format tiền
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
+    
     // format ngày
     const formatDate = (timestamp) => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
-    const loadTours = async () => {
+
+    // 2. Bọc hàm loadTours trong useCallback để tối ưu dependency
+    const loadTours = useCallback(async () => {
         try {
             setLoading(true);
-           let params = {};
+            let params = {};
+            
             // FILTER
             if (filters.destination)
                 params.destination = filters.destination;
             if (filters.departureDate)
                 params.departureTime = filters.departureDate;
+                
             // SORT
             switch (sort) {
                 case "price_asc":
@@ -46,11 +54,10 @@ const TourService = () => {
                 default:
                     break;
             }
+
             let res = await Apis.get(
                 endpoints['tour-services'],
-                {
-                    params: params
-                }
+                { params: params }
             );
             
             // MAP API -> CARD DATA
@@ -65,22 +72,23 @@ const TourService = () => {
                     `Khởi hành: ${formatDate(tour.departureTime)}`,
                     `Số chỗ: ${tour.services?.availableSlots}`
                 ],
-                onView: () => {
-                    console.log("Xem tour:", tour.id);
-                }
-
+                onView: () => navigate(`/tour-services/${tour.id}`)
             }));
+            
             setTours(mappedTours);
         } catch (err) {
             console.error(err);
         } finally {
             setLoading(false);
         }
-    };
+    }, [filters, sort, navigate]); // Hàm sẽ chỉ đổi khi filters, sort hoặc navigate thay đổi
+
+    // 3. Thêm loadTours vào mảng dependency một cách an toàn
     useEffect(() => {
         loadTours();
-    }, [filters, sort]);
-    // FILTER
+    }, [loadTours]);
+
+    // CONFIG CHO FILTER
     const tourConfig = [
         {
             key: "destination",
@@ -93,30 +101,33 @@ const TourService = () => {
             type: "date"
         }
     ];
+
     const handleFilter = (values) => {
         setFilters(values);
     };
+
     return (
         <div className="d-flex p-4 gap-4">
             {/* FILTER */}
-                <DynamicFilter
-                    config={tourConfig}
-                    onFilterSubmit={handleFilter}
-                />
+            <DynamicFilter
+                config={tourConfig}
+                onFilterSubmit={handleFilter}
+            />
+            
             {/* LIST */}
             <div className="flex-grow-1">
-            <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-3"></div>
+                
+                {loading && <MySpinner />}
+                
+                <ServiceList
+                    title="Danh sách Tour"
+                    items={tours}
+                    sortCategory="slot"
+                    currentSort={sort}
+                    onSortChange={setSort}
+                />
             </div>
-             {loading && <MySpinner />}
-            <ServiceList
-                title="Danh sách Tour"
-                items={tours}
-                sortCategory="slot"
-                currentSort={sort}
-                onSortChange={setSort}
-            />
-            </div>
-
         </div>
     );
 };
