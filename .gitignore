@@ -6,7 +6,12 @@
 
 # BlueJ files
 *.ctxt
+*.json
+# Maven build
+target/
 
+# Firebase credentials
+*firebase-adminsdk*.json
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 

@@ -148,7 +148,7 @@ const TransportService = () => {
 
             {/* COMPONENT DANH SÁCH */}
             <div className="flex-grow-1">
-                {loading && <MySpinner />}
+               
                 
                 <ServiceList
                     title="Danh sách Phương tiện"
@@ -157,6 +157,7 @@ const TransportService = () => {
                     currentSort={sort}
                     onSortChange={setSort}
                 />
+                 {loading && <MySpinner />}
             </div>
         </div>
     );

@@ -5,12 +5,9 @@
 package com.nhom34.controllers;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.nhom34.configs.FirebareConfigs;
 import com.nhom34.pojo.Conversation;
 import com.nhom34.pojo.Users;
 import com.nhom34.services.ConversationService;
-import com.nhom34.services.CustomerService;
-import com.nhom34.services.ProviderService;
 import com.nhom34.services.UserService;
 import java.security.Principal;
 import java.util.List;
@@ -36,16 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ApiConversationController {
     @Autowired
-    private FirebareConfigs firebaseConfigs;
-    @Autowired
     private UserService userService;
     @Autowired
     private ConversationService conversationService;
-    @Autowired
-    private ProviderService provService;
-    @Autowired
-    private CustomerService cusService;
-    
     @GetMapping("/firebase-token")
     public ResponseEntity<String> getFirebaseCustomToken(Principal principal) {
         try {

@@ -11,17 +11,17 @@ import ReviewSection from "../../components/ReviewSection";
 const HotelRoomServiceDetail = () => {
     const { serviceId } = useParams();
     const [hotelService, setHotelService] = useState(null);
+    const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(false);
     const [user] = useContext(MyUserContext);
     const nav = useNavigate();
-    const [reviews, setReviews] = useState([]);
     
-    // State chọn phòng đặt lịch
+    // State quản lý việc đặt phòng
     const [checkInDate, setCheckInDate] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
     const [roomCount, setRoomCount] = useState(1);
 
-    // Đặt mặc định ngày nhận phòng (Hôm nay) & ngày trả phòng (Mai)
+    // Khởi tạo mặc định: Nhận phòng hôm nay, Trả phòng ngày mai
     useEffect(() => {
         const today = new Date();
         const tomorrow = new Date(today);
@@ -31,69 +31,51 @@ const HotelRoomServiceDetail = () => {
         setCheckOutDate(tomorrow.toISOString().split("T")[0]);
     }, []);
 
-    // 1. API lấy dữ liệu chi tiết phòng khách sạn
-    const loadHotelDetail = async () => {
-        try {
-            setLoading(true);
-            let res = await Api.get(endpoints['hotel-room-service-detail'](serviceId));
-            setHotelService(res.data);
-        } catch (ex) {
-            console.error("Lỗi khi tải chi tiết dịch vụ khách sạn:", ex);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // 2. API lấy danh sách bình luận dựa trên ID dịch vụ cốt lõi
-    const loadReviews = async () => {
-        try {
-            const coreServiceId = hotelService?.services?.id;
-            if (coreServiceId) {
-                let res = await Api.get(endpoints['service-reviews'](coreServiceId));
-                setReviews(res.data);
-            }
-        } catch (ex) {
-            console.error("Lỗi khi fetch danh sách reviews:", ex);
-        }
-    };
-
-    // VÒNG ĐỜI 1: Chỉ chạy duy nhất khi id trên đường dẫn URL thay đổi để lấy thông tin phòng
+    // VÒNG ĐỜI TUẦN TỰ: Tự động tải thông tin khách sạn và đánh giá khi ID thay đổi
     useEffect(() => {
-        if (serviceId) {
-            loadHotelDetail();
-        }
+        const fetchData = async () => {
+            if (!serviceId) return;
+            try {
+                setLoading(true);
+                
+                // 1. Tải chi tiết dịch vụ khách sạn
+                let resDetail = await Api.get(endpoints['hotel-room-service-detail'](serviceId));
+                setHotelService(resDetail.data);
+
+                // 2. Tải danh sách đánh giá
+                let resReviews = await Api.get(endpoints['service-reviews'](serviceId));
+                setReviews(resReviews.data);
+            } catch (ex) {
+                console.error("Lỗi khi tải dữ liệu chi tiết khách sạn:", ex);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, [serviceId]);
 
-    // VÒNG ĐỜI 2: Chỉ chạy khi thông tin phòng đã tải xong xuôi để lấy danh sách review
-    useEffect(() => {
-        if (hotelService) {
-            loadReviews();
-        }
-    }, [hotelService]);
-
-    // Xử lý logic nút Đặt phòng
+    // Xử lý khi nhấn nút Đặt phòng
     const handleBooking = () => {
         if (user === null) {
             nav(`/login?next=/hotel-room-services/${serviceId}`);
         } else {
-            nav(
-                `/customer/checkout?serviceId=${serviceId}&type=HOTEL&checkIn=${checkInDate}&checkOut=${checkOutDate}&rooms=${roomCount}`
-            );
+            nav(`/customer/checkout?serviceId=${serviceId}&type=HOTEL&checkIn=${checkInDate}&checkOut=${checkOutDate}&rooms=${roomCount}`);
         }
     };
 
-    // Điều hướng nhà cung cấp đối tác
+    // Xem thông tin chi tiết nhà cung cấp (Đối tác)
     const handleViewProvider = () => {
-        const providerId = hotelService.services?.providerId?.id;
+        const providerId = hotelService?.services?.providerId?.id;
         if (providerId) nav(`/providers/${providerId}`);
     };
 
+    // Chat trực tiếp với nhà cung cấp
     const handleChatProvider = () => {
         if (user === null) {
             nav(`/login?next=/hotel-room-services/${serviceId}`);
             return;
         }
-        const providerUserId = hotelService.services?.providerId?.users?.id;
+        const providerUserId = hotelService?.services?.providerId?.users?.id;
         if (providerUserId) nav(`/chat?withUser=${providerUserId}`);
     };
 
@@ -109,7 +91,7 @@ const HotelRoomServiceDetail = () => {
         <Container className="mt-4 mb-5">
             {hotelService && (
                 <>
-                    {/* TIÊU ĐỀ */}
+                    {/* KHUNG TRÊN CÙNG: Tên phòng / Tên dịch vụ */}
                     <Row className="mb-4">
                         <Col>
                             <div style={styles.titleBox}>
@@ -120,39 +102,35 @@ const HotelRoomServiceDetail = () => {
                         </Col>
                     </Row>
 
-                    {/* THÂN CHI TIẾT DỊCH VỤ */}
+                    {/* PHẦN THÂN: Chia 2 cột Trái - Phải */}
                     <Row>
-                        {/* CỘT TRÁI: Hình ảnh */}
+                        {/* CỘT TRÁI: Hình ảnh không gian phòng */}
                         <Col md={5} xs={12} className="mb-4 d-flex align-items-center justify-content-center">
                             <div style={{ ...styles.imageWrapper, width: "100%" }}>
                                 <DisplayImage src={hotelService.services?.imgUrl} />
                             </div>
                         </Col>
 
-                        {/* CỘT PHẢI: Khung tương tác đặt và thông tin chi tiết */}
+                        {/* CỘT PHẢI: Giá cả, Form chọn lịch và Thông tin khách sạn */}
                         <Col md={7} xs={12}>
                             <div style={styles.infoCard}>
                                 
-                                {/* 1. Khung Giá & Booking */}
-                                <div className="d-flex justify-content-between align-items-start mb-3">
+                                {/* 1. Khung Giá & Nút Đặt phòng */}
+                                <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div>
                                         <span className="text-muted d-block small">Giá từ</span>
-                                        <h3 style={styles.priceText}>
-                                            {hotelService.services?.price?.toLocaleString()} VNĐ <small className="fs-6 text-muted fw-normal">/ đêm</small>
+                                        <h3 style={styles.priceText} className="m-0">
+                                            {hotelService.services?.price?.toLocaleString()} VNĐ 
+                                            <small className="fs-6 text-muted fw-normal"> / đêm</small>
                                         </h3>
                                     </div>
-                                    <Button 
-                                        variant="danger" 
-                                        size="lg" 
-                                        className="px-4 font-weight-bold mt-2" 
-                                        onClick={handleBooking}
-                                    >
+                                    <Button variant="danger" size="lg" className="px-4 font-weight-bold" onClick={handleBooking}>
                                         Đặt ngay
                                     </Button>
                                 </div>
 
-                                {/* Form chọn Ngày & Số lượng phòng */}
-                                <Row className="g-2 mb-3 p-2 bg-light rounded-3 align-items-center">
+                                {/* Form chọn Ngày và Số lượng phòng */}
+                                <Row className="g-2 mb-3 p-3 bg-light rounded-3 align-items-center mx-0">
                                     <Col sm={4} xs={6}>
                                         <Form.Group>
                                             <Form.Label className="small fw-bold text-secondary mb-1">Ngày nhận phòng</Form.Label>
@@ -178,18 +156,18 @@ const HotelRoomServiceDetail = () => {
                                     <Col sm={4} xs={12}>
                                         <Form.Group>
                                             <Form.Label className="small fw-bold text-secondary mb-1">Số lượng phòng</Form.Label>
-                                            <div className="d-flex align-items-center justify-content-between">
+                                            <div className="d-flex align-items-center gap-2">
                                                 <Form.Select 
                                                     size="sm"
                                                     value={roomCount}
                                                     onChange={(e) => setRoomCount(Number(e.target.value))}
-                                                    style={{ width: "70%" }}
+                                                    style={{ width: "80px" }}
                                                 >
                                                     {[...Array(hotelService.services?.availableSlots || 1).keys()].map((i) => (
-                                                        <option key={i + 1} value={i + 1}>{i + 1} phòng</option>
+                                                        <option key={i + 1} value={i + 1}>{i + 1}</option>
                                                     ))}
                                                 </Form.Select>
-                                                <small className="text-muted text-end w-100 ps-1" style={{ fontSize: '11px' }}>
+                                                <small className="text-muted" style={{ fontSize: '11px' }}>
                                                     (Còn {hotelService.services?.availableSlots} phòng trống)
                                                 </small>
                                             </div>
@@ -199,7 +177,7 @@ const HotelRoomServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 2. Khung Đối tác quản lý */}
+                                {/* 2. Khung Thông tin Đối tác / Chủ khách sạn */}
                                 <div className="d-flex justify-content-between align-items-center my-3 py-2">
                                     <div className="d-flex align-items-center">
                                         <Image 
@@ -221,20 +199,10 @@ const HotelRoomServiceDetail = () => {
                                     </div>
                                     
                                     <div className="d-flex flex-column gap-2">
-                                        <Button 
-                                            variant="outline-primary" 
-                                            size="sm" 
-                                            className="font-weight-bold"
-                                            onClick={handleViewProvider}
-                                        >
+                                        <Button variant="outline-primary" size="sm" className="font-weight-bold" onClick={handleViewProvider}>
                                             Xem chi tiết
                                         </Button>
-                                        <Button 
-                                            variant="outline-success" 
-                                            size="sm" 
-                                            className="font-weight-bold"
-                                            onClick={handleChatProvider}
-                                        >
+                                        <Button variant="outline-success" size="sm" className="font-weight-bold" onClick={handleChatProvider}>
                                             Chat ngay
                                         </Button>
                                     </div>
@@ -242,30 +210,28 @@ const HotelRoomServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 3. Khung chi tiết dịch vụ */}
+                                {/* 3. Khung Thông tin chi tiết dịch vụ phòng */}
                                 <div className="mt-3">
-                                    <h5 className="font-weight-bold text-dark mb-3">
-                                        Thông tin chi tiết dịch vụ
-                                    </h5>
+                                    <h5 className="font-weight-bold text-dark mb-3">Thông tin chi tiết phòng</h5>
                                     
-                                    <div className="ps-1 mb-2">
-                                        <strong>Tên khách sạn: </strong>
-                                        <span className="text-secondary">{hotelService.hotelName}</span>
-                                    </div>
-                                    
-                                    <div className="ps-1 mb-3">
-                                        <strong>Địa chỉ: </strong>
-                                        <span className="text-secondary">{hotelService.address}</span>
-                                    </div>
-
-                                    <div className="ps-1">
-                                        <strong>Mô tả phòng ốc: </strong>
-                                        <p style={styles.descriptionText} className="mt-1">
-                                            {hotelService.services?.description}
-                                        </p>
-                                    </div>
+                                    <ul className="list-unstyled ps-1">
+                                        <li className="mb-2">
+                                            <strong>Tên khách sạn: </strong> 
+                                            <span className="text-secondary">{hotelService.hotelName}</span>
+                                        </li>
+                                        <li className="mb-2">
+                                            <strong>Địa chỉ: </strong> 
+                                            <span className="text-secondary">{hotelService.address}</span>
+                                        </li>
+                                        <li className="mb-2">
+                                            <strong>Mô tả tiện nghi: </strong>
+                                            <p style={styles.descriptionText} className="mt-1">
+                                                {hotelService.services?.description}
+                                            </p>
+                                        </li>
+                                    </ul>
                                 </div>
-                                
+                                 
                                 <hr />
                                 
                                 {/* 4. Tích hợp danh sách đánh giá */}
