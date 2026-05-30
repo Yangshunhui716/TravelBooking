@@ -29,7 +29,7 @@ export const endpoints={
     'transport-service-detail': (serviceId) => `/transport-services/${serviceId}`,
 
     'service-customers': 'secure/provider/service/{serviceId}/cutomers',
-    'service-reviews': '/services/{serviceId}/reviews',
+    'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
 }
 export const authApis = () => {
     return axios.create({

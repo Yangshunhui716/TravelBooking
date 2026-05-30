@@ -6,7 +6,12 @@
 
 # BlueJ files
 *.ctxt
+*.json
+# Maven build
+target/
 
+# Firebase credentials
+*firebase-adminsdk*.json
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -25,6 +30,7 @@ replay_pid*
 
 TravelBookingApp/src/main/resources/databases.properties
 TravelBookingApp/src/main/resources/payments.properties
+TravelBookingApp/src/main/resources/ahtravelbookingweb-firebase-adminsdk-fbsvc-c3022223fd.json
 
 TravelBookingApp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 TravelBookingApp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

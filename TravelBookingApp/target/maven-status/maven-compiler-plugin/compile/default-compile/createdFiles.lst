@@ -10,6 +10,7 @@ com\nhom34\pojo\Users.class
 com\nhom34\services\AdminService.class
 com\nhom34\configs\PaypalConfigs.class
 com\nhom34\pojo\Services.class
+com\nhom34\repositories\ConversationRepository.class
 com\nhom34\pojo\Bookings.class
 com\nhom34\utils\JwtUtils.class
 com\nhom34\pojo\TransportServices.class
@@ -32,6 +33,8 @@ com\nhom34\services\impl\ServiceServiceImpl.class
 com\nhom34\dto\RequestOrder.class
 com\nhom34\repositories\BookingRepository.class
 com\nhom34\services\TransferTransactionService.class
+com\nhom34\services\ConversationService.class
+com\nhom34\controllers\ApiConversationController.class
 com\nhom34\repositories\impl\TransferTransactionRepositoryImpl.class
 com\nhom34\controllers\ApiPaymentController.class
 com\nhom34\services\CustomerService.class
@@ -68,7 +71,9 @@ com\nhom34\repositories\impl\ServiceRepositoryImpl.class
 com\nhom34\services\TourService.class
 com\nhom34\controllers\ApiProviderController.class
 com\nhom34\services\impl\ProviderServiceImpl.class
+com\nhom34\repositories\impl\ConversationRepositoryImpl.class
 com\nhom34\repositories\impl\UserRepositoryImpl.class
+com\nhom34\services\impl\ConversationServiceImpl.class
 com\nhom34\repositories\UserRepository.class
 com\nhom34\services\PaymentService.class
 com\nhom34\services\ReviewService.class
@@ -84,6 +89,7 @@ com\nhom34\repositories\TourRepository.class
 com\nhom34\pojo\TransferTransactions.class
 com\nhom34\controllers\ApiReviewController.class
 com\nhom34\filters\JwtFilter.class
+com\nhom34\configs\CloudinaryConfigs.class
 com\nhom34\pojo\BookingsServiceDetail.class
 com\nhom34\repositories\TransportRepository.class
 com\nhom34\controllers\HomeController.class
@@ -93,4 +99,5 @@ com\nhom34\services\ServiceService.class
 com\nhom34\pojo\Conversation.class
 com\nhom34\services\impl\payment\MomoServiceImpl.class
 com\nhom34\services\impl\AdminServiceImpl.class
+com\nhom34\configs\FirebareConfigs.class
 com\nhom34\services\HotelService.class

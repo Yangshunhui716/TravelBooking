@@ -1,6 +1,8 @@
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\components\PaymentFactory.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\ApiSecurityConfigs.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\CloudinaryConfigs.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\DispatcherServeletInit.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\FirebareConfigs.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\HibernateConfigs.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\MomoConfigs.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\PaypalConfigs.java
@@ -8,6 +10,7 @@ D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\SecurityWebAp
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\SpringSecurityConfigs.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\ThymeleafConfigs.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\WebAppContextConfigs.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiConversationController.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiCustomerController.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiHotelController.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiPaymentController.java
@@ -40,10 +43,12 @@ D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Users.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\AdminRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\AutoUpdateServiceRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\BookingRepository.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\ConversationRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\CustomerRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\HotelRepository.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\AdminRepositoryImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\BookingRepositoryImpl.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\ConversationRepositoryImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\CustomerRepositoryImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\HotelRepositoryImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\ProviderRepositoryImpl.java
@@ -64,10 +69,12 @@ D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\UserRepo
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\AdminService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\AutoUpdateServiceService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\BookingService.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\ConversationService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\CustomerService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\HotelService.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\AdminServiceImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\BookingServiceImpl.java
+D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\ConversationServiceImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\CustomerServiceImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\HotelServiceImpl.java
 D:\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\payment\MomoServiceImpl.java
