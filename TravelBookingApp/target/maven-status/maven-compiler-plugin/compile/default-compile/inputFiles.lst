@@ -8,6 +8,7 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\Sec
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\SpringSecurityConfigs.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\ThymeleafConfigs.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\WebAppContextConfigs.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiConversationController.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiCustomerController.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiHotelController.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ApiPaymentController.java
@@ -20,6 +21,9 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\HomeController.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\ProviderController.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\controllers\UserController.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\dto\OrderServices.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\dto\ProviderStatistic.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\dto\RequestOrder.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\filters\JwtFilter.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Admins.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Bookings.java
@@ -27,9 +31,7 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Bookin
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Conversation.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Customers.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\HotelRoomServices.java
-D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\OrderServices.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Providers.java
-D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\RequestOrder.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Reviews.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Services.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\TourServices.java
@@ -74,6 +76,7 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\im
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\ProviderServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\ReviewServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\ServiceServiceImpl.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\StatisticServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\TourServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\TransferTransactionServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\TransportServiceImpl.java
@@ -83,6 +86,7 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\Pr
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\ReviewService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\ServiceDetailService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\ServiceService.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\StatisticService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\TourService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\TransferTransactionService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\TransportService.java
