@@ -12,21 +12,12 @@ export const endpoints={
     'customer-create-review': 'secure/customer/services/{serviceId}/reviews',
 
     'provider-profile': 'secure/provider/profile',
-<<<<<<< HEAD
     'provider-tour-services': 'secure/provider/tour-services',
     'provider-tour-service': (tourServiceId) => `secure/provider/tour-services/${tourServiceId}`,
     'provider-hotel-room-services': 'secure/provider/hotel-room-services',
     'provider-hotel-room-service': (hotelRoomServiceId) => `secure/provider/hotel-room-services/${hotelRoomServiceId}`,
     'provider-transport-services': 'secure/provider/transport-services',
     'provider-transport-service': (transportServiceId) => `secure/provider/transport-services/${transportServiceId}`,
-=======
-    'provider-services': 'secure/provider/tour-services',
-    'provider-tour-services': 'secure/provider/tour-services/{tourServiceId}',
-    'provider-hotel-room-services': 'secure/provider/hotel-room-services',
-    'provider-hotel-room-service': 'secure/provider/hotel-room-services/{hotelRoomServiceId}',
-    'provider-transport-services': 'secure/provider/transport-services',
-    'provider-transport-service': 'secure/provider/transport-services/{transportServiceId}',
->>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
 
     'hotel-room-services': '/hotel-room-services',
     'hotel-room-service-detail': (serviceId) => `/hotel-room-services/${serviceId}`,
@@ -38,20 +29,16 @@ export const endpoints={
     'transport-service-detail': (serviceId) => `/transport-services/${serviceId}`,
 
     'service-customers': 'secure/provider/service/{serviceId}/cutomers',
-<<<<<<< HEAD
-    'service-reviews': '/services/{serviceId}/reviews',
-=======
     'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
->>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
 }
 export const authApis = () => {
     return axios.create({
-        baseURL: 'http://localhost:8080/TravelBookingApp/api/',
+        baseURL: 'http://localhost:8000/TravelBookingApp/api/',
         headers: {
             'Authorization': `Bearer ${cookies.load('token')}`
         }
     })
 }
 export default axios.create({
-    baseURL: "http://localhost:8080/TravelBookingApp/api"
+    baseURL: "http://localhost:8000/TravelBookingApp/api"
 });
