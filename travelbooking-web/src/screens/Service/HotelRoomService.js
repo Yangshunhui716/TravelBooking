@@ -1,31 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom"; // Import hook điều hướng
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
 import MySpinner from "../../components/MySpinner";
-
 import Apis, { endpoints } from "../../configs/Api";
+
 const HotelRoomService = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({});
     const [sort, setSort] = useState("");
-    // format tiền
+    
+    const navigate = useNavigate(); // Khởi tạo điều hướng
+
+    // Định dạng hiển thị giá tiền lẻ VNĐ
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
-    const loadRooms = async () => {
+
+    // Bọc logic tải phòng trong useCallback để tối ưu hóa mảng dependency
+    const loadRooms = useCallback(async () => {
         try {
             setLoading(true);
             let params = {};
-            // FILTER
+
+            // ================= FILTER =================
             if (filters.destination)
-                  params.destination = filters.destination;
+                params.destination = filters.destination;
             if (filters.checkInDate)
                 params.startDate = filters.checkInDate;
             if (filters.checkOutDate)
                 params.endDate = filters.checkOutDate;
-            // SORT
+
+            // ================= SORT =================
             switch (sort) {
                 case "price_asc":
                     params.price = "asc";
@@ -42,40 +50,42 @@ const HotelRoomService = () => {
                 default:
                     break;
             }
+
             let res = await Apis.get(
                 endpoints['hotel-room-services'],
-                {
-                    params: params
-                }
+                { params: params }
             );
-            // MAP API -> CARD DATA
+
+            // ================= MAP API -> CARD DATA =================
             const mappedRooms = res.data.map((room) => ({
                 id: room.id,
-                title: room.services?.name,
+                title: room.services?.name, // Tên loại phòng (Ví dụ: Phòng Deluxe Ocean View)
                 badge: "Khách sạn",
                 image: room.services?.imgUrl,
                 price: formatPrice(room.services?.price),
                 details: [
                     `Khách sạn: ${room.hotelName}`,
                     `Địa chỉ: ${room.address}`,
-                    `Số phòng còn: ${room.services?.availableSlots}`
+                    `Số phòng còn: ${room.services?.availableSlots || 0} phòng`
                 ],
-                onView: () => {
-                    console.log("Xem phòng:", room.id);
-                }
-
+                // Hành động điều hướng trực tiếp khi người dùng click xem chi tiết card phòng
+                onView: () => navigate(`/hotel-room-services/${room.id}`)
             }));
+
             setRooms(mappedRooms);
         } catch (err) {
-            console.error(err);
+            console.error("Lỗi khi tải danh sách phòng khách sạn:", err);
         } finally {
             setLoading(false);
         }
-    };
+    }, [filters, sort, navigate]);
+
+    // Lắng nghe thay đổi của bộ lọc và bộ sắp xếp để tự động nạp lại dữ liệu an toàn
     useEffect(() => {
         loadRooms();
-    }, [filters, sort]);
-    // FILTER
+    }, [loadRooms]);
+
+    // CẤU HÌNH BỘ LỌC TÌM KIẾM PHÒNG (FILTER CONFIG)
     const hotelConfig = [
         {
             key: "destination",
@@ -93,30 +103,31 @@ const HotelRoomService = () => {
             type: "date"
         }
     ];
+
     const handleFilter = (values) => {
         setFilters(values);
     };
 
     return (
         <div className="d-flex p-4 gap-4">
-            {/* FILTER */}
+            {/* BỘ LỌC ĐỘNG TÌM KIẾM PHÒNG */}
             <DynamicFilter
                 config={hotelConfig}
                 onFilterSubmit={handleFilter}
             />
-            {/* LIST */}
+
+            {/* DANH SÁCH HIỂN THỊ PHÒNG KHÁCH SẠN */}
             <div className="flex-grow-1">
-                    {loading && <MySpinner />}
+                {loading && <MySpinner />}
+                
                 <ServiceList
                     title="Danh sách Phòng khách sạn"
                     items={rooms}
-                    sortCategory="rating"
+                    sortCategory="rating" // Đồng bộ hiển thị menu sort theo Rating/Đánh giá khách sạn
                     currentSort={sort}
                     onSortChange={setSort}
                 />
-
             </div>
-
         </div>
     );
 };
