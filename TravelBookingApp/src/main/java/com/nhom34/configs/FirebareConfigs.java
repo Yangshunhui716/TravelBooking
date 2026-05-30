@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FirebareConfigs {
     
-
     @Bean
     public FirebaseApp init() throws IOException{
         InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("ahtravelbookingweb-firebase-adminsdk-fbsvc-c3022223fd.json");

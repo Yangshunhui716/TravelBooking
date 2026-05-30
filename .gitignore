@@ -31,6 +31,12 @@ replay_pid*
 TravelBookingApp/src/main/resources/databases.properties
 TravelBookingApp/src/main/resources/payments.properties
 TravelBookingApp/src/main/resources/ahtravelbookingweb-firebase-adminsdk-fbsvc-c3022223fd.json
+<<<<<<< HEAD
+TravelBookingApp/target/TravelBookingApp-1.0-SNAPSHOT/WEB-INF/classes/ahtravelbookingweb-firebase-adminsdk-fbsvc-c3022223fd.json
+
+TravelBookingApp/target/
+=======
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
 
 TravelBookingApp/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 TravelBookingApp/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

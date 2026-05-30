@@ -36,6 +36,7 @@ public class ApiConversationController {
     private UserService userService;
     @Autowired
     private ConversationService conversationService;
+    
     @GetMapping("/firebase-token")
     public ResponseEntity<String> getFirebaseCustomToken(Principal principal) {
         try {

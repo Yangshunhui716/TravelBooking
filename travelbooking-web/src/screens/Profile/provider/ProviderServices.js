@@ -1,86 +1,112 @@
-import { useEffect, useState } from "react";
-
+import { useCallback, useEffect, useState } from "react";
 import { Card, Button, Spinner } from "react-bootstrap";
-
 import { authApis, endpoints } from "../../../configs/Api";
-const ProviderServices = () => {
+import ButtonServiceGroup from "../../../components/ButtonServiceGroup";
 
+const ProviderServices = () => {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [serviceType, setServiceType] = useState('tour');
 
-    const loadServices = async () => {
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString("vi-VN");
+    };
+
+    const loadServices = useCallback(async () => {
+        try {
+            setLoading(true);
+            let res;
+            if(serviceType === 'tour') {
+                res = await authApis().get(endpoints["provider-tour-services"]);
+            }else if(serviceType === 'hotelRoom') {
+                res = await authApis().get(endpoints["provider-hotel-room-services"]);
+            }else if(serviceType === 'transport') {
+                res = await authApis().get(endpoints["provider-transport-services"]);
+            }
+            setServices(res.data);
+        } catch (ex) {
+            console.error(ex);
+        } finally {
+            setLoading(false);
+        }
+    }, [serviceType]);
+
+    useEffect(() => {
+        loadServices();
+    }, [loadServices]);
+
+    const closeService = async (serviceId) => {
+        const isConfirm = window.confirm("Dịch vụ sau khi đóng sẽ không thể mở lại. Vui lòng xác nhận khi đã chắc chắn?");
+        if (!isConfirm) return;
 
         try {
-
             setLoading(true);
+            let patchUrl = ""
 
-            let res = await authApis().get(
-                endpoints["provider-services"]
-            );
+            if (serviceType === 'tour') {
+                patchUrl = endpoints["provider-tour-service"](serviceId);
+            } else if (serviceType === 'hotelRoom') {
+                patchUrl = endpoints["provider-hotel-room-service"](serviceId);
+            } else if (serviceType === 'transport') {
+                patchUrl = endpoints["provider-transport-service"](serviceId);
+            }
 
-            setServices(res.data);
+            const payload = {
+                "status": "false"
+            };
+
+            await authApis().patch(patchUrl, payload);
+            loadServices(); 
 
         } catch (ex) {
             console.error(ex);
         } finally {
             setLoading(false);
         }
-    }
-     useEffect(() => {
-        loadServices();
-    }, []);
+    };
 
     return (
         <Card className="shadow rounded-4 p-4">
-
-            <div className="d-flex justify-content-between mb-4">
-
-                <h3>
-                    Danh sách dịch vụ
-                </h3>
-
+            <h2>Quản lý dịch vụ</h2>
+            <div className="d-flex justify-content-between mb-4 mt-4">
+                <ButtonServiceGroup onChangeType={setServiceType} />
                 <Button>
                     Thêm dịch vụ mới
                 </Button>
-
             </div>
 
             {loading && <Spinner animation="border" />}
 
             {services.map(s => (
+                <Card key={s.id} className="p-3 mb-3 rounded-4 border-secondary">
+                    <Card.Title>{s.services.name}</Card.Title>
+                    <div className="d-flex justify-content-between mb-3 mt-2 fw-medium">
+                        <div>Trạng thái: {s.services.status ? "Đang mở" : "Đã đóng"}</div>
+                        <div>Ngày đăng: {formatDate(s.services.createdAt)}</div> 
+                        <div className="text-end">Số lượng: {s.services.availableSlots} / {s.services.slots}</div> 
+                    </div>
 
-                <Card
-                    key={s.id}
-                    className="p-3 mb-3"
-                >
-
-                    <div className="d-flex justify-content-between">
-
+                    <div className="d-flex justify-content-between align-items-end">
                         <div>
-                            <h5>{s.name}</h5>
-                            <p>Giá: {s.price}</p>
-                            <p>Trạng thái: {s.status}</p>
+                        { s.services.status && (
+                                <Button variant="secondary" className="rounded-pill px-3" onClick={() => closeService(s.services.id)}>
+                                    Đóng dịch vụ
+                                </Button>
+                        ) }
                         </div>
 
                         <div>
-                            <Button
-                                variant="info"
-                                className="me-2"
-                            >
-                                DS khách hàng
+                            <Button variant="info" className="me-2 rounded-pill px-4">
+                                Danh sách khách hàng
                             </Button>
 
-                            <Button variant="primary">
+                            <Button variant="outline-primary" className="rounded-pill px-3">
                                 Xem chi tiết
                             </Button>
                         </div>
-
                     </div>
-
                 </Card>
-
             ))}
-
         </Card>
     );
 }
