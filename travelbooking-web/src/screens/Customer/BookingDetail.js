@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import {  Alert} from "react-bootstrap";
 import { useParams} from "react-router-dom";
-import { authApis, endpoints} from "../../../configs/Api";
+import { authApis, endpoints} from "../../configs/Api";
 import DetailStyle from "./BookingDetailStyle";
-import MySpinner from "../../../components/MySpinner";
+import MySpinner from "../../components/MySpinner";
 
 const BookingDetail = () => {
     const { bookingId } = useParams();
@@ -115,4 +115,3 @@ const BookingDetail = () => {
 }
 
 export default BookingDetail;
-

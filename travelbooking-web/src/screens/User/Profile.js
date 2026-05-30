@@ -4,8 +4,8 @@ import { MyUserContext } from "../../configs/Context";
 
 import ProfileLayout from "../../components/profile/ProfileLayout";
 
-import ProviderServices from "../../screens/Profile/provider/ProviderServices";
-import CustomerBookings from "../../screens/Profile/customer/CustomerBookings";
+import ProviderServices from "../Provider/ProviderServices";
+import CustomerBookings from "../Customer/CustomerBookings";
 import { Container } from "react-bootstrap";
 
 const Profile = () => {

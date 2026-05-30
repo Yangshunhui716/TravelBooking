@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
-import { authApis, endpoints } from "../../../configs/Api";
+import { authApis, endpoints } from "../../configs/Api";
 import BookingStyle from "./CustomerBookingsStyle";
 import { useNavigate } from "react-router-dom";
-import MySpinner from "../../../components/MySpinner";
+import MySpinner from "../../components/MySpinner";
 
 const CustomerBookings = () => {
     const [bookings, setBookings] = useState([]);
