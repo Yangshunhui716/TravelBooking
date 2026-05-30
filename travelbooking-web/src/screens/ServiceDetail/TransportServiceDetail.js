@@ -5,16 +5,29 @@ import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { endpoints } from "../../configs/Api";
 import { MyUserContext } from "../../configs/Context";
+<<<<<<< HEAD
 import styles from "./ServiceDetailStyle"; // Tái sử dụng style dùng chung
+=======
+import styles from "./ServiceDetailStyle"; // Sử dụng chung style hệ thống
+import ReviewSection from "../../components/ReviewSection";
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
 
 const TransportServiceDetail = () => {
     const { serviceId } = useParams();
     const [transportService, setTransportService] = useState(null);
+<<<<<<< HEAD
+=======
+    const [reviews, setReviews] = useState([]);
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
     const [loading, setLoading] = useState(false);
     const [user] = useContext(MyUserContext);
     const nav = useNavigate();
 
+<<<<<<< HEAD
     // Format thời gian hiển thị ngày/giờ khởi hành
+=======
+    // Định dạng hiển thị ngày/giờ khởi hành và ngày đến
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
     const formatDateTime = (timestamp) => {
         if (!timestamp) return "";
         return new Date(timestamp).toLocaleString("vi-VN", {
@@ -26,6 +39,7 @@ const TransportServiceDetail = () => {
         });
     };
 
+<<<<<<< HEAD
     // Gọi API lấy thông tin chi tiết dịch vụ vận chuyển
     const loadTransportDetail = async () => {
         try {
@@ -47,6 +61,32 @@ const TransportServiceDetail = () => {
     }, [serviceId]);
 
     // Điều hướng khi bấm nút Đặt vé
+=======
+    // VÒNG ĐỜI TUẦN TỰ: Tải thông tin vận chuyển và đánh giá tương ứng
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!serviceId) return;
+            try {
+                setLoading(true);
+                
+                // 1. Tải chi tiết dịch vụ vận chuyển
+                let resDetail = await Api.get(endpoints['transport-service-detail'](serviceId));
+                setTransportService(resDetail.data);
+
+                // 2. Tải danh sách đánh giá dựa trên serviceId
+                let resReviews = await Api.get(endpoints['service-reviews'](serviceId));
+                setReviews(resReviews.data);
+            } catch (ex) {
+                console.error("Lỗi khi tải dữ liệu chi tiết vận chuyển:", ex);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [serviceId]);
+
+    // Xử lý khi nhấn nút Đặt vé
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
     const handleBooking = () => {
         if (user === null) {
             nav(`/login?next=/transport-services/${serviceId}`);
@@ -55,18 +95,32 @@ const TransportServiceDetail = () => {
         }
     };
 
+<<<<<<< HEAD
     // 2 nút gọi độc lập cho Nhà cung cấp
     const handleViewProvider = () => {
         const providerId = transportService.services?.providerId?.id;
         if (providerId) nav(`/providers/${providerId}`);
     };
 
+=======
+    // Xem thông tin nhà cung cấp (Nhà xe / Hãng xe)
+    const handleViewProvider = () => {
+        const providerId = transportService?.services?.providerId?.id;
+        if (providerId) nav(`/providers/${providerId}`);
+    };
+
+    // Kích hoạt chat trực tiếp với nhà cung cấp
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
     const handleChatProvider = () => {
         if (user === null) {
             nav(`/login?next=/transport-services/${serviceId}`);
             return;
         }
+<<<<<<< HEAD
         const providerUserId = transportService.services?.providerId?.users?.id;
+=======
+        const providerUserId = transportService?.services?.providerId?.users?.id;
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
         if (providerUserId) nav(`/chat?withUser=${providerUserId}`);
     };
 
@@ -82,7 +136,11 @@ const TransportServiceDetail = () => {
         <Container className="mt-4 mb-5">
             {transportService && (
                 <>
+<<<<<<< HEAD
                     {/* KHUNG TIÊU ĐỀ: Tên dịch vụ vận chuyển */}
+=======
+                    {/* KHUNG TRÊN CÙNG: Tên dịch vụ vận chuyển */}
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                     <Row className="mb-4">
                         <Col>
                             <div style={styles.titleBox}>
@@ -93,21 +151,37 @@ const TransportServiceDetail = () => {
                         </Col>
                     </Row>
 
+<<<<<<< HEAD
                     {/* THÂN TRANG CHI TIẾT */}
                     <Row>
                         {/* CỘT TRÁI: Hình ảnh nhà xe/phương tiện */}
                         <Col md={5} xs={12} className="mb-4">
                             <div style={styles.imageWrapper}>
                                 {/* Sử dụng prop src đồng bộ với DisplayImage */}
+=======
+                    {/* PHẦN THÂN: Chia 2 cột Trái - Phải */}
+                    <Row>
+                        {/* CỘT TRÁI: Hình ảnh phương tiện */}
+                        <Col md={5} xs={12} className="mb-4 d-flex align-items-center justify-content-center">
+                            <div style={{ ...styles.imageWrapper, width: "100%" }}>
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                 <DisplayImage src={transportService.services?.imgUrl} />
                             </div>
                         </Col>
 
+<<<<<<< HEAD
                         {/* CỘT PHẢI: Khung giá, Nhà xe và Chi tiết hành trình */}
                         <Col md={7} xs={12}>
                             <div style={styles.infoCard}>
                                 
                                 {/* 1. Khung Giá vé & Nút Đặt */}
+=======
+                        {/* CỘT PHẢI: Giá vé, Đối tác và Thông tin hành trình */}
+                        <Col md={7} xs={12}>
+                            <div style={styles.infoCard}>
+                                
+                                {/* 1. Khung Giá vé & Nút Đặt vé */}
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div>
                                         <span className="text-muted d-block small">Giá vé từ</span>
@@ -118,12 +192,16 @@ const TransportServiceDetail = () => {
                                             Còn trống: {transportService.services?.availableSlots} / {transportService.services?.slots} ghế
                                         </small>
                                     </div>
+<<<<<<< HEAD
                                     <Button 
                                         variant="danger" 
                                         size="lg" 
                                         className="px-4 font-weight-bold" 
                                         onClick={handleBooking}
                                     >
+=======
+                                    <Button variant="danger" size="lg" className="px-4 font-weight-bold" onClick={handleBooking}>
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                         Đặt vé
                                     </Button>
                                 </div>
@@ -152,6 +230,7 @@ const TransportServiceDetail = () => {
                                     </div>
                                     
                                     <div className="d-flex flex-column gap-2">
+<<<<<<< HEAD
                                         <Button 
                                             variant="outline-primary" 
                                             size="sm" 
@@ -166,6 +245,12 @@ const TransportServiceDetail = () => {
                                             className="font-weight-bold"
                                             onClick={handleChatProvider}
                                         >
+=======
+                                        <Button variant="outline-primary" size="sm" className="font-weight-bold" onClick={handleViewProvider}>
+                                            Xem chi tiết
+                                        </Button>
+                                        <Button variant="outline-success" size="sm" className="font-weight-bold" onClick={handleChatProvider}>
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                             Chat ngay
                                         </Button>
                                     </div>
@@ -173,6 +258,7 @@ const TransportServiceDetail = () => {
 
                                 <hr />
 
+<<<<<<< HEAD
                                 {/* 3. Khung Thông tin chi tiết dịch vụ (Chia 2 Cột theo Wireframe) */}
                                 <div className="mt-3">
                                     <h5 className="font-weight-bold text-dark mb-3">
@@ -181,6 +267,13 @@ const TransportServiceDetail = () => {
                                     
                                     <Row>
                                         {/* CỘT TRÁI */}
+=======
+                                {/* 3. Khung Thông tin chi tiết chuyến đi (Chia thành 2 cột nhỏ gọn) */}
+                                <div className="mt-3">
+                                    <h5 className="font-weight-bold text-dark mb-3">Thông tin hành trình</h5>
+                                    <Row>
+                                        {/* Cột thông tin trái */}
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                         <Col sm={6} xs={12}>
                                             <ul className="list-unstyled ps-1">
                                                 <li className="mb-2">
@@ -188,6 +281,7 @@ const TransportServiceDetail = () => {
                                                     <span className="text-secondary">{transportService.transportType}</span>
                                                 </li>
                                                 <li className="mb-2">
+<<<<<<< HEAD
                                                     <strong>Địa điểm: </strong> 
                                                     <span className="text-secondary">
                                                         {transportService.departure} &rarr; {transportService.services?.destination}
@@ -199,17 +293,29 @@ const TransportServiceDetail = () => {
                                                     <span className="text-secondary block">
                                                         {formatDateTime(transportService.departureTime)}
                                                     </span>
+=======
+                                                    <strong>Tuyến đường: </strong> 
+                                                    <span className="text-secondary d-block">
+                                                        {transportService.departure} &rarr; {transportService.services?.destination}
+                                                    </span>
+                                                    <small className="text-muted d-block mt-1">({transportService.loactionDetail})</small>
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                                 </li>
                                             </ul>
                                         </Col>
 
+<<<<<<< HEAD
                                         {/* CỘT PHẢI */}
+=======
+                                        {/* Cột thông tin phải */}
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                         <Col sm={6} xs={12}>
                                             <ul className="list-unstyled ps-1">
                                                 <li className="mb-2">
                                                     <strong>Loại vé: </strong> 
                                                     <span className="text-secondary">{transportService.ticketType}</span>
                                                 </li>
+<<<<<<< HEAD
                                                 <li className="mb-2" style={{ visibility: "hidden" }}>
                                                     {/* Giữ khoảng cách bằng cột địa điểm bên trái để cân bằng hàng */}
                                                     <br/><small>&nbsp;</small>
@@ -219,20 +325,43 @@ const TransportServiceDetail = () => {
                                                     <span className="text-secondary block">
                                                         {formatDateTime(transportService.endTime)}
                                                     </span>
+=======
+                                                <li className="mb-2">
+                                                    <strong>Khởi hành: </strong> 
+                                                    <span className="text-secondary d-block">{formatDateTime(transportService.departureTime)}</span>
+                                                </li>
+                                                <li className="mb-2">
+                                                    <strong>Dự kiến đến: </strong> 
+                                                    <span className="text-secondary d-block">{formatDateTime(transportService.endTime)}</span>
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                                 </li>
                                             </ul>
                                         </Col>
                                     </Row>
 
+<<<<<<< HEAD
                                     {/* MÔ TẢ PHÍA DƯỚI RỘNG */}
                                     <div className="mt-2 ps-1">
                                         <strong>Mô tả: </strong>
+=======
+                                    {/* Phần mô tả mở rộng bên dưới */}
+                                    <div className="mt-3 ps-1">
+                                        <strong>Mô tả dịch vụ: </strong>
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                                         <p style={styles.descriptionText} className="mt-1">
                                             {transportService.services?.description}
                                         </p>
                                     </div>
                                 </div>
 
+<<<<<<< HEAD
+=======
+                                <hr />
+                                
+                                {/* 4. Khung nhận xét & đánh giá */}
+                                <ReviewSection reviews={reviews} />
+
+>>>>>>> 7b11bc724eb58226cddc55d18276d10a249f14bb
                             </div>
                         </Col>
                     </Row>
