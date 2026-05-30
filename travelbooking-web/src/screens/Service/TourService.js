@@ -118,7 +118,7 @@ const TourService = () => {
             <div className="flex-grow-1">
                 <div className="d-flex justify-content-between align-items-center mb-3"></div>
                 
-                {loading && <MySpinner />}
+               
                 
                 <ServiceList
                     title="Danh sách Tour"
@@ -126,7 +126,7 @@ const TourService = () => {
                     sortCategory="slot"
                     currentSort={sort}
                     onSortChange={setSort}
-                />
+                /> {loading && <MySpinner />}
             </div>
         </div>
     );
