@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Spinner, Alert} from "react-bootstrap";
+import {  Alert} from "react-bootstrap";
 import { useParams} from "react-router-dom";
 import { authApis, endpoints} from "../../../configs/Api";
 import DetailStyle from "./BookingDetailStyle";
