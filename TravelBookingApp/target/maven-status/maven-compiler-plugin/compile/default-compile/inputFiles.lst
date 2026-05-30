@@ -1,6 +1,8 @@
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\components\PaymentFactory.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\ApiSecurityConfigs.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\CloudinaryConfigs.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\DispatcherServeletInit.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\FirebareConfigs.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\HibernateConfigs.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\MomoConfigs.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\configs\PaypalConfigs.java
@@ -41,10 +43,12 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\pojo\Users.
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\AdminRepository.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\AutoUpdateServiceRepository.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\BookingRepository.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\ConversationRepository.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\CustomerRepository.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\HotelRepository.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\AdminRepositoryImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\BookingRepositoryImpl.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\ConversationRepositoryImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\CustomerRepositoryImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\HotelRepositoryImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositories\impl\ProviderRepositoryImpl.java
@@ -65,10 +69,12 @@ D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\repositorie
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\AdminService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\AutoUpdateServiceService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\BookingService.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\ConversationService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\CustomerService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\HotelService.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\AdminServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\BookingServiceImpl.java
+D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\ConversationServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\CustomerServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\HotelServiceImpl.java
 D:\My Github\TravelBooking\TravelBookingApp\src\main\java\com\nhom34\services\impl\payment\MomoServiceImpl.java

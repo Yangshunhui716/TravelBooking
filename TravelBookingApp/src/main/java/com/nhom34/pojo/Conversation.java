@@ -30,7 +30,7 @@ import java.util.Date;
     @NamedQuery(name = "Conversation.findAll", query = "SELECT c FROM Conversation c"),
     @NamedQuery(name = "Conversation.findById", query = "SELECT c FROM Conversation c WHERE c.id = :id"),
     @NamedQuery(name = "Conversation.findByLastMessage", query = "SELECT c FROM Conversation c WHERE c.lastMessage = :lastMessage"),
-   @NamedQuery(name = "Conversation.findByProviderUnread", query = "SELECT c FROM Conversation c WHERE c.providerUnread = :providerUnread"),
+    @NamedQuery(name = "Conversation.findByProviderUnread", query = "SELECT c FROM Conversation c WHERE c.providerUnread = :providerUnread"),
     @NamedQuery(name = "Conversation.findByCustomerUnread", query = "SELECT c FROM Conversation c WHERE c.customerUnread = :customerUnread"),
     @NamedQuery(name = "Conversation.findByCreatedAt", query = "SELECT c FROM Conversation c WHERE c.createdAt = :createdAt"),
     @NamedQuery(name = "Conversation.findByUpdatedAt", query = "SELECT c FROM Conversation c WHERE c.updatedAt = :updatedAt")})

@@ -4,13 +4,14 @@
  */
 package com.nhom34.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author PC
  */
-public class RequestOrder {
+public class RequestOrder implements Serializable{
     private List<OrderServices> booking;
     private String payMethod;
 
