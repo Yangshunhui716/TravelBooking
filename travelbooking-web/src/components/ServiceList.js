@@ -1,6 +1,7 @@
 import { Col, Row } from "react-bootstrap";
 import ServiceCard from "./ServiceCard";
 import SortDropdown from "./SortDropdown";
+import ButtonServiceGroup from "./ButtonServiceGroup";
 
 const ServiceList = ({ title, items, sortCategory, currentSort, onSortChange}) => {
   return (
@@ -9,11 +10,13 @@ const ServiceList = ({ title, items, sortCategory, currentSort, onSortChange}) =
       <h3 className="mb-4 text-uppercase fs-4 fw-bold text-secondary">
         {title}
       </h3>
-      <SortDropdown
+      {sortCategory ? 
+        <SortDropdown
           sortCategory={sortCategory}
           currentSort={currentSort}
           onSortChange={onSortChange}
-      />
+        />
+       : <ButtonServiceGroup currentType={currentSort} onChangeType={onSortChange} className="w-100"></ButtonServiceGroup>}
 
 
       {/* Hệ thống Grid: 

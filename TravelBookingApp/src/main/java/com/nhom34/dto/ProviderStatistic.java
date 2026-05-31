@@ -10,11 +10,29 @@ import java.io.Serializable;
  *
  * @author PC
  */
-public class ProviderStatistic implements Serializable{
+public class ProviderStatistic implements Serializable {
     private String period;
     private Double revenue;
-    private Integer totalCustomers;
-    private Integer newCustomers;
+    private Long totalCustomers;
+    private Long newCustomers;
+
+    public ProviderStatistic() {
+    }
+
+    public ProviderStatistic(Integer timeValue, Double revenue) {
+        this.period = String.valueOf(timeValue);
+        this.revenue = revenue != null ? revenue : 0.0;
+        this.totalCustomers = 0L;
+        this.newCustomers = 0L;
+    }
+
+    // 3. Constructor dùng cho Query getCustomerStats (Integer, Long, Long)
+    public ProviderStatistic(Integer timeValue, Long totalCustomers, Long newCustomers) {
+        this.period = String.valueOf(timeValue);
+        this.revenue = 0.0;
+        this.totalCustomers = totalCustomers != null ? totalCustomers : 0L;
+        this.newCustomers = newCustomers != null ? newCustomers : 0L;
+    }
 
     /**
      * @return the period
@@ -47,28 +65,28 @@ public class ProviderStatistic implements Serializable{
     /**
      * @return the totalCustomers
      */
-    public Integer getTotalCustomers() {
+    public Long getTotalCustomers() {
         return totalCustomers;
     }
 
     /**
      * @param totalCustomers the totalCustomers to set
      */
-    public void setTotalCustomers(Integer totalCustomers) {
+    public void setTotalCustomers(Long totalCustomers) {
         this.totalCustomers = totalCustomers;
     }
 
     /**
      * @return the newCustomers
      */
-    public Integer getNewCustomers() {
+    public Long getNewCustomers() {
         return newCustomers;
     }
 
     /**
      * @param newCustomers the newCustomers to set
      */
-    public void setNewCustomers(Integer newCustomers) {
+    public void setNewCustomers(Long newCustomers) {
         this.newCustomers = newCustomers;
     }
 }

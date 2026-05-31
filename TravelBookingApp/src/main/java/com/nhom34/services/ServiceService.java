@@ -21,5 +21,4 @@ public interface ServiceService {
     void deleteService(Long id);
     boolean checkOwner(Long provId, Long id);
     boolean checkAvailableSlots(int slotsOrder,Long id);
-    List<Services> getServicesByProviderId(Long id);
 }

@@ -63,6 +63,7 @@ public class ApiPaymentController {
             return payMethod.call(bookingId, totalAmount, orderInfo);
         }else{
             this.bookingService.changeBookingStatus(booking.getId(), "CONFIRM");
+            this.bookingService.changePaymentStatus(booking.getId(), "PAID");
             return null;
         }
     }

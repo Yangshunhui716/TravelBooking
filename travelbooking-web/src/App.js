@@ -19,6 +19,7 @@ import TourServiceDetail from "./screens/ServiceDetail/TourServiceDetail";
 import TransportServiceDetail from "./screens/ServiceDetail/TransportServiceDetail";
 import HotelRoomServiceDetail from "./screens/ServiceDetail/HotelRoomServiceDetail";
 import ModifierService from "./screens/Provider/ModifierService";
+import ProviderProfile from "./screens/PublicProfile/ProviderProfile";
 
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, null);
@@ -38,6 +39,7 @@ const App = () => {
                     <Route path="/tour-services/:serviceId" element={<TourServiceDetail />} />
                     <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
                     <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
+                    <Route path="/providers/:providerId" element={<ProviderProfile />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/modifier-service" element={<ModifierService />} />
                     <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />

@@ -1,6 +1,21 @@
 import { Col, Form, Row } from "react-bootstrap";
 
 const DynamicFormFields = ({ config, data, onChange, isEditMode }) => {
+
+    const formatForInput = (type, value) => {
+        if (!value) return "";
+        if (type === "datetime-local") {
+            const dateObj = new Date(value);
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            const h = String(dateObj.getHours()).padStart(2, '0');
+            const min = String(dateObj.getMinutes()).padStart(2, '0');
+            return `${y}-${m}-${d}T${h}:${min}`;
+        }
+        return value;
+    };
+
     return (
         <Row>
             {config.map((field) => {
@@ -27,7 +42,7 @@ const DynamicFormFields = ({ config, data, onChange, isEditMode }) => {
                             ) : (
                                 <Form.Control type={field.type} disabled={isDisabled}
                                     placeholder={`Nhập ${field.label.toLowerCase()}...`}
-                                    value={data[field.key] || ""}
+                                    value={formatForInput(field.type, data[field.key])}
                                     onChange={(c) => onChange(field.key, c.target.value)}
                                 />
                             )}

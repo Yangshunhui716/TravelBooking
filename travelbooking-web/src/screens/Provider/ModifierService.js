@@ -5,6 +5,7 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import ButtonServiceGroup from "../../components/ButtonServiceGroup";
 import DynamicFormFields from "../../components/DynamicFormFields";
 import { useLocation } from "react-router-dom";
+import MySpinner from "../../components/MySpinner";
 
 
 const ModifierService = () => {
@@ -24,7 +25,7 @@ const ModifierService = () => {
         { key: "destination", label: "Địa điểm (Tỉnh / Thành phố)", type: "text", disableOnEdit: true },
         { key: "departureTime", label: "Thời gian khởi hành", type: "datetime-local" },
         { key: "durationDays", label: "Thời lượng dịch vụ (ngày)", type: "number", disableOnEdit: true },
-        { key: "description", label: "Mô tả", type: "textarea" }
+        { key: "description", label: "Mô tả chi tiết", type: "textarea" }
     ];
 
     const hotelRoomFieldsConfig = [
@@ -34,15 +35,15 @@ const ModifierService = () => {
         { key: "destination", label: "Địa điểm (Tỉnh / Thành phố)", type: "text", disableOnEdit: true },
         { key: "hotelName", label: "Tên khách sạn", type: "text", disableOnEdit: true },
         { key: "address", label: "Địa chỉ khách sạn", type: "text", disableOnEdit: true },
-        { key: "description", label: "Mô tả", type: "textarea", disableOnEdit: true }
+        { key: "description", label: "Mô tả phòng, tiện ích, dịch vụ đính kèm (nếu có)", type: "textarea" }
     ];
 
     const transportFieldsConfig = [
         { key: "providerName", label: "Tên nhà cung cấp phương tiện", type: "text", disableOnEdit: true },
         { key: "price", label: "Giá (/vé)", type: "number" },
-        { key: "slots", label: "Số lượng", type: "number" },
         { key: "departure", label: "Nơi khởi hành", type: "text", disableOnEdit: true },
         { key: "destination", label: "Nơi đến", type: "text", disableOnEdit: true },
+        { key: "slots", label: "Số lượng", type: "number" },
         { key: "locationDetail", label: "Địa điểm chi tiết", type: "text" },
         { key: "departureTime", label: "Thời gian khởi hành dự kiến", type: "datetime-local", disableOnEdit: true },
         { key: "endTime", label: "Thời gian đến dự kiến", type: "datetime-local", disableOnEdit: true },
@@ -60,10 +61,7 @@ const ModifierService = () => {
 
     useEffect(() => {
         if (isEditMode && existingService) {
-            const flatServiceData = {
-                id: existingService.id,
-                ...existingService.services
-            };
+            const flatServiceData = { id: existingService.id, ...existingService, ...existingService.services };
 
             if (service.id !== flatServiceData.id) {
                 setService(flatServiceData);
@@ -78,6 +76,10 @@ const ModifierService = () => {
     }, [isEditMode, existingService]);
 
     const createPayload = (key, value) => {
+        if (key==='departureTime' || key==='endTime') {
+            value = new Date(value).getTime();
+        }
+
         setPayload(prev => ({ ...prev, [key]: value }));
         setService(prev => ({ ...prev, [key]: value }));
     };
@@ -122,12 +124,13 @@ const ModifierService = () => {
 
                     <div className="mt-4 d-flex justify-content-start gap-3">
                         {isEditMode ? (
-                            <>
-                                <Button variant="primary" onClick={saveService}>Xác nhận</Button>
-                                <Button variant="danger">Xóa dịch vụ</Button>
-                            </>
+                            loading === true ? <MySpinner /> :
+                                <>
+                                    <Button variant="primary" onClick={saveService}>Xác nhận</Button>
+                                    <Button variant="danger">Xóa dịch vụ</Button>
+                                </>
                         ) : (
-                            <Button variant="primary" onClick={saveService}>Thêm dịch vụ</Button>
+                            loading === true ? <MySpinner /> :<Button variant="primary" onClick={saveService}>Thêm dịch vụ</Button>
                         )}
                     </div>
                 </Col>
@@ -138,7 +141,7 @@ const ModifierService = () => {
                             {!isEditMode ? (
                                 <ButtonServiceGroup currentType={serviceType} onChangeType={setServiceType} />
                             ) : (
-                                <h4>Chỉnh sửa dịch vụ {serviceType.toUpperCase()}</h4>
+                                <h4>Chỉnh sửa dịch vụ {serviceType==='tour' ? 'Tour du lịch' : serviceType==='hotelRoom' ? 'Phòng khách sạn' : 'Phương tiện'}</h4>
                             )}
                         </div>
 
