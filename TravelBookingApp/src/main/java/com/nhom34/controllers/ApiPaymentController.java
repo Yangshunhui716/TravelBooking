@@ -17,6 +17,7 @@ import com.nhom34.services.TransferTransactionService;
 import com.nhom34.services.impl.payment.MomoServiceImpl;
 import com.nhom34.services.impl.payment.PaypalServiceImpl;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,7 @@ public class ApiPaymentController {
     
     @PostMapping("/secure/pay")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String createPayment(@RequestBody RequestOrder requestPayload, Principal principal) {
+    public ResponseEntity<?> createPayment(@RequestBody RequestOrder requestPayload, Principal principal) {
         Customers customer = this.cusService.getCustomerByUsername(principal.getName());
         Bookings booking = this.bookingService.addBooking(requestPayload, customer);
         if(!"CASH".equals(requestPayload.getPayMethod())){
@@ -60,11 +61,13 @@ public class ApiPaymentController {
             String bookingId = booking.getId().toString();
             String orderInfo = "Thanh toán đơn "+ bookingId;
             String totalAmount = String.format("%.0f", booking.getTotalAmount());
-            return payMethod.call(bookingId, totalAmount, orderInfo);
+            Map<String, String> response = new HashMap<>();
+            response.put("payUrl", payMethod.call(bookingId, totalAmount, orderInfo));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }else{
             this.bookingService.changeBookingStatus(booking.getId(), "CONFIRM");
             this.bookingService.changePaymentStatus(booking.getId(), "PAID");
-            return null;
+            return new ResponseEntity<>(null,HttpStatus.OK);
         }
     }
     

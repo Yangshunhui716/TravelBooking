@@ -32,7 +32,7 @@ public class MomoServiceImpl implements PaymentService{
     
     @Override
     public String call(String orderId, String amount, String orderInfo) {
-        String requestType = "captureWallet";
+        String requestType = "payWithATM";
         String extraData = "";
         String rawData = "accessKey=" + momoConfigs.getAccessKey() + 
                          "&amount=" + amount + 
@@ -89,9 +89,12 @@ public class MomoServiceImpl implements PaymentService{
             String amount = String.valueOf(payload.get("amount"));
             String extraData = payload.get("extraData") != null ? (String) payload.get("extraData") : "";
             String message = (String) payload.get("message");
-            String orderId = (String) payload.get("orderId");
+            String orderId = String.valueOf(payload.get("orderId"));
             String orderInfo = (String) payload.get("orderInfo");
-            String requestId = (String) payload.get("requestId");
+            String orderType = (String) payload.get("orderType");
+            String partnerCode = (String) payload.get("partnerCode");
+            String payType = (String) payload.get("payType");
+            String requestId = String.valueOf(payload.get("requestId"));
             String responseTime = String.valueOf(payload.get("responseTime"));
             String resultCode = String.valueOf(payload.get("resultCode"));
             String transId = String.valueOf(payload.get("transId"));
@@ -102,13 +105,18 @@ public class MomoServiceImpl implements PaymentService{
                              "&message=" + message +
                              "&orderId=" + orderId +
                              "&orderInfo=" + orderInfo +
-                             "&partnerCode=" + momoConfigs.getPartnerCode() +
+                             "&orderType=" + orderType +
+                             "&partnerCode=" + partnerCode + 
+                             "&payType=" + payType +
                              "&requestId=" + requestId +
                              "&responseTime=" + responseTime +
                              "&resultCode=" + resultCode +
                              "&transId=" + transId;
 
             String mySignature = MomoUtils.createSignature(rawData, momoConfigs.getSecretKey());
+            System.out.println("MoMo Signature : " + momoSignature);
+            System.out.println("My Signature   : " + mySignature);
+            System.out.println("Raw Data       : " + rawData);
             return mySignature.equals(momoSignature);
         } catch (Exception e) {
             e.printStackTrace();

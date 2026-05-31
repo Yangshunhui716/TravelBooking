@@ -48,6 +48,8 @@ public class BookingServiceImpl implements BookingService{
             detail.setServiceStartDate(o.getServiceStartDate());
             detail.setServiceDuration(o.getServiceDuration());
             total += detail.getSubtotal();
+            
+            booking.add(detail);
         }
         
         Bookings newBooking = new Bookings();
@@ -60,7 +62,7 @@ public class BookingServiceImpl implements BookingService{
         newBooking.setCustomerId(customer);
         newBooking = this.bookingRepo.addBooking(newBooking);
         
-        this.bookingRepo.addBookingDetail(booking, newBooking);
+        this.bookingRepo.addBookingDetails(booking, newBooking);
         
         return newBooking;
     }

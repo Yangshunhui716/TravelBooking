@@ -31,7 +31,7 @@ public class StatisticServiceImpl implements StatisticService{
         Long providerId = prov.getId(); 
         String serviceType = filter.getOrDefault("serviceType", "all");
         String timePeriod = filter.getOrDefault("timePeriod", "month");
-        int periodValue = Integer.parseInt(filter.getOrDefault("periodValue","5")); 
+        int periodValue = Integer.parseInt(filter.getOrDefault("periodValue","5"));
         int statisticYear = LocalDate.now().getYear();
         if (filter.containsKey("year")&&!filter.get("year").isEmpty()) {
             statisticYear = Integer.parseInt(filter.get("year"));
