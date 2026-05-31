@@ -99,5 +99,9 @@ public class BookingServiceImpl implements BookingService{
     public List<Object[]> getCustomerByServiceId(Long serviceId) {
         return this.bookingRepo.getCustomerByServiceId(serviceId);
     }
+    @Override
+    public boolean checkCustomerPaidService(Long customerId, Long serviceId) {
+        return this.bookingRepo.checkCustomerPaidService(customerId, serviceId);
+    }
     
 }

@@ -8,12 +8,14 @@ import com.nhom34.pojo.Customers;
 import com.nhom34.pojo.Reviews;
 import com.nhom34.pojo.Services;
 import com.nhom34.pojo.Users;
+import com.nhom34.services.BookingService;
 import com.nhom34.services.CustomerService;
 import com.nhom34.services.ReviewService;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.UserService;
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,8 @@ public class ApiReviewController {
     private UserService userService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private BookingService bookingService;
     
     @GetMapping("/services/{serviceId}/reviews")
     public ResponseEntity<List<Reviews>> getReviews(@PathVariable(value = "serviceId") Long serviceId) {
@@ -53,21 +57,24 @@ public class ApiReviewController {
     }
 
     @PostMapping("/secure/customer/services/{serviceId}/reviews")
-    public ResponseEntity<Reviews> addReview(@PathVariable(value = "serviceId") Long serviceId, @RequestBody Map<String, String> params, Principal principal) {
+    public ResponseEntity<?> addReview(@PathVariable(value = "serviceId") Long serviceId,    @RequestBody Map<String, String> params,  Principal principal) {
         Services service = this.serviceService.getServiceById(serviceId);
-        //principal lay user hien tai dang login
         Users user = this.userService.getUserByUsername(principal.getName());
         Customers customer = this.customerService.getCustomerByUserId(user.getId());
-        
+        boolean hasPaid = this.bookingService.checkCustomerPaidService(customer.getId(), service.getId());
+        if (!hasPaid) {
+            Map<String, String> errResponse = new HashMap<>();
+            errResponse.put("message", "Bạn không thể đánh giá dịch vụ này vì chưa đặt hàng hoặc chưa hoàn tất thanh toán!");
+            return new ResponseEntity<>(errResponse, HttpStatus.BAD_REQUEST);
+        }
         Reviews review = new Reviews();
         review.setComment(params.get("comment"));
         review.setRating(Integer.valueOf(params.get("rating")));
         review.setCreatedAt(new Date());
         review.setServiceId(service);
         review.setCustomerId(customer);
-        
-        return new ResponseEntity<>(this.reviewService.addReview(review),HttpStatus.CREATED);
-    }
+        return new ResponseEntity<>(this.reviewService.addReview(review), HttpStatus.CREATED);
+     }
 
     @PatchMapping("/secure/customer/reviews/{reviewId}")
     public ResponseEntity<?> updateReview(@PathVariable("reviewId") Long reviewId,@RequestBody Map<String, String> params, Principal principal) {

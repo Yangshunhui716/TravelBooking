@@ -20,4 +20,5 @@ public interface BookingService {
     void bookingPaySuccess(String transactionCode, String transStatus, Long id, String paymentStatus, String bookingStatus);
     List<Bookings> getBookingsByCustomerId(Long customerId);
     List<Object[]> getCustomerByServiceId(Long serviceId);
+    boolean checkCustomerPaidService(Long customerId, Long serviceId);
 }

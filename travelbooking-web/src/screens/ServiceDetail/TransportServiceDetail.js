@@ -3,9 +3,10 @@ import { Button, Col, Container, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
-import Api, { endpoints } from "../../configs/Api";
+import Api, { authApis, endpoints } from "../../configs/Api"; // Import thêm authApis để xử lý đính kèm Token
 import { MyUserContext } from "../../configs/Context";
 import styles from "./ServiceDetailStyle"; // Tái sử dụng style dùng chung
+import ReviewSection from "../../components/ReviewSection"; // Import component ReviewSection dạng nút bấm xổ xuống
 
 const TransportServiceDetail = () => {
     const { serviceId } = useParams();
@@ -13,6 +14,9 @@ const TransportServiceDetail = () => {
     const [loading, setLoading] = useState(false);
     const [user] = useContext(MyUserContext);
     const nav = useNavigate();
+    
+    // Quản lý danh sách đánh giá của dịch vụ vận chuyển
+    const [reviews, setReviews] = useState([]);
 
     // Format thời gian hiển thị ngày/giờ khởi hành
     const formatDateTime = (timestamp) => {
@@ -26,11 +30,10 @@ const TransportServiceDetail = () => {
         });
     };
 
-    // Gọi API lấy thông tin chi tiết dịch vụ vận chuyển
+    // 1. Gọi API lấy thông tin chi tiết dịch vụ vận chuyển
     const loadTransportDetail = async () => {
         try {
             setLoading(true);
-            // Bạn nhớ cấu hình endpoint này trong file Api.js nhé
             let res = await Api.get(endpoints['transport-service-detail'](serviceId));
             setTransportService(res.data);
         } catch (ex) {
@@ -40,11 +43,62 @@ const TransportServiceDetail = () => {
         }
     };
 
+    // 2. Gọi API công khai lấy tất cả danh sách bình luận dựa trên ID dịch vụ cốt lõi
+    const loadReviews = async () => {
+        try {
+            const coreServiceId = transportService?.services?.id;
+            if (coreServiceId) {
+                let res = await Api.get(endpoints['service-reviews'](coreServiceId));
+                setReviews(res.data);
+            }
+        } catch (ex) {
+            console.error("Lỗi khi fetch danh sách reviews của vận chuyển:", ex);
+        }
+    };
+
+    // VÒNG ĐỜI 1: Tải chi tiết dịch vụ khi mã ID trên URL thay đổi
     useEffect(() => {
         if (serviceId) {
             loadTransportDetail();
         }
     }, [serviceId]);
+
+    // VÒNG ĐỜI 2: Tải danh sách đánh giá ngay sau khi thông tin dịch vụ đổ về hoàn tất
+    useEffect(() => {
+        if (transportService) {
+            loadReviews();
+        }
+    }, [transportService]);
+
+    // 3. Xử lý gửi đánh giá mới lên phân vùng bảo mật (/secure/) của Backend
+    const handlePostReview = async (comment, rating) => {
+        try {
+            const coreServiceId = transportService?.services?.id;
+            if (!coreServiceId) {
+                alert("Không tìm thấy mã dịch vụ cốt lõi!");
+                return;
+            }
+
+            // Dùng authApis() để tự động đính kèm Token Bearer lên Header bảo mật
+            let res = await authApis().post(
+                endpoints['customer-create-review'](coreServiceId), 
+                {
+                    comment: comment,
+                    rating: String(rating)
+                }
+            );
+
+            alert("Đánh giá dịch vụ vận chuyển thành công!");
+            setReviews([res.data, ...reviews]); // Đẩy đánh giá mới nhất lên đầu danh sách hiển thị
+        } catch (ex) {
+            console.error("Lỗi chi tiết khi gửi review vận chuyển:", ex);
+            if (ex.response && ex.response.data) {
+                alert(`Lỗi: ${ex.response.data.message || "Hệ thống từ chối quyền đánh giá!"}`);
+            } else {
+                alert("Đã xảy ra lỗi khi gửi đánh giá. Vui lòng kiểm tra lại trạng thái đăng nhập!");
+            }
+        }
+    };
 
     // Điều hướng khi bấm nút Đặt vé
     const handleBooking = () => {
@@ -98,7 +152,6 @@ const TransportServiceDetail = () => {
                         {/* CỘT TRÁI: Hình ảnh nhà xe/phương tiện */}
                         <Col md={5} xs={12} className="mb-4">
                             <div style={styles.imageWrapper}>
-                                {/* Sử dụng prop src đồng bộ với DisplayImage */}
                                 <DisplayImage src={transportService.services?.imgUrl} />
                             </div>
                         </Col>
@@ -173,14 +226,14 @@ const TransportServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 3. Khung Thông tin chi tiết dịch vụ (Chia 2 Cột theo Wireframe) */}
+                                {/* 3. Khung Thông tin chi tiết dịch vụ */}
                                 <div className="mt-3">
                                     <h5 className="font-weight-bold text-dark mb-3">
                                         Thông tin chi tiết dịch vụ
                                     </h5>
                                     
                                     <Row>
-                                        {/* CỘT TRÁI */}
+                                        {/* CỘT TRÁI TRONG CHI TIẾT */}
                                         <Col sm={6} xs={12}>
                                             <ul className="list-unstyled ps-1">
                                                 <li className="mb-2">
@@ -203,7 +256,7 @@ const TransportServiceDetail = () => {
                                             </ul>
                                         </Col>
 
-                                        {/* CỘT PHẢI */}
+                                        {/* CỘT PHẢI TRONG CHI TIẾT */}
                                         <Col sm={6} xs={12}>
                                             <ul className="list-unstyled ps-1">
                                                 <li className="mb-2">
@@ -211,7 +264,6 @@ const TransportServiceDetail = () => {
                                                     <span className="text-secondary">{transportService.ticketType}</span>
                                                 </li>
                                                 <li className="mb-2" style={{ visibility: "hidden" }}>
-                                                    {/* Giữ khoảng cách bằng cột địa điểm bên trái để cân bằng hàng */}
                                                     <br/><small>&nbsp;</small>
                                                 </li>
                                                 <li className="mb-2">
@@ -225,13 +277,22 @@ const TransportServiceDetail = () => {
                                     </Row>
 
                                     {/* MÔ TẢ PHÍA DƯỚI RỘNG */}
-                                    <div className="mt-2 ps-1">
+                                    <div className="mt-2 ps-1 mb-4">
                                         <strong>Mô tả: </strong>
                                         <p style={styles.descriptionText} className="mt-1">
                                             {transportService.services?.description}
                                         </p>
                                     </div>
                                 </div>
+
+                                <hr />
+
+                                {/* 4. TÍCH HỢP HỆ THỐNG ĐÁNH GIÁ (Xổ xuống mượt mà bằng Bootstrap Collapse) */}
+                                <ReviewSection 
+                                    reviews={reviews}
+                                    onAddReview={handlePostReview}
+                                    user={user}
+                                />
 
                             </div>
                         </Col>

@@ -7,6 +7,7 @@ import Api, { endpoints } from "../../configs/Api";
 import { MyUserContext } from "../../configs/Context";
 import styles from "./ServiceDetailStyle"; 
 import ReviewSection from "../../components/ReviewSection";
+import { authApis } from "../../configs/Api";
 
 const HotelRoomServiceDetail = () => {
     const { serviceId } = useParams();
@@ -96,7 +97,39 @@ const HotelRoomServiceDetail = () => {
         const providerUserId = hotelService.services?.providerId?.users?.id;
         if (providerUserId) nav(`/chat?withUser=${providerUserId}`);
     };
+    // Xử lý gửi đánh giá mới lên Backend
+    const handlePostReview = async (comment, rating) => {
+        try {
+            const coreServiceId = hotelService?.services?.id;
+            if (!coreServiceId) {
+                alert("Không tìm thấy thông tin dịch vụ để đánh giá!");
+                return;
+            }
 
+            // 1. Gọi API bằng cách dùng thực thể authApis() để tự động đính kèm Token từ Cookie
+            // 2. Đổi endpoint sang đúng key: 'customer-create-review'
+            let res = await authApis().post(
+                endpoints['customer-create-review'](coreServiceId), 
+                {
+                    comment: comment,
+                    rating: String(rating) // Gửi dạng chuỗi hoặc số tùy Backend của bạn nhận loại nào
+                }
+            );
+
+            // Nếu thành công, cập nhật danh sách hiển thị
+            alert("Đánh giá thành công!");
+            setReviews([res.data, ...reviews]); 
+        } catch (ex) {
+            console.error("Lỗi chi tiết từ hệ thống:", ex);
+
+            // Đọc thông báo chi tiết trả về từ Spring Boot (nếu có)
+            if (ex.response && ex.response.data) {
+                alert(`Lỗi: ${ex.response.data.message || "Hệ thống từ chối quyền đánh giá!"}`);
+            } else {
+                alert("Đã xảy ra lỗi khi kết nối hoặc gửi đánh giá lên Server.");
+            }
+        }
+    };
     if (loading) {
         return (
             <div className="d-flex justify-content-center my-5">
@@ -269,7 +302,13 @@ const HotelRoomServiceDetail = () => {
                                 <hr />
                                 
                                 {/* 4. Tích hợp danh sách đánh giá */}
-                                <ReviewSection reviews={reviews} />
+
+                                {/* Đảm bảo có thuộc tính user={user} ở đây */}
+                                <ReviewSection 
+                                    reviews={reviews} 
+                                    onAddReview={handlePostReview} 
+                                    user={user} 
+                                />
 
                             </div>
                         </Col>

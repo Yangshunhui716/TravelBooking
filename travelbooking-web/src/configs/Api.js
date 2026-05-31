@@ -9,7 +9,7 @@ export const endpoints={
     'customer-bookings-detail': (bookingId) => `secure/customer/bookings/${bookingId}`,
 
     'customer-review': 'secure/customer/reviews/{reviewId}',
-    'customer-create-review': 'secure/customer/services/{serviceId}/reviews',
+    'customer-create-review': (serviceId) => `secure/customer/services/${serviceId}/reviews`,
 
     'provider-profile': 'secure/provider/profile',
     'provider-tour-services': 'secure/provider/tour-services',
@@ -33,12 +33,12 @@ export const endpoints={
 }
 export const authApis = () => {
     return axios.create({
-        baseURL: 'http://localhost:8080/TravelBookingApp/api/',
+        baseURL: 'http://localhost:8000/TravelBookingApp/api/',
         headers: {
             'Authorization': `Bearer ${cookies.load('token')}`
         }
     })
 }
 export default axios.create({
-    baseURL: "http://localhost:8080/TravelBookingApp/api"
+    baseURL: "http://localhost:8000/TravelBookingApp/api"
 });
