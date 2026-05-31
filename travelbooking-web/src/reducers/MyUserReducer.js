@@ -7,6 +7,7 @@ const MyUserReducer = (current, action) => {
 
         case "LOGOUT":
             cookies.remove("token");
+            cookies.remove("user");
             return null;
     }
 

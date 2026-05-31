@@ -27,8 +27,9 @@ export const endpoints={
     'transport-services': '/transport-services',
     'transport-service-detail': (serviceId) => `/transport-services/${serviceId}`,
 
-    'service-customers': 'secure/provider/service/{serviceId}/cutomers',
+    'provider-customers': (idservice) => `/secure/provider/services/${idservice}/customers`,
     'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
+    'pay': '/secure/pay'
 
     'public-provider-profile': (providerId) => `provider/${providerId}`,
     'public-provider-tour-services': (providerId) => `provider/${providerId}/tour-services`,

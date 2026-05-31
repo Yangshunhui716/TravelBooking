@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import cookies from "react-cookies";
 
@@ -30,7 +30,7 @@ const Login = () => {
     const nav = useNavigate();
 
     const [, dispatch] = useContext(MyUserContext);
-
+    const [q] = useSearchParams();
     const validate = () => {
 
         for (let f of fields) {
@@ -82,13 +82,15 @@ const Login = () => {
                         console.error(ex);
                     }
                 }
+                cookies.save("user", u.data);
 
                 dispatch({
                     "type": "LOGIN",
                     "payload": u.data
                 });
-
-                nav("/");
+                let next = q.get("next");
+                if (next) nav(next);
+                else nav("/");
 
             } catch (ex) {
 
