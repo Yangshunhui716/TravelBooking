@@ -4,6 +4,7 @@
  */
 package com.nhom34.services;
 
+import com.nhom34.dto.ProviderStatistic;
 import com.nhom34.pojo.Providers;
 import java.util.List;
 import java.util.Map;
@@ -13,5 +14,5 @@ import java.util.Map;
  * @author PC
  */
 public interface StatisticService {
-    List<Object> providerStatistic(Map<String, String> filter, Providers prov);
+    List<ProviderStatistic> providerStatistic(Map<String, String> filter, Providers prov, String metric);
 }

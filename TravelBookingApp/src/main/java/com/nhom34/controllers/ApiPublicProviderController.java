@@ -6,7 +6,6 @@ package com.nhom34.controllers;
 
 import com.nhom34.pojo.Providers;
 import com.nhom34.services.ProviderService;
-import com.nhom34.services.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiPublicProviderController {
     @Autowired
     private ProviderService provService;
-    @Autowired
-    private ServiceService serviceService;
     
     @GetMapping("/{providerId}")
     public ResponseEntity<?> getProvider(@PathVariable(value = "providerId") Long id) {
@@ -38,11 +35,29 @@ public class ApiPublicProviderController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại thông tin nhà cung cấp");
     }
     
-    @GetMapping("/{providerId}/services")
-    public ResponseEntity<?> getProviderService(@PathVariable(value = "providerId") Long id) {
+    @GetMapping("/{providerId}/tour-services")
+    public ResponseEntity<?> getProviderTourServices(@PathVariable(value = "providerId") Long id) {
         Providers p = this.provService.getProvById(id);
         if(p!=null){
-            return new ResponseEntity<>(this.serviceService.getServicesByProviderId(id), HttpStatus.OK);
+            return new ResponseEntity<>(this.provService.getTourServices(id), HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại thông tin nhà cung cấp");
+    }
+    
+    @GetMapping("/{providerId}/hotel-room-services")
+    public ResponseEntity<?> getProviderHotelRoomServices(@PathVariable(value = "providerId") Long id) {
+        Providers p = this.provService.getProvById(id);
+        if(p!=null){
+            return new ResponseEntity<>(this.provService.getHotelRoomServices(id), HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại thông tin nhà cung cấp");
+    }
+    
+    @GetMapping("/{providerId}/transport-services")
+    public ResponseEntity<?> getProviderTransportServices(@PathVariable(value = "providerId") Long id) {
+        Providers p = this.provService.getProvById(id);
+        if(p!=null){
+            return new ResponseEntity<>(this.provService.getTransportServices(id), HttpStatus.OK);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại thông tin nhà cung cấp");
     }

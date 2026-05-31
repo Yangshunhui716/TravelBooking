@@ -64,16 +64,4 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         
         s.remove(service);
     }
-
-    @Override
-    public List<Services> getServicesByProviderId(Long id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        CriteriaBuilder b = s.getCriteriaBuilder();
-        CriteriaQuery<Services> query = b.createQuery(Services.class);
-        Root root = query.from(Services.class);
-        query.where(b.equal(root.get("providerId").get("id"), id));
-        Query q = s.createQuery(query);
-        
-        return q.getResultList();
-    }
 }

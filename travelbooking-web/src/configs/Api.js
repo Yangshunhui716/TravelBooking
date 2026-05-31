@@ -7,7 +7,6 @@ export const endpoints={
     'customer-profile': '/secure/customer/profile',
     'customer-bookings': '/secure/customer/bookings',
     'customer-bookings-detail': (bookingId) => `secure/customer/bookings/${bookingId}`,
-
     'customer-review': 'secure/customer/reviews/{reviewId}',
     'customer-create-review': 'secure/customer/services/{serviceId}/reviews',
 
@@ -30,6 +29,11 @@ export const endpoints={
 
     'service-customers': 'secure/provider/service/{serviceId}/cutomers',
     'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
+
+    'public-provider-profile': (providerId) => `provider/${providerId}`,
+    'public-provider-tour-services': (providerId) => `provider/${providerId}/tour-services`,
+    'public-provider-hotel-room-services': (providerId) => `provider/${providerId}/hotel-room-services`,
+    'public-provider-transport-services': (providerId) => `provider/${providerId}/transport-services`
 }
 export const authApis = () => {
     return axios.create({

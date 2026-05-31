@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
 
-const ButtonServiceGroup = ({ onChangeType }) => {
-    const [activeType, setActiveType] = useState('tour');
+const ButtonServiceGroup = ({ currentType, onChangeType }) => {
+    const [activeType, setActiveType] = useState(currentType || 'tour');
 
     const handleButtonClick = (type) => {
         setActiveType(type);
@@ -10,7 +10,7 @@ const ButtonServiceGroup = ({ onChangeType }) => {
     };
 
     return (
-        <ButtonGroup aria-label="Basic example" className="w-75 d-flex">
+        <ButtonGroup aria-label="Basic example" className="d-flex">
             <Button className="flex-fill" variant={activeType === 'tour' ? 'primary' : 'secondary'} onClick={() => handleButtonClick('tour')}>
                 Tour
             </Button>
