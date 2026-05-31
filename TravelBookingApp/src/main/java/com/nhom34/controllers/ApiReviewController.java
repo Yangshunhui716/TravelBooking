@@ -63,9 +63,7 @@ public class ApiReviewController {
         Customers customer = this.customerService.getCustomerByUserId(user.getId());
         boolean hasPaid = this.bookingService.checkCustomerPaidService(customer.getId(), service.getId());
         if (!hasPaid) {
-            Map<String, String> errResponse = new HashMap<>();
-            errResponse.put("message", "Bạn không thể đánh giá dịch vụ này vì chưa đặt hàng hoặc chưa hoàn tất thanh toán!");
-            return new ResponseEntity<>(errResponse, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bạn không thể đánh giá dịch vụ này vì chưa đặt hàng hoặc chưa hoàn tất thanh toán!", HttpStatus.BAD_REQUEST);
         }
         Reviews review = new Reviews();
         review.setComment(params.get("comment"));

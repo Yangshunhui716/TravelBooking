@@ -4,10 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { authApis, endpoints } from "../../configs/Api"; // Import thêm authApis để xử lý Token bảo mật
-import { MyUserContext } from "../../configs/Context";
+import { MyUserContext, MyCartContext } from "../../configs/Context";
 import styles from "./ServiceDetailStyle"; // Import style dùng chung
 import ReviewSection from "../../components/ReviewSection";
-
+import cookies from "react-cookies";
 const TourServiceDetail = () => {
     const { serviceId } = useParams();
     const [tourService, setTourService] = useState(null);
@@ -15,7 +15,17 @@ const TourServiceDetail = () => {
     const [user] = useContext(MyUserContext);
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
-
+    const [, dispatch] = useContext(MyCartContext);
+    const formatDateTime = (timestamp) => {
+        if (!timestamp) return "";
+        return new Date(timestamp).toLocaleString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+    };
     // 1. API lấy dữ liệu chi tiết Tour từ backend
     const loadTourDetail = async () => {
         try {
@@ -42,6 +52,32 @@ const TourServiceDetail = () => {
             console.error("Lỗi khi fetch danh sách reviews của tour:", ex);
         }
     };
+    const order = (service) => {
+        let cart = cookies.load("cart") || null;
+        if (cart === null) {
+            cart = {};
+        }
+        const serviceId = service.services?.id;
+
+        if (serviceId in cart) {
+            cart[serviceId].quantity += 1;
+        } else {
+            cart[serviceId] = {
+                id: serviceId,
+                name: service.services?.name,
+                price: service.services?.price,
+                departure_time: formatDateTime(service.departureTime), // Đồng bộ key chính xác để Cart.js hiển thị được ngay
+                type: "tour",
+                quantity: 1
+            }; 
+        } 
+        cookies.save("cart", cart);
+        dispatch({
+            type: "UPDATE"
+        });
+        alert("Đã thêm vé tour vào giỏ hàng thành công!");
+    };
+    
 
     // VÒNG ĐỜI 1: Tải chi tiết tour mỗi khi mã ID trên URL thay đổi
     useEffect(() => {
@@ -87,14 +123,6 @@ const TourServiceDetail = () => {
         }
     };
 
-    // Xử lý khi nhấn nút Đặt dịch vụ
-    const handleBooking = () => {
-        if (user === null) {
-            nav(`/login?next=/tour-services/${serviceId}`);
-        } else {
-            nav(`/customer/checkout?serviceId=${serviceId}`);
-        }
-    };
 
     // Xử lý xem chi tiết nhà cung cấp (Provider)
     const handleViewProvider = () => {
@@ -171,7 +199,7 @@ const TourServiceDetail = () => {
                                         variant="danger" 
                                         size="lg" 
                                         className="px-4 font-weight-bold" 
-                                        onClick={handleBooking}
+                                        onClick={()=> order(tourService)}
                                     >
                                         Đặt
                                     </Button>

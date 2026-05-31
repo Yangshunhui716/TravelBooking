@@ -4,16 +4,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { authApis, endpoints } from "../../configs/Api"; // Import thêm authApis để xử lý đính kèm Token
-import { MyUserContext } from "../../configs/Context";
+import { MyUserContext, MyCartContext } from "../../configs/Context";
 import styles from "./ServiceDetailStyle"; // Tái sử dụng style dùng chung
 import ReviewSection from "../../components/ReviewSection"; // Import component ReviewSection dạng nút bấm xổ xuống
-
+import cookies from "react-cookies";
 const TransportServiceDetail = () => {
     const { serviceId } = useParams();
     const [transportService, setTransportService] = useState(null);
     const [loading, setLoading] = useState(false);
     const [user] = useContext(MyUserContext);
     const nav = useNavigate();
+     const [, dispatch] = useContext(MyCartContext);
     
     // Quản lý danh sách đánh giá của dịch vụ vận chuyển
     const [reviews, setReviews] = useState([]);
@@ -55,6 +56,32 @@ const TransportServiceDetail = () => {
             console.error("Lỗi khi fetch danh sách reviews của vận chuyển:", ex);
         }
     };
+    const order = (service) => {
+        let cart = cookies.load("cart") || null;
+        if (cart === null) {
+            cart = {};
+        }
+        const serviceId = service.services?.id;
+
+        if (serviceId in cart) {
+            cart[serviceId].quantity += 1;
+        } else {
+            cart[serviceId] = {
+                id: serviceId,
+                name: service.services?.name,
+                price: service.services?.price,
+                departure_time: formatDateTime(service.departureTime), // Đồng bộ key chính xác để Cart.js hiển thị được ngay
+                type: "transport",
+                quantity: 1
+            }; 
+        } 
+        cookies.save("cart", cart);
+        dispatch({
+            type: "UPDATE"
+        });
+        alert("Đã thêm vé xe vào giỏ hàng thành công!");
+    };
+    
 
     // VÒNG ĐỜI 1: Tải chi tiết dịch vụ khi mã ID trên URL thay đổi
     useEffect(() => {
@@ -97,15 +124,6 @@ const TransportServiceDetail = () => {
             } else {
                 alert("Đã xảy ra lỗi khi gửi đánh giá. Vui lòng kiểm tra lại trạng thái đăng nhập!");
             }
-        }
-    };
-
-    // Điều hướng khi bấm nút Đặt vé
-    const handleBooking = () => {
-        if (user === null) {
-            nav(`/login?next=/transport-services/${serviceId}`);
-        } else {
-            nav(`/customer/checkout?serviceId=${serviceId}&type=TRANSPORT`);
         }
     };
 
@@ -175,9 +193,9 @@ const TransportServiceDetail = () => {
                                         variant="danger" 
                                         size="lg" 
                                         className="px-4 font-weight-bold" 
-                                        onClick={handleBooking}
+                                        onClick={()=> order(transportService)}
                                     >
-                                        Đặt vé
+                                        Đặt 
                                     </Button>
                                 </div>
 

@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { Container, Nav, Navbar, Button } from "react-bootstrap";
+import { Container, Nav, Navbar, Button, Badge } from "react-bootstrap";
 
 import { useContext } from "react";
 
 import cookies from "react-cookies";
 
-import { MyUserContext } from "../configs/Context";
+import { MyUserContext, MyCartContext } from "../configs/Context";
 
 const Header = () => {
 
@@ -19,6 +19,7 @@ const Header = () => {
             type: "LOGOUT"
         });
     }
+    const [cart,] = useContext(MyCartContext);
 
     return (
         <Navbar
@@ -84,6 +85,13 @@ const Header = () => {
                             style={styles.navLink}
                         >
                             Phương tiện
+                        </Nav.Link>
+                        <Nav.Link
+                            as={Link}
+                            to="/cart"
+                            style={styles.navLink}
+                        >
+                            Giỏ hàng <Badge variant="danger" className="bg-danger">{cart?.totalQuantity || 0}</Badge>
                         </Nav.Link>
 
                     </Nav>

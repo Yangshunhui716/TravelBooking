@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê & Báo cáo</title>
+    <th:block th:replace="~{base :: resources}"></th:block>
+</head>
+<body>
+    <div th:replace="~{base :: header}"></div>
+
+    <section class="container my-4">
+        <h1 class="text-center text-success mt-2 mb-4">THỐNG KÊ & BÁO CÁO</h1>
+
+        <div class="row">
+            <div class="col-md-5 col-12 mb-4">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Tổng doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="s : ${revenueProducts}">
+                            <td th:text="${s[0]}">1</td>
+                            <td th:text="${s[1]}">Tên sản phẩm</td>
+                            <td th:text="${#numbers.formatDecimal(s[2], 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-7 col-12 mb-4">
+                <canvas id="myChart1"></canvas>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row mt-4">
+            <div class="col-md-5 col-12 mb-4">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Tổng doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="s : ${revenueTimes}">
+                            <td th:text="${s[0]}">Tháng/Năm</td>
+                            <td th:text="${#numbers.formatDecimal(s[1], 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-7 col-12 mb-4">
+                <canvas id="myChart2"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{base :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        function drawChart(ctx, labels, data) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '# Doanh thu',
+                        data: data,
+                        borderWidth: 1,
+                        backgroundColor: ['red', 'green', 'blue', 'gold', 'brown', 'pink']
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            let revenueProducts = /*[[${revenueProducts}]]*/ [];
+            let labels1 = [];
+            let data1 = [];
+            
+            if (revenueProducts) {
+                revenueProducts.forEach(item => {
+                    labels1.push(item[1]); 
+                    data1.push(item[2]);   
+                });
+            }
+            const ctx1 = document.getElementById('myChart1');
+            drawChart(ctx1, labels1, data1);
+
+            let revenueTimes = /*[[${revenueTimes}]]*/ [];
+            let labels2 = [];
+            let data2 = [];
+            
+            if (revenueTimes) {
+                revenueTimes.forEach(item => {
+                    labels2.push(item[0]); 
+                    data2.push(item[1]);   
+                });
+            }
+            const ctx2 = document.getElementById('myChart2');
+            drawChart(ctx2, labels2, data2);
+        }
+    </script>
+</body>
+</html>

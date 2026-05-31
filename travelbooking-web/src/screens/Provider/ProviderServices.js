@@ -110,7 +110,7 @@ const ProviderServices = () => {
                         </div>
 
                         <div>
-                            <Button variant="info" className="me-2 rounded-pill px-4">
+                            <Button variant="info" className="me-2 rounded-pill px-4" onClick={() => navigate(`/provider/services/${s.services.id}/customers`)}>
                                 Danh sách khách hàng
                             </Button>
 

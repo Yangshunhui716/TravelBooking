@@ -4,16 +4,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { endpoints } from "../../configs/Api";
-import { MyUserContext } from "../../configs/Context";
+import { MyUserContext, MyCartContext } from "../../configs/Context";
 import styles from "./ServiceDetailStyle"; 
 import ReviewSection from "../../components/ReviewSection";
 import { authApis } from "../../configs/Api";
+import cookies from "react-cookies";
 
 const HotelRoomServiceDetail = () => {
     const { serviceId } = useParams();
     const [hotelService, setHotelService] = useState(null);
     const [loading, setLoading] = useState(false);
     const [user] = useContext(MyUserContext);
+    const [, dispatch] = useContext(MyCartContext);
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
     
@@ -21,17 +23,16 @@ const HotelRoomServiceDetail = () => {
     const [checkInDate, setCheckInDate] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
     const [roomCount, setRoomCount] = useState(1);
-
-    // Đặt mặc định ngày nhận phòng (Hôm nay) & ngày trả phòng (Mai)
-    useEffect(() => {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-
-        setCheckInDate(today.toISOString().split("T")[0]);
-        setCheckOutDate(tomorrow.toISOString().split("T")[0]);
-    }, []);
-
+    const formatDateTime = (timestamp) => {
+        if (!timestamp) return "";
+        return new Date(timestamp).toLocaleString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+    };
     // 1. API lấy dữ liệu chi tiết phòng khách sạn
     const loadHotelDetail = async () => {
         try {
@@ -48,15 +49,60 @@ const HotelRoomServiceDetail = () => {
     // 2. API lấy danh sách bình luận dựa trên ID dịch vụ cốt lõi
     const loadReviews = async () => {
         try {
-            const coreServiceId = hotelService?.services?.id;
-            if (coreServiceId) {
-                let res = await Api.get(endpoints['service-reviews'](coreServiceId));
+            const serviceId = hotelService?.services?.id;
+            if (serviceId) {
+                let res = await Api.get(endpoints['service-reviews'](serviceId));
                 setReviews(res.data);
             }
         } catch (ex) {
             console.error("Lỗi khi fetch danh sách reviews:", ex);
         }
     };
+    const order = (service) => {
+        if (!checkInDate || !checkOutDate) {
+            alert("Vui lòng chọn đầy đủ ngày nhận và trả phòng!");
+            return;
+        }
+        const date1 = new Date(checkInDate);
+        const date2 = new Date(checkOutDate);
+        if (date2 <= date1) {
+            alert("Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 ngày!");
+            return;
+        }
+        // Tính số đêm lưu trú (Nights)
+        const differenceInTime = date2.getTime() - date1.getTime();
+        const calculatedNights = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+        // Hàm format chỉ lấy Ngày/Tháng/Năm
+        const formatDateOnly = (dateObj) => {
+            return dateObj.toLocaleDateString("vi-VN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+        };
+        let cart = cookies.load("cart") || null;
+        if (cart === null) {
+            cart = {};
+        }
+        cart[service.services?.id] = {
+            id: service.services?.id,
+            name: service.services?.name,
+            price: service.services?.price, 
+            imgUrl: service.services?.imgUrl,
+            checkIn: formatDateOnly(date1), 
+            checkOut: formatDateOnly(date2), 
+            nights: calculatedNights, 
+            type: "hotel",
+            quantity: roomCount, 
+        }; 
+
+        cookies.save("cart", cart);
+        dispatch({
+            type: "UPDATE"
+        });
+        alert("Đã thêm vào giỏ hàng thành công!");
+    };
+    
 
     // VÒNG ĐỜI 1: Chỉ chạy duy nhất khi id trên đường dẫn URL thay đổi để lấy thông tin phòng
     useEffect(() => {
@@ -71,17 +117,6 @@ const HotelRoomServiceDetail = () => {
             loadReviews();
         }
     }, [hotelService]);
-
-    // Xử lý logic nút Đặt phòng
-    const handleBooking = () => {
-        if (user === null) {
-            nav(`/login?next=/hotel-room-services/${serviceId}`);
-        } else {
-            nav(
-                `/customer/checkout?serviceId=${serviceId}&type=HOTEL&checkIn=${checkInDate}&checkOut=${checkOutDate}&rooms=${roomCount}`
-            );
-        }
-    };
 
     // Điều hướng nhà cung cấp đối tác
     const handleViewProvider = () => {
@@ -100,8 +135,8 @@ const HotelRoomServiceDetail = () => {
     // Xử lý gửi đánh giá mới lên Backend
     const handlePostReview = async (comment, rating) => {
         try {
-            const coreServiceId = hotelService?.services?.id;
-            if (!coreServiceId) {
+            const serviceId = hotelService?.services?.id;
+            if (!serviceId) {
                 alert("Không tìm thấy thông tin dịch vụ để đánh giá!");
                 return;
             }
@@ -109,7 +144,7 @@ const HotelRoomServiceDetail = () => {
             // 1. Gọi API bằng cách dùng thực thể authApis() để tự động đính kèm Token từ Cookie
             // 2. Đổi endpoint sang đúng key: 'customer-create-review'
             let res = await authApis().post(
-                endpoints['customer-create-review'](coreServiceId), 
+                endpoints['customer-create-review'](serviceId), 
                 {
                     comment: comment,
                     rating: String(rating) // Gửi dạng chuỗi hoặc số tùy Backend của bạn nhận loại nào
@@ -178,9 +213,9 @@ const HotelRoomServiceDetail = () => {
                                         variant="danger" 
                                         size="lg" 
                                         className="px-4 font-weight-bold mt-2" 
-                                        onClick={handleBooking}
+                                        onClick={()=> order(hotelService)}
                                     >
-                                        Đặt ngay
+                                        Đặt
                                     </Button>
                                 </div>
 
