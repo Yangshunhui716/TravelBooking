@@ -84,9 +84,4 @@ public class ServiceServiceImpl implements ServiceService {
     public boolean checkAvailableSlots(int slotsOrder, Long id) {
         return slotsOrder>=this.serviceRepo.getServiceById(id).getAvailableSlots();
     }
-
-    @Override
-    public List<Services> getServicesByProviderId(Long id) {
-        return this.serviceRepo.getServicesByProviderId(id);
-    }
 }

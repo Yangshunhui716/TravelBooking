@@ -4,6 +4,7 @@
  */
 package com.nhom34.controllers;
 
+import com.nhom34.dto.ProviderStatistic;
 import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.TourServices;
@@ -15,6 +16,7 @@ import com.nhom34.services.TourService;
 import com.nhom34.services.TransportService;
 import com.nhom34.services.HotelService;
 import com.nhom34.services.ServiceService;
+import com.nhom34.services.StatisticService;
 import com.nhom34.services.UserService;
 import java.security.Principal;
 import java.util.List;
@@ -55,6 +57,8 @@ public class ApiProviderController {
     private UserService userService;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private StatisticService statisticService;
     
     @GetMapping("/tour-services")
     public ResponseEntity<List<TourServices>> getTourServices(Principal principal) {
@@ -160,4 +164,9 @@ public class ApiProviderController {
         return new ResponseEntity<>(provider, HttpStatus.OK);
     }
     
+    @GetMapping("/statistic/{metric}")
+    public ResponseEntity<List<ProviderStatistic>> getStatistic(@PathVariable(value = "metric") String metric, @RequestParam Map<String, String> params, Principal principal){
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        return new ResponseEntity<>(this.statisticService.providerStatistic(params, provider, metric), HttpStatus.OK);
+    }
 }

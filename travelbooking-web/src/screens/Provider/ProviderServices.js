@@ -83,7 +83,7 @@ const ProviderServices = () => {
         <Card className="shadow rounded-4 p-4">
             <h2>Quản lý dịch vụ</h2>
             <div className="d-flex justify-content-between mb-4 mt-4">
-                <ButtonServiceGroup onChangeType={setServiceType} />
+                <ButtonServiceGroup onChangeType={setServiceType} className="w-75"/>
                 <Button variant="primary" onClick={() => navigateModifierService(null)}>
                     Thêm dịch vụ mới
                 </Button>

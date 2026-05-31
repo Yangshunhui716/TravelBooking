@@ -21,6 +21,8 @@ import ModifierService from "./screens/Provider/ModifierService";
 import ListCustomer from "./screens/Provider/ListCustomer";
 import MyCartReducer from "./reducers/MyCartReducer";
 import Cart from "./screens/Cart/Cart";
+import ProviderProfile from "./screens/PublicProfile/ProviderProfile";
+
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, cookies.load("user") || null);
     const [cart, cartDispatch] = useReducer(MyCartReducer, { totalQuantity: 0 , "totalAmount": 0 });
