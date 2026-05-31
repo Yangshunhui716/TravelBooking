@@ -22,6 +22,7 @@ import ListCustomer from "./screens/Provider/ListCustomer";
 import MyCartReducer from "./reducers/MyCartReducer";
 import Cart from "./screens/Cart/Cart";
 import ProviderProfile from "./screens/PublicProfile/ProviderProfile";
+import Statistic from "./screens/Statistic/Statistic";
 
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, cookies.load("user") || null);
@@ -29,7 +30,7 @@ const App = () => {
     useEffect(() => {
         cartDispatch({ type: "UPDATE" });
 
-    }) // ko reset lại
+    },[]) // ko reset lại
     return (
         <MyUserContext.Provider value={[user, dispatch]}>
             <MyCartContext.Provider value={[cart, cartDispatch]}>
@@ -48,12 +49,13 @@ const App = () => {
                             <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
                             <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/profile/*" element={<Profile />} />
                             <Route path="/modifier-service" element={<ModifierService />} />
                             <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
                             <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/providers/:providerId" element={<ProviderProfile />} />
-
+                            <Route path="/statistic" element={<Statistic />} />
                         </Routes>
 
                     <Footer />

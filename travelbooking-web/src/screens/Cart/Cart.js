@@ -43,10 +43,14 @@ const Cart = () => {
 
                     let res = await authApis().post(endpoints["pay"], requestBody);
                     if(res.status === 200 || res.status === 201) {
-                        alert("Thanh toán thành công!");
-                        setCart(null);
-                        cookies.remove("cart");
-                        cartDispatch({ type: "PAID" });
+                        if(res.data){
+                            navigate(res.data.payUrl); // Điều hướng đến URL thanh toán nếu API trả về
+                        }else{
+                            alert("Thanh toán thành công!");
+                            setCart(null);
+                            cookies.remove("cart");
+                            cartDispatch({ type: "PAID" });
+                        }
                     }
                 } catch (error) {
                     console.error("Lỗi khi thanh toán:", error);

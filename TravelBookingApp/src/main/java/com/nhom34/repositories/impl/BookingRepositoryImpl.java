@@ -64,7 +64,7 @@ public class BookingRepositoryImpl implements BookingRepository{
     }
 
     @Override
-    public void addBookingDetail(List<BookingsServiceDetail> bookingDetail, Bookings booking) {
+    public void addBookingDetails(List<BookingsServiceDetail> bookingDetail, Bookings booking) {
         Session s = this.factory.getObject().getCurrentSession();
         for (var b : bookingDetail) {
             b.setBookingId(booking);

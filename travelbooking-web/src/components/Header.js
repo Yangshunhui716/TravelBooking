@@ -42,7 +42,7 @@ const Header = () => {
                         letterSpacing: "1px"
                     }}
                 >
-                    ✈ AH TravelBooking
+                    AH TravelBooking
                 </Navbar.Brand>
 
                 <Navbar.Toggle
@@ -86,13 +86,6 @@ const Header = () => {
                         >
                             Phương tiện
                         </Nav.Link>
-                        <Nav.Link
-                            as={Link}
-                            to="/cart"
-                            style={styles.navLink}
-                        >
-                            Giỏ hàng <Badge variant="danger" className="bg-danger">{cart?.totalQuantity || 0}</Badge>
-                        </Nav.Link>
 
                     </Nav>
 
@@ -124,24 +117,48 @@ const Header = () => {
                             </>
                         ) : (
                             <>
-                                    <Link
-                                        to="/profile"
-                                        style={{
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            marginRight: "15px",
-                                            textDecoration: "none",
-                                            fontSize: "18px"
-                                        }}
-                                    >
-                                        Xin chào, {
-                                            user.fullname ||
-                                            user.businessName ||
-                                            user.users?.username
-                                        }
-                                    </Link>
+                                <Link
+                                    as={Link}
+                                    to="/cart"
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        marginRight: "15px",
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                    &#128722; Giỏ hàng <Badge variant="danger" className="bg-danger">{cart?.totalQuantity || 0}</Badge>
+                                </Link>
 
+                                <Link
+                                    as={Link}
+                                    to="/statistic"
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        marginRight: "15px",
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                    &#128202; Thống kê
+                                </Link>
 
+                                <Link
+                                    to="/profile"
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        marginRight: "15px",
+                                        textDecoration: "none",
+                                        fontSize: "18px"
+                                    }}
+                                >
+                                    Xin chào, {
+                                        user.fullname ||
+                                        user.businessName ||
+                                        user.users?.username
+                                    }
+                                </Link>
                             </>
                         )}
 

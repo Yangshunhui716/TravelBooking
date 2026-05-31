@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface BookingRepository {
     Bookings addBooking(Bookings booking);
-    void addBookingDetail(List<BookingsServiceDetail> bookingDetail, Bookings booking);
+    void addBookingDetails(List<BookingsServiceDetail> bookingDetail, Bookings booking);
     Bookings getBookingById(Long id);
     List<BookingsServiceDetail> getBookingDetailByBookingId(Long id);
     void changePaymentStatus(Long id, String paymentStatus);

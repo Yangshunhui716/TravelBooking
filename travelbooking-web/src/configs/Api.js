@@ -17,6 +17,8 @@ export const endpoints={
     'provider-hotel-room-service': (hotelRoomServiceId) => `secure/provider/hotel-room-services/${hotelRoomServiceId}`,
     'provider-transport-services': 'secure/provider/transport-services',
     'provider-transport-service': (transportServiceId) => `secure/provider/transport-services/${transportServiceId}`,
+    'provider-customers': (idservice) => `/secure/provider/services/${idservice}/customers`,
+    'provider-statistics': (metric) => `/secure/provider/statistic/${metric}`,
 
     'hotel-room-services': '/hotel-room-services',
     'hotel-room-service-detail': (serviceId) => `/hotel-room-services/${serviceId}`,
@@ -27,8 +29,8 @@ export const endpoints={
     'transport-services': '/transport-services',
     'transport-service-detail': (serviceId) => `/transport-services/${serviceId}`,
 
-    'provider-customers': (idservice) => `/secure/provider/services/${idservice}/customers`,
     'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
+
     'pay': '/secure/pay',
 
     'public-provider-profile': (providerId) => `provider/${providerId}`,
@@ -38,12 +40,12 @@ export const endpoints={
 }
 export const authApis = () => {
     return axios.create({
-        baseURL: 'http://localhost:8000/TravelBookingApp/api/',
+        baseURL: 'http://localhost:8080/TravelBookingApp/api/',
         headers: {
             'Authorization': `Bearer ${cookies.load('token')}`
         }
     })
 }
 export default axios.create({
-    baseURL: "http://localhost:8000/TravelBookingApp/api"
+    baseURL: "http://localhost:8080/TravelBookingApp/api"
 });
