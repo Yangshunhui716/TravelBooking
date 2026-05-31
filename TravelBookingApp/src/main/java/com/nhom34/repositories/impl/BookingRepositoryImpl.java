@@ -120,4 +120,34 @@ public class BookingRepositoryImpl implements BookingRepository{
         
         return q.getResultList();
     }
+    @Override
+    public boolean checkCustomerPaidService(Long customerId, Long serviceId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder builder = s.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        
+        // Gốc từ bảng chi tiết đơn hàng (BookingsServiceDetail)
+        Root<BookingsServiceDetail> rBD = query.from(BookingsServiceDetail.class);
+        
+        // INNER JOIN sang bảng Bookings thông qua thuộc tính "bookingId"
+        Join<BookingsServiceDetail, Bookings> joinBooking = rBD.join("bookingId");
+        
+        // SELECT COUNT(rBD) 
+        query.select(builder.count(rBD));
+        
+        // Điều kiện WHERE: 
+        // 1. Đúng customerId
+        // 2. Đúng serviceId tương ứng
+        // 3. Trạng thái thanh toán phải là "PAID"
+        query.where(builder.and(
+            builder.equal(joinBooking.get("customerId").get("id"), customerId),
+            builder.equal(rBD.get("serviceId").get("id"), serviceId),
+            builder.equal(joinBooking.get("paymentStatus"), "PAID")
+        ));
+        
+        Query q = s.createQuery(query);
+        Long count = (Long) q.getSingleResult();
+        
+        return count > 0; // Trả về true nếu đã từng mua và thanh toán thành công
+    }
 }

@@ -3,10 +3,11 @@ import { Button, Col, Container, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
-import Api, { endpoints } from "../../configs/Api";
+import Api, { authApis, endpoints } from "../../configs/Api"; // Import thêm authApis để xử lý Token bảo mật
 import { MyUserContext } from "../../configs/Context";
 import styles from "./ServiceDetailStyle"; // Import style dùng chung
 import ReviewSection from "../../components/ReviewSection";
+
 const TourServiceDetail = () => {
     const { serviceId } = useParams();
     const [tourService, setTourService] = useState(null);
@@ -15,7 +16,7 @@ const TourServiceDetail = () => {
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
 
-    // Gọi API lấy dữ liệu chi tiết Tour từ backend
+    // 1. API lấy dữ liệu chi tiết Tour từ backend
     const loadTourDetail = async () => {
         try {
             setLoading(true);
@@ -28,27 +29,77 @@ const TourServiceDetail = () => {
         }
     };
 
+    // 2. API lấy danh sách bình luận dựa trên ID dịch vụ cốt lõi (coreServiceId)
+    const loadReviews = async () => {
+        try {
+            const coreServiceId = tourService?.services?.id;
+            if (coreServiceId) {
+                // Gọi endpoint công khai lấy tất cả review thuộc dịch vụ này
+                let res = await Api.get(endpoints['service-reviews'](coreServiceId));
+                setReviews(res.data);
+            }
+        } catch (ex) {
+            console.error("Lỗi khi fetch danh sách reviews của tour:", ex);
+        }
+    };
+
+    // VÒNG ĐỜI 1: Tải chi tiết tour mỗi khi mã ID trên URL thay đổi
     useEffect(() => {
         if (serviceId) {
             loadTourDetail();
         }
     }, [serviceId]);
 
+    // VÒNG ĐỜI 2: Chỉ fetch review ngay sau khi dữ liệu Tour đã đổ về thành công
+    useEffect(() => {
+        if (tourService) {
+            loadReviews();
+        }
+    }, [tourService]);
+
+    // Xử lý gửi đánh giá mới lên phân vùng bảo mật (/secure/) của Backend
+    const handlePostReview = async (comment, rating) => {
+        try {
+            const coreServiceId = tourService?.services?.id;
+            if (!coreServiceId) {
+                alert("Không tìm thấy mã dịch vụ!");
+                return;
+            }
+
+            // Dùng authApis() để đính kèm Token Bearer tự động từ cookie lên Header
+            let res = await authApis().post(
+                endpoints['customer-create-review'](coreServiceId), 
+                {
+                    comment: comment,
+                    rating: String(rating)
+                }
+            );
+
+            alert("Đánh giá tour thành công!");
+            setReviews([res.data, ...reviews]); // Chèn bình luận mới nhất lên đầu danh sách hiển thị
+        } catch (ex) {
+            console.error("Lỗi chi tiết khi gửi review tour:", ex);
+            if (ex.response && ex.response.data) {
+                alert(`Lỗi: ${ex.response.data.message || "Hệ thống từ chối quyền đánh giá!"}`);
+            } else {
+                alert("Đã xảy ra lỗi khi gửi đánh giá. Vui lòng kiểm tra lại quyền đăng nhập!");
+            }
+        }
+    };
+
     // Xử lý khi nhấn nút Đặt dịch vụ
     const handleBooking = () => {
         if (user === null) {
-            // Lưu vị trí trang chi tiết để sau khi đăng nhập tự động quay lại đây
             nav(`/login?next=/tour-services/${serviceId}`);
         } else {
-            // Điều hướng sang trang đặt tour/thanh toán tùy theo logic dự án của bạn
             nav(`/customer/checkout?serviceId=${serviceId}`);
         }
     };
+
     // Xử lý xem chi tiết nhà cung cấp (Provider)
     const handleViewProvider = () => {
         const providerId = tourService.services?.providerId?.id;
         if (providerId) {
-            // Điều hướng đến trang thông tin nhà cung cấp (bạn thay đổi route theo dự án của mình)
             nav(`/providers/${providerId}`);
         }
     };
@@ -56,17 +107,16 @@ const TourServiceDetail = () => {
     // Xử lý kích hoạt Chat với nhà cung cấp
     const handleChatProvider = () => {
         if (user === null) {
-            // Bắt buộc đăng nhập mới được chat
             nav(`/login?next=/tour-services/${serviceId}`);
             return;
         }
         
         const providerUserId = tourService.services?.providerId?.users?.id;
         if (providerUserId) {
-            // Thường logic chat sẽ cần ID tài khoản người dùng của nhà cung cấp để mở phòng chat
             nav(`/chat?withUser=${providerUserId}`);
         }
     };
+
     if (loading) {
         return (
             <div className="d-flex justify-content-center my-5">
@@ -150,7 +200,6 @@ const TourServiceDetail = () => {
                                         </div>
                                     </div>
                                     
-                                    {/* Tách biệt hoàn toàn thành 2 nút gọi 2 logic khác nhau */}
                                     <div className="d-flex flex-column gap-2">
                                         <Button 
                                             variant="outline-primary" 
@@ -179,7 +228,7 @@ const TourServiceDetail = () => {
                                         Thông tin chi tiết dịch vụ
                                     </h5>
                                     
-                                    <ul className="list-unstyled ps-1">
+                                    <ul className="list-unstyled ps-1 mb-4">
                                         <li className="mb-2">
                                             <strong>Điểm đến: </strong> 
                                             <span className="text-secondary">{tourService.services?.destination}</span>
@@ -196,6 +245,15 @@ const TourServiceDetail = () => {
                                         </li>
                                     </ul>
                                 </div>
+
+                                <hr />
+
+                                {/* 4. TÍCH HỢP HỆ THỐNG ĐÁNH GIÁ (Xổ xuống tự động khi viết xong) */}
+                                <ReviewSection 
+                                    reviews={reviews}
+                                    onAddReview={handlePostReview}
+                                    user={user}
+                                />
 
                             </div>
                         </Col>
