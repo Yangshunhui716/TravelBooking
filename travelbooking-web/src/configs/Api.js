@@ -29,12 +29,12 @@ export const endpoints={
 
     'provider-customers': (idservice) => `/secure/provider/services/${idservice}/customers`,
     'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
-    'pay': '/secure/pay'
+    'pay': '/secure/pay',
 
     'public-provider-profile': (providerId) => `provider/${providerId}`,
     'public-provider-tour-services': (providerId) => `provider/${providerId}/tour-services`,
     'public-provider-hotel-room-services': (providerId) => `provider/${providerId}/hotel-room-services`,
-    'public-provider-transport-services': (providerId) => `provider/${providerId}/transport-services`
+    'public-provider-transport-services': (providerId) => `provider/${providerId}/transport-services`,
 }
 export const authApis = () => {
     return axios.create({

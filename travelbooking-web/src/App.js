@@ -52,6 +52,8 @@ const App = () => {
                             <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
                             <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
                             <Route path="/cart" element={<Cart />} />
+                            <Route path="/providers/:providerId" element={<ProviderProfile />} />
+
                         </Routes>
 
                     <Footer />
