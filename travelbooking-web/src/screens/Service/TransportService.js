@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"; // Xóa bỏ hoàn toàn useCallback
-import { useNavigate, useSearchParams } from "react-router-dom"; // Thêm useSearchParams giống thầy
+import React, { useEffect, useState } from "react"; 
+import { useNavigate, useSearchParams } from "react-router-dom"; 
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
@@ -9,11 +9,10 @@ import Apis, { endpoints } from "../../configs/Api";
 const TransportService = () => {
     const [transports, setTransports] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams(); // Đọc và ghi trực tiếp lên thanh URL
-    
+    const [searchParams, setSearchParams] = useSearchParams(); 
+    const [page, setPage] = useState(1); // Thêm state quản lý số trang giống Tour
     const navigate = useNavigate();
 
-    // Format tiền tệ
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
@@ -33,11 +32,10 @@ const TransportService = () => {
         });
     };
 
-    // 1. Viết hàm async thường giống hệt thầy (không bọc useCallback)
     const loadTransports = async () => {
         try {
             setLoading(true);
-            let params = {};
+            let params = { page: page }; // Gửi kèm số trang lên Back-end
 
             // Đọc trực tiếp các tham số lọc từ URL xuống
             const departureLocation = searchParams.get("departureLocation");
@@ -66,6 +64,11 @@ const TransportService = () => {
                 { params: params }
             );
 
+            if (res.data.length === 0) {
+                setPage(0); // Đánh dấu hết dữ liệu để ẩn nút Xem thêm
+                return;
+            }
+
             // MAP API -> CARD DATA
             const mappedTransports = res.data.map((transport) => ({
                 id: transport.id,
@@ -83,7 +86,12 @@ const TransportService = () => {
                 onView: () => navigate(`/transport-services/${transport.id}`)
             }));
 
-            setTransports(mappedTransports);
+            // Xử lý nạp dữ liệu chuẩn theo page giống Tour và giống thầy
+            if (page === 1) {
+                setTransports(mappedTransports); // Trang đầu hoặc lọc mới thì thay thế hoàn toàn
+            } else if (page > 1) {
+                setTransports(prev => [...prev, ...mappedTransports]); // Các trang sau thì cộng dồn mảng
+            }
         } catch (err) {
             console.error("Lỗi khi tải danh sách phương tiện:", err);
         } finally {
@@ -91,12 +99,23 @@ const TransportService = () => {
         }
     };
 
-    // 2. useEffect CHỈ lắng nghe searchParams (URL thay đổi thì load lại dữ liệu)
-    // Hoàn toàn không bỏ 'loadTransports' vào mảng này để tránh lỗi lặp vô hạn giống thầy bạn
+
     useEffect(() => {
-        loadTransports();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (page > 0) {
+            loadTransports();
+        }
+    }, [searchParams, page]); 
+
+    useEffect(() => {
+        setPage(1);
     }, [searchParams]);
+
+
+    const handleLoadMore = () => {
+        if (page > 0 && !loading) {
+            setPage(page + 1);
+        }
+    };
 
     // CẤU HÌNH BỘ LỌC (FILTER CONFIG)
     const transportConfig = [
@@ -115,7 +134,7 @@ const TransportService = () => {
         }
     ];
 
-    // 3. Đẩy các tham số lọc lên URL khi nhấn nút Submit bộ lọc
+    // Đẩy các tham số lọc lên URL khi nhấn nút Submit bộ lọc
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         
@@ -134,7 +153,7 @@ const TransportService = () => {
         setSearchParams(newParams);
     };
 
-    // 4. Đẩy tham số sắp xếp lên URL khi bấm đổi Sort dropdown
+    // Đẩy tham số sắp xếp lên URL khi bấm đổi Sort dropdown
     const handleSortChange = (sortValue) => {
         const newParams = new URLSearchParams(searchParams);
         if (sortValue) newParams.set("sort", sortValue);
@@ -151,17 +170,20 @@ const TransportService = () => {
             />
 
             {/* COMPONENT DANH SÁCH */}
-            <div className="flex-grow-1">
-                {loading && <MySpinner />}
-                
-                <ServiceList
-                    title="Danh sách Phương tiện"
-                    items={transports}
-                    sortCategory="slot"
-                    currentSort={searchParams.get("sort") || ""} // Đọc trực tiếp từ URL để giữ trạng thái dropdown
-                    onSortChange={handleSortChange}
-                />
-            </div>
+                <div className="flex-grow-1">
+                    <div className="d-flex justify-content-between align-items-center mb-3"></div>
+                    {loading && transports.length === 0 && <MySpinner />}
+                    <ServiceList
+                        title="Danh sách Phương tiện"
+                        items={transports}
+                        sortCategory="slot"
+                        currentSort={searchParams.get("sort") || ""}
+                        onSortChange={handleSortChange}
+                        page={page}
+                        loading={loading}
+                        onLoadMore={handleLoadMore}
+                    />
+                </div>
         </div>
     );
 };
