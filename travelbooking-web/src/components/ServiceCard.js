@@ -1,6 +1,21 @@
 import { Badge, Button, Card } from "react-bootstrap";
+import { useContext } from "react";
+import { MyCompareContext } from "../configs/Context";
 
 const ServiceCard = ({ data }) => {
+    const [, compareDispatch] = useContext(MyCompareContext);
+
+    const handleAddCompare = () => {
+        const servicePayload = {
+            id: data.id,
+            name: data.title,
+            description: data.details ? data.details.join("<br/>") : "Chưa có mô tả", 
+            price: data.price,
+            image: data.image,
+            typeService: data.typeService
+        };
+        compareDispatch({ type: 'ADD_SERVICE', payload: servicePayload });
+    };
 
     return (
         <Card className="h-100 shadow-sm rounded-4 overflow-hidden border-0">
@@ -52,15 +67,25 @@ const ServiceCard = ({ data }) => {
                         {data.price}
                     </span>
 
-                    <Button
-                        variant="outline-primary"
-                        className="rounded-pill px-3"
-                        onClick={data.onView}
-                    >
-                        Xem
-                    </Button>
+                    <div>
+                        <Button
+                            variant="outline-secondary"
+                            className="rounded-pill px-3"
+                            onClick={handleAddCompare}
+                        >
+                            + So sánh
+                        </Button>
+                    </div>
 
                 </div>
+
+                <Button 
+                    variant="outline-primary"
+                    className="rounded-pill px-3 mt-3"
+                    onClick={data.onView}
+                >
+                    Xem
+                </Button>
 
             </Card.Body>
 

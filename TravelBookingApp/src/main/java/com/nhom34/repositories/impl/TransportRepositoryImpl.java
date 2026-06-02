@@ -49,6 +49,7 @@ public class TransportRepositoryImpl implements TransportRepository{
         
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(b.equal(services.get("status"), true));
+        predicates.add(b.greaterThan(services.get("availableSlots"), 0));
 
         List<Order> orders = new ArrayList<>();
         if (params != null) {

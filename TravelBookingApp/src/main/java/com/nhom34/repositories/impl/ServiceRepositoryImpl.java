@@ -66,4 +66,10 @@ public class ServiceRepositoryImpl implements ServiceRepository {
             s.merge(service);
         }
     }
+
+    @Override
+    public void updateService(Services service) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.merge(service);  
+    }
 }

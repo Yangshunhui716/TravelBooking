@@ -52,7 +52,7 @@ const HotelRoomService = () => {
             const mappedRooms = res.data.map((room) => ({
                 id: room.id,
                 title: room.services?.name, 
-                badge: "Khách sạn",
+                badge: room.rate,
                 image: room.services?.imgUrl,
                 price: formatPrice(room.services?.price),
                 details: [
@@ -60,6 +60,7 @@ const HotelRoomService = () => {
                     `Địa chỉ: ${room.address}`,
                     `Số phòng còn: ${room.services?.availableSlots || 0} phòng`
                 ],
+                typeService: "hotel-room-services",
                 onView: () => navigate(`/hotel-room-services/${room.id}`)
             }));
 

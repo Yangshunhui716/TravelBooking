@@ -10,8 +10,9 @@ import Register from "./screens/User/Register";
 import TransportService from "./screens/Service/TransportService";
 import HotelRoomService from "./screens/Service/HotelRoomService";
 import TourService from "./screens/Service/TourService";
-import { MyCartContext, MyUserContext } from "./configs/Context";
+import { MyCartContext, MyUserContext, MyCompareContext } from "./configs/Context";
 import MyUserReducer from "./reducers/MyUserReducer";
+import MyCompareReducer from "./reducers/MyCompareReducer";
 import Profile from "./screens/User/Profile";
 import BookingDetail from "./screens/Customer/BookingDetail";
 import TourServiceDetail from "./screens/ServiceDetail/TourServiceDetail";
@@ -25,45 +26,54 @@ import ProviderProfile from "./screens/PublicProfile/ProviderProfile";
 import Statistic from "./screens/Statistic/Statistic";
 import Conversations from "./screens/Conversation/Conversations";
 import PaymentResult from "./screens/Payment/AnnouncementResult";
+import CompareService from "./screens/CompareService/CompareService";
 
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, cookies.load("user") || null);
     const [cart, cartDispatch] = useReducer(MyCartReducer, { totalQuantity: 0 , "totalAmount": 0 });
+    const savedCompareList = cookies.load("compare_list");
+    const initialCompareState = {
+        services: savedCompareList ? (typeof savedCompareList === 'string' ? JSON.parse(savedCompareList) : savedCompareList) : []
+    };
+    const [compareList, compareDispatch] = useReducer(MyCompareReducer, initialCompareState);
     useEffect(() => {
         cartDispatch({ type: "UPDATE" });
 
-    },[]) // ko reset lại
+    },[])
     return (
         <MyUserContext.Provider value={[user, dispatch]}>
             <MyCartContext.Provider value={[cart, cartDispatch]}>
-                <BrowserRouter>
+                <MyCompareContext.Provider value={[compareList, compareDispatch]}>
+                    <BrowserRouter>
 
-                    <Header />
+                        <Header />
 
-                        <Routes>
-                            <Route path="*" element={<Home />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/tour-services" element={<TourService/>} />
-                            <Route path="/hotel-room-services" element={<HotelRoomService/>} />
-                            <Route path="/transport-services" element={<TransportService/>} />
-                            <Route path="/tour-services/:serviceId" element={<TourServiceDetail />} />
-                            <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
-                            <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
-                            <Route path="/profile" element={<Profile />} />
-                            <Route path="/modifier-service" element={<ModifierService />} />
-                            <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
-                            <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
-                            <Route path="/cart" element={<Cart />} />
-                            <Route path="/providers/:providerId" element={<ProviderProfile />} />
-                            <Route path="/statistic" element={<Statistic />} />
-                            <Route path="/conversations" element={<Conversations />} />
-                            <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
-                        </Routes>
+                            <Routes>
+                                <Route path="*" element={<Home />} />
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/register" element={<Register />} />
+                                <Route path="/tour-services" element={<TourService/>} />
+                                <Route path="/hotel-room-services" element={<HotelRoomService/>} />
+                                <Route path="/transport-services" element={<TransportService/>} />
+                                <Route path="/tour-services/:serviceId" element={<TourServiceDetail />} />
+                                <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
+                                <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route path="/modifier-service" element={<ModifierService />} />
+                                <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
+                                <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
+                                <Route path="/cart" element={<Cart />} />
+                                <Route path="/providers/:providerId" element={<ProviderProfile />} />
+                                <Route path="/statistic" element={<Statistic />} />
+                                <Route path="/conversations" element={<Conversations />} />
+                                <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
+                                <Route path="/compare" element={<CompareService />} />
+                            </Routes>
 
-                    <Footer />
+                        <Footer />
 
-                </BrowserRouter>
+                    </BrowserRouter>        
+                </MyCompareContext.Provider>
             </MyCartContext.Provider>
         </MyUserContext.Provider>
     );

@@ -46,7 +46,13 @@ public class ApiPaymentController {
     @PostMapping("/secure/customer/pay")
     public ResponseEntity<?> createPayment(@RequestBody RequestOrder requestPayload, Principal principal) {
         Customers customer = this.cusService.getCustomerByUsername(principal.getName());
-        Bookings booking = this.bookingService.addBooking(requestPayload, customer);
+        Bookings booking;
+        try {
+            booking = this.bookingService.addBooking(requestPayload, customer);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Không thể tạo đơn", HttpStatus.BAD_REQUEST);
+        }
+        
         if(!"CASH".equals(requestPayload.getPayMethod())){
             PaymentService payMethod = paymentFactory.getMethod(requestPayload.getPayMethod());
             String bookingId = booking.getId().toString();

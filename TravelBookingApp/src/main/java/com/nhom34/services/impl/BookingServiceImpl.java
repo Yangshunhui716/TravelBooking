@@ -33,16 +33,21 @@ public class BookingServiceImpl implements BookingService{
         List<BookingsServiceDetail> booking = new ArrayList<>();
         double total = 0;
         for(OrderServices o: bookingDetails){
-            BookingsServiceDetail detail = new BookingsServiceDetail();
-            detail.setServiceId(this.serviceService.getServiceById(o.getId()));
-            detail.setQuantity(o.getQuantity());
-            detail.setUnitPrice(o.getUnitPrice());
-            detail.setSubtotal(o.getUnitPrice()*o.getQuantity()*o.getServiceDuration());
-            detail.setServiceStartDate(o.getServiceStartDate());
-            detail.setServiceDuration(o.getServiceDuration());
-            total += detail.getSubtotal();
-            
-            booking.add(detail);
+            if(this.serviceService.updateAvailableSlots(o.getQuantity(), o.getId())){
+                BookingsServiceDetail detail = new BookingsServiceDetail();
+                detail.setServiceId(this.serviceService.getServiceById(o.getId()));
+                detail.setQuantity(o.getQuantity());
+                detail.setUnitPrice(o.getUnitPrice());
+                detail.setSubtotal(o.getUnitPrice()*o.getQuantity()*o.getServiceDuration());
+                detail.setServiceStartDate(o.getServiceStartDate());
+                detail.setServiceDuration(o.getServiceDuration());
+                total += detail.getSubtotal();
+
+                booking.add(detail);
+            }
+            else{
+                throw new IllegalStateException("Số slot của dịch vụ có ID " + o.getId() + " không đủ đáp ứng yêu cầu"); 
+            }
         }
         
         Bookings newBooking = new Bookings();

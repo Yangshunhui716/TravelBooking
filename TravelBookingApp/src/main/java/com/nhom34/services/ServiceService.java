@@ -12,6 +12,6 @@ public interface ServiceService {
     void updateStatus(Long id, boolean status);
     void deleteService(Long id);
     boolean checkOwner(Long provId, Long id);
-    boolean checkAvailableSlots(int slotsOrder,Long id);
+    boolean updateAvailableSlots(int slotsOrder,Long id);
     void updateImg(MultipartFile img, Long id);
 }

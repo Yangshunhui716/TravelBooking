@@ -10,4 +10,5 @@ public interface ServiceRepository {
     void deleteService(Long id);
     boolean checkOwner(Long provId, Long id);
     void updateImg(String img, Long id);
+    void updateService(Services s);
 }

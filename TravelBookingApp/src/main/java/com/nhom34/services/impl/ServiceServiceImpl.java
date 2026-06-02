@@ -67,8 +67,19 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public boolean checkAvailableSlots(int slotsOrder, Long id) {
-        return slotsOrder>=this.serviceRepo.getServiceById(id).getAvailableSlots();
+    @Transactional
+    public boolean updateAvailableSlots(int slotsOrder, Long id) {
+        Services s = this.serviceRepo.getServiceById(id);
+        if(slotsOrder<=s.getAvailableSlots()){
+            s.setAvailableSlots(s.getAvailableSlots()-slotsOrder);
+            if(s.getAvailableSlots()<=0){
+                s.setStatus(false);
+            }
+            this.serviceRepo.updateService(s);
+            return true;
+        }else{
+            return false;
+        }
     }
     
     @Override
