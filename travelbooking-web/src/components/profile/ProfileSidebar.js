@@ -115,7 +115,6 @@ const ProfileSidebar = () => {
     };
     return (
         <Card className="shadow p-4 rounded-4">
-            {/* AVATAR */}
             <div className="text-center mb-3">
                 <img
                     src={
@@ -132,7 +131,6 @@ const ProfileSidebar = () => {
 
             </div>
 
-            {/* UPLOAD AVATAR */}
             {editing && (
                 <Form.Group className="mb-3">
                     <Form.Control
@@ -146,11 +144,11 @@ const ProfileSidebar = () => {
                     />
                 </Form.Group>
             )}
-            {/* TITLE */}
+
             <h4 className="text-center mb-4">
                 {isProvider ? formData.businessName: formData.fullname ||user.users.username}
             </h4>
-            {/* PROVIDER */}
+
             {isProvider ? (
                 <>
                     <div className="mb-3">
@@ -240,7 +238,6 @@ const ProfileSidebar = () => {
                 </>
             )}
 
-            {/* PHONE */}
             <div className="mb-3">
                 <b>SĐT:</b>
                 {editing ? (
@@ -256,7 +253,7 @@ const ProfileSidebar = () => {
                 )}
 
             </div>
-            {/* EMAIL */}
+
             <div className="mb-3">
                 <b>Email:</b>
                 {editing ? (
@@ -271,7 +268,7 @@ const ProfileSidebar = () => {
                     <p>     {user?.users?.email} </p>
                 )}
             </div>
-            {/* ACTIONS */}
+
             <div className="d-flex justify-content-between mt-4">
                 {editing ? (
                     <Button

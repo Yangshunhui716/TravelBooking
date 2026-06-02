@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Container, Image, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
-import { authApis, endpoints } from "../../configs/Api"; // Điều chỉnh đường dẫn nếu file là Apis.js
+import { authApis, endpoints } from "../../configs/Api";
 import styles from "./ListCustomerStyle";
 
 const ListCustomer = () => {
@@ -13,7 +13,6 @@ const ListCustomer = () => {
     const loadCustomers = async () => {
         try {
             setLoading(true);
-            // Sử dụng authApis() vì đường dẫn của bạn có "/secure/"
             let res = await authApis().get(endpoints['provider-customers'](idservice));
             setCustomers(res.data);
         } catch (ex) {
@@ -31,7 +30,6 @@ const ListCustomer = () => {
 
     const handleChat = (email) => {
         alert(`Bắt đầu cuộc trò chuyện với: ${email}`);
-        // Xử lý chuyển hướng hướng tới màn hình conversation nếu cần
     };
 
     return (
@@ -57,7 +55,6 @@ const ListCustomer = () => {
                         <tbody>
                             {customers.length > 0 ? (
                                 customers.map((customer, index) => {
-                                    // Bóc tách mảng: [Tên, Giới tính, SĐT, Email, Link ảnh]
                                     const [name, gender, phone, email, avatar] = customer;
 
                                     return (

@@ -160,7 +160,6 @@
         });
     }
 
-    // Khởi tạo biểu đồ với trục Y kép (Doanh thu bên trái, Số lượt bên phải)
     const context = document.getElementById('mainChart').getContext('2d');
     new Chart(context, {
         type: 'bar',
@@ -206,7 +205,6 @@
         }
     });
 
-    // Hàm ẩn hiện nhanh ô chọn tháng bằng JS thuần khi click thay đổi Loại lọc
     function toggleMonthField() {
         const type = document.getElementById('type').value;
         const monthBox = document.getElementById('monthBox');

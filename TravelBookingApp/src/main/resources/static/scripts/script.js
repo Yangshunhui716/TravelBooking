@@ -1,5 +1,5 @@
 function updateActive(url, isActiveValue) {
-    if (confirm("Ban chac chan duyet khong?") === true) {
+    if (confirm("Vui long xac nhan dieu chinh trang thai hoat dong cua nha cung cap") === true) {
         fetch(url, {
             method: 'PATCH',
             headers: {

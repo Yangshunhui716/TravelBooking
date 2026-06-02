@@ -10,20 +10,20 @@ const TransportService = () => {
     const [transports, setTransports] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams(); 
-    const [page, setPage] = useState(1); // Thêm state quản lý số trang giống Tour
+    const [page, setPage] = useState(1);
     const navigate = useNavigate();
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
 
-    // Format ngày khởi hành
+
     const formatDate = (timestamp) => {
         if (!timestamp) return "";
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
 
-    // Format giờ khởi hành
+
     const formatTime = (timestamp) => {
         if (!timestamp) return "";
         return new Date(timestamp).toLocaleTimeString("vi-VN", {
@@ -35,22 +35,19 @@ const TransportService = () => {
     const loadTransports = async () => {
         try {
             setLoading(true);
-            let params = { page: page }; // Gửi kèm số trang lên Back-end
+            let params = { page: page };
 
-            // Đọc trực tiếp các tham số lọc từ URL xuống
             const departureLocation = searchParams.get("departureLocation");
             const destination = searchParams.get("destination");
             const departureDate = searchParams.get("departureDate");
             const transportType = searchParams.get("transportType");
             const sort = searchParams.get("sort") || "";
 
-            // Đóng gói gửi lên Backend API nếu tồn tại trên URL
             if (departureLocation) params.departureLocation = departureLocation;
             if (destination) params.destination = destination;
             if (departureDate) params.departureTime = departureDate;
             if (transportType) params.transportType = transportType;
 
-            // Xử lý Sort
             switch (sort) {
                 case "price_asc":   params.price = "asc"; break;
                 case "price_desc":  params.price = "desc"; break;
@@ -65,11 +62,10 @@ const TransportService = () => {
             );
 
             if (res.data.length === 0) {
-                setPage(0); // Đánh dấu hết dữ liệu để ẩn nút Xem thêm
+                setPage(0);
                 return;
             }
 
-            // MAP API -> CARD DATA
             const mappedTransports = res.data.map((transport) => ({
                 id: transport.id,
                 title: transport.services?.name, 
@@ -86,11 +82,10 @@ const TransportService = () => {
                 onView: () => navigate(`/transport-services/${transport.id}`)
             }));
 
-            // Xử lý nạp dữ liệu chuẩn theo page giống Tour và giống thầy
             if (page === 1) {
-                setTransports(mappedTransports); // Trang đầu hoặc lọc mới thì thay thế hoàn toàn
+                setTransports(mappedTransports);
             } else if (page > 1) {
-                setTransports(prev => [...prev, ...mappedTransports]); // Các trang sau thì cộng dồn mảng
+                setTransports(prev => [...prev, ...mappedTransports]);
             }
         } catch (err) {
             console.error("Lỗi khi tải danh sách phương tiện:", err);
@@ -117,7 +112,7 @@ const TransportService = () => {
         }
     };
 
-    // CẤU HÌNH BỘ LỌC (FILTER CONFIG)
+
     const transportConfig = [
         { key: "departureLocation", label: "Điểm khởi hành", type: "text" },
         { key: "destination", label: "Điểm đến", type: "text" },
@@ -134,7 +129,7 @@ const TransportService = () => {
         }
     ];
 
-    // Đẩy các tham số lọc lên URL khi nhấn nút Submit bộ lọc
+
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         
@@ -153,7 +148,6 @@ const TransportService = () => {
         setSearchParams(newParams);
     };
 
-    // Đẩy tham số sắp xếp lên URL khi bấm đổi Sort dropdown
     const handleSortChange = (sortValue) => {
         const newParams = new URLSearchParams(searchParams);
         if (sortValue) newParams.set("sort", sortValue);
@@ -163,13 +157,11 @@ const TransportService = () => {
 
     return (
         <div className="d-flex p-4 gap-4">
-            {/* COMPONENT BỘ LỌC */}
             <DynamicFilter
                 config={transportConfig}
                 onFilterSubmit={handleFilter}
             />
 
-            {/* COMPONENT DANH SÁCH */}
                 <div className="flex-grow-1">
                     <div className="d-flex justify-content-between align-items-center mb-3"></div>
                     {loading && transports.length === 0 && <MySpinner />}

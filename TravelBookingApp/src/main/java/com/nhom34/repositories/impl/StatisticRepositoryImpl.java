@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.repositories.impl;
 
 import com.nhom34.dto.ProviderStatistic;
@@ -31,10 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author PC
- */
 @Repository
 public class StatisticRepositoryImpl implements StatisticRepository {
     @Autowired
@@ -151,9 +143,9 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             case "month" -> {
                 predicates.add(cb.equal(monthExpr, periodValue));
                 query.select(cb.construct(ProviderStatistic.class, 
-                        dayExpr,                                  // Trục thời gian
-                        cb.countDistinct(b.get("customerId")),    // Tổng khách
-                        cb.countDistinct(newCustomerExpr)         // Khách mới
+                        dayExpr,
+                        cb.countDistinct(b.get("customerId")),
+                        cb.countDistinct(newCustomerExpr)
                 ));
                 query.where(predicates.toArray(new Predicate[0]));
                 query.groupBy(dayExpr);
@@ -187,7 +179,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
 
     @Override
-    public List<Object[]> getRevenueByTime(String time, int year, int month) { // Đổi tên tham số ở đây
+    public List<Object[]> getRevenueByTime(String time, int year, int month) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<Object[]> q = b.createQuery(Object[].class);
@@ -206,9 +198,8 @@ public class StatisticRepositoryImpl implements StatisticRepository {
         predicates.add(b.equal(b.function("YEAR", Integer.class, root.get("createdAt")), year));
         predicates.add(b.equal(root.get("bookingStatus"), "CONFIRM")); 
 
-        // Ép đúng tháng được chọn khi chọn chế độ lọc MONTH
         if ("MONTH".equalsIgnoreCase(time)) {
-            predicates.add(b.equal(b.function("MONTH", Integer.class, root.get("createdAt")), month)); // Thay bằng biến month
+            predicates.add(b.equal(b.function("MONTH", Integer.class, root.get("createdAt")), month));
         }
 
         q.where(predicates.toArray(new Predicate[0]));
@@ -217,6 +208,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
         return s.createQuery(q).getResultList();
     }
+    
     @Override
     public List<Object[]> getTop5Services() {
         Session s = this.factory.getObject().getCurrentSession();
@@ -239,6 +231,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
         return query.getResultList();
     }
+    
     @Override
     public Map<String, Long> countActiveServices() {
         Session s = this.factory.getObject().getCurrentSession();
@@ -246,44 +239,35 @@ public class StatisticRepositoryImpl implements StatisticRepository {
         Map<String, Long> stats = new HashMap<>();
 
         try {
-            // --- 1. ĐẾM SỐ LƯỢNG TOUR ĐANG HOẠT ĐỘNG ---
             CriteriaQuery<Long> qTour = b.createQuery(Long.class);
             Root<TourServices> rootTour = qTour.from(TourServices.class);
-            // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp TourServices
             Join<TourServices, Services> joinTourService = rootTour.join("services");
             
             qTour.select(b.count(rootTour));
-            // Lọc điều kiện status = true từ bảng Services cha
             qTour.where(b.equal(joinTourService.get("status"), true)); 
             Long tourCount = s.createQuery(qTour).getSingleResult();
 
-            // --- 2. ĐẾM SỐ LƯỢNG KHÁCH SẠN ĐANG HOẠT ĐỘNG ---
             CriteriaQuery<Long> qHotel = b.createQuery(Long.class);
             Root<HotelRoomServices> rootHotel = qHotel.from(HotelRoomServices.class);
-            // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp HotelRoomServices
             Join<HotelRoomServices, Services> joinHotelService = rootHotel.join("services");
             
             qHotel.select(b.count(rootHotel));
             qHotel.where(b.equal(joinHotelService.get("status"), true));
             Long hotelCount = s.createQuery(qHotel).getSingleResult();
 
-            // --- 3. ĐẾM SỐ LƯỢNG PHƯƠNG TIỆN ĐANG HOẠT ĐỘNG ---
             CriteriaQuery<Long> qTransport = b.createQuery(Long.class);
             Root<TransportServices> rootTransport = qTransport.from(TransportServices.class);
-            // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp TransportServices
             Join<TransportServices, Services> joinTransportService = rootTransport.join("services");
             
             qTransport.select(b.count(rootTransport));
             qTransport.where(b.equal(joinTransportService.get("status"), true));
             Long transportCount = s.createQuery(qTransport).getSingleResult();
 
-            // Đổ số liệu thực tế vào Map kết quả
             stats.put("Tour", tourCount);
             stats.put("Hotel", hotelCount);
             stats.put("Transport", transportCount);
 
         } catch (Exception ex) {
-            // Ghi nhận lỗi chi tiết ra màn hình Console nếu có phát sinh lỗi trong quá trình truy vấn
             ex.printStackTrace(); 
             stats.put("Tour", 0L);
             stats.put("Hotel", 0L);

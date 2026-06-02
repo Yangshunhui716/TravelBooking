@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.pojo;
 
 import jakarta.persistence.Basic;
@@ -16,10 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
-/**
- *
- * @author PC
- */
+
 @Entity
 @Table(name = "admins")
 @NamedQueries({

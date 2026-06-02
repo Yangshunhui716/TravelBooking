@@ -47,17 +47,14 @@ const CustomerBookings = () => {
                 <Alert variant="info">Chưa có booking nào!</Alert>
             )}
 
-            {/* Duyệt qua từng đơn Booking tổng */}
             {Array.isArray(bookings) &&
                 bookings.map((booking) => {
                     return (
                         <div key={booking.id} style={BookingStyle.card}>
-                            {/* Cấu trúc Header đã loại bỏ hoàn toàn thẻ img */}
                             <div style={BookingStyle.header}>
                                 <div style={{ ...BookingStyle.serviceSection, width: "100%" }}>
                                     <div style={{ width: "100%" }}>
                                         <div style={BookingStyle.topRow}>
-                                            {/* CHỈ HIỂN THỊ MỖI BOOKING ID */}
                                             <h5 style={BookingStyle.title}>
                                                 Booking #{booking.id}
                                             </h5>
@@ -74,8 +71,7 @@ const CustomerBookings = () => {
                                     {formatDate(booking.createdAt)}
                                 </div>
                             </div>
-
-                            {/* Giữ nguyên cấu trúc Body hiển thị các trạng thái song song ban đầu */}
+ 
                             <div style={BookingStyle.body}>
                                 <div style={BookingStyle.item}>
                                     <span style={BookingStyle.label}>Trạng thái</span>

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.services.impl;
 
 import com.cloudinary.Cloudinary;
@@ -12,7 +8,6 @@ import com.nhom34.repositories.ServiceRepository;
 import com.nhom34.services.ServiceService;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-/**
- *
- * @author QUANG AN
- */
+
+
 @Service
 @Transactional
 public class ServiceServiceImpl implements ServiceService {

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Reviews;
@@ -19,10 +15,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author QUANG AN
- */
 @Repository
 @Transactional
 public class ReviewRepositoryImpl implements ReviewRepository {
@@ -35,7 +27,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         CriteriaQuery<Reviews> q = b.createQuery(Reviews.class);
         Root<Reviews> root = q.from(Reviews.class);
         q.select(root);
-        //Predicate loc dieu kien nhu where
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(b.equal(root.get("serviceId").get("id"), serviceId));
         q.where(predicates.toArray(Predicate[]::new));

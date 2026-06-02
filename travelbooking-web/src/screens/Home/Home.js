@@ -5,7 +5,6 @@ const Home = () => {
     return (
         <>
 
-            {/* ===== CAROUSEL ===== */}
             <Carousel fade>
 
                 <Carousel.Item>
@@ -57,7 +56,7 @@ const Home = () => {
             </Carousel>
 
             <Container>
-                {/* ===== GIỚI THIỆU ===== */}
+
                 <div style={styles.introSection}>
 
                     <h1 style={styles.sectionTitle}>
@@ -91,7 +90,7 @@ const Home = () => {
 
                 </div>
 
-                {/* ===== DỊCH VỤ ===== */}
+
                 <div style={styles.serviceSection}>
 
                     <h1 style={styles.sectionTitle}>
@@ -100,7 +99,7 @@ const Home = () => {
 
                     <Row className="mt-5 g-4">
 
-                        {/* TOUR */}
+
                         <Col md={4}>
                             <Card style={styles.card}>
 
@@ -128,7 +127,7 @@ const Home = () => {
                             </Card>
                         </Col>
 
-                        {/* HOTEL */}
+
                         <Col md={4}>
                             <Card style={styles.card}>
 
@@ -156,7 +155,7 @@ const Home = () => {
                             </Card>
                         </Col>
 
-                        {/* VEHICLE */}
+
                         <Col md={4}>
                             <Card style={styles.card}>
 
@@ -188,7 +187,7 @@ const Home = () => {
 
                 </div>
 
-                {/* ===== WHY CHOOSE US ===== */}
+
                 <div style={styles.whySection}>
 
                     <h1 style={styles.sectionTitle}>

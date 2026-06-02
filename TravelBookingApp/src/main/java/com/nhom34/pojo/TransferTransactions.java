@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.pojo;
 
 import jakarta.persistence.Basic;
@@ -22,10 +18,6 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- *
- * @author PC
- */
 @Entity
 @Table(name = "transfer_transactions")
 @NamedQueries({
@@ -153,7 +145,6 @@ public class TransferTransactions implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof TransferTransactions)) {
             return false;
         }

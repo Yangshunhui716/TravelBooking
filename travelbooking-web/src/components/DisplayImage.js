@@ -1,6 +1,5 @@
 import { Image } from "react-bootstrap";
 
-// Chấp nhận cả src hoặc imageUrl, ưu tiên src nếu có cả hai
 const DisplayImage = ({ src, imageUrl, altText = "Hình ảnh dịch vụ" }) => {
     const finalSrc = src || imageUrl;
 
@@ -8,9 +7,8 @@ const DisplayImage = ({ src, imageUrl, altText = "Hình ảnh dịch vụ" }) =>
         <div 
             className="w-100 d-flex align-items-center justify-content-center "
             style={{
-                height: '350px', // Chiều cao cố định theo wireframe
-                backgroundColor: finalSrc ? 'transparent' : '#b4c6e7', // Màu xanh dương nhạt khi không có ảnh
-                borderRadius: '12px',
+                height: '350px',
+                backgroundColor: finalSrc ? 'transparent' : '#b4c6e7',
                 border: '1px solid #444',
                 overflow: 'hidden'
             }}

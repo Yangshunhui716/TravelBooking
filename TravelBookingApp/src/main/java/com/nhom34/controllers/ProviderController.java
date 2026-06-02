@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.controllers;
 
 import com.nhom34.pojo.Providers;
@@ -13,10 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.nhom34.services.UserService;
 import org.springframework.stereotype.Controller;
-/**
- *
- * @author QUANG AN
- */
+
+
 @Controller
 @RequestMapping("/admin")
 public class ProviderController {

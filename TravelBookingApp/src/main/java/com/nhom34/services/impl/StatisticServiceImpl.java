@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.services.impl;
 
 import com.nhom34.dto.ProviderStatistic;
@@ -9,21 +5,14 @@ import com.nhom34.pojo.Providers;
 import com.nhom34.repositories.StatisticRepository;
 import com.nhom34.services.StatisticService;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author PC
- */
+
 @Service
 @Transactional
 public class StatisticServiceImpl implements StatisticService{

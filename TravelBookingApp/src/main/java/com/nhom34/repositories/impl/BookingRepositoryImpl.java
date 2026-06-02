@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Bookings;
@@ -20,10 +16,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author QUANG AN
- */
 @Repository
 @Transactional
 public class BookingRepositoryImpl implements BookingRepository{
@@ -136,19 +128,12 @@ public class BookingRepositoryImpl implements BookingRepository{
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         
-        // Gốc từ bảng chi tiết đơn hàng (BookingsServiceDetail)
         Root<BookingsServiceDetail> rBD = query.from(BookingsServiceDetail.class);
         
-        // INNER JOIN sang bảng Bookings thông qua thuộc tính "bookingId"
         Join<BookingsServiceDetail, Bookings> joinBooking = rBD.join("bookingId");
         
-        // SELECT COUNT(rBD) 
         query.select(builder.count(rBD));
         
-        // Điều kiện WHERE: 
-        // 1. Đúng customerId
-        // 2. Đúng serviceId tương ứng
-        // 3. Trạng thái thanh toán phải là "PAID"
         query.where(builder.and(
             builder.equal(joinBooking.get("customerId").get("id"), customerId),
             builder.equal(rBD.get("serviceId").get("id"), serviceId),
@@ -158,6 +143,6 @@ public class BookingRepositoryImpl implements BookingRepository{
         Query q = s.createQuery(query);
         Long count = (Long) q.getSingleResult();
         
-        return count > 0; // Trả về true nếu đã từng mua và thanh toán thành công
+        return count > 0;
     }
 }

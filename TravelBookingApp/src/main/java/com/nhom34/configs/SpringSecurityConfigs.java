@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-/**
- *
- * @author admin
- */
+
 @Configuration
 @EnableWebSecurity
 @EnableTransactionManagement
@@ -54,10 +47,10 @@ public class SpringSecurityConfigs {
         http.securityMatcher("/admin/**", "/","/logout").csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
-        ).formLogin(form -> form.loginPage("/admin/login") // Đường dẫn tới trang đăng nhập
-                .loginProcessingUrl("/admin/login") // Đường dẫn xử lý POST
-                .defaultSuccessUrl("/", true) // Chuyển hướng khi thành công
-                .failureUrl("/admin/login?error=true") // Chuyển hướng khi thất bại
+        ).formLogin(form -> form.loginPage("/admin/login")
+                .loginProcessingUrl("/admin/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/admin/login?error=true")
                 .permitAll()
         ).logout(logout -> logout.logoutSuccessUrl("/admin/login").permitAll());
         return http.build();

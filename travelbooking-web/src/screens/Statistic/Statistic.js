@@ -6,7 +6,6 @@ import {
 import { authApis, endpoints } from "../../configs/Api"; 
 
 const Statistic = () => {
-    // --- STATES ---
     const [chartData, setChartData] = useState([]);
     const [metric, setMetric] = useState('customers');
     const [timePeriod, setTimePeriod] = useState('month');
@@ -14,40 +13,36 @@ const Statistic = () => {
     const [periodValue, setPeriodValue] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
 
-    // --- HÀM XỬ LÝ DỮ LIỆU TRỐNG (DATA IMPUTATION) ---
-    // Tự động sinh ra các mốc thời gian đầy đủ dù backend không trả về
     const fillMissingData = useCallback((apiData, currentPeriodType, currentPeriodValue, currentYear) => {
         let expectedPeriods = [];
         let prefix = "";
 
         if (currentPeriodType === 'month') {
-            // Lấy số ngày tối đa trong tháng đó
             const daysInMonth = new Date(currentYear, currentPeriodValue, 0).getDate();
             expectedPeriods = Array.from({ length: daysInMonth }, (_, i) => i + 1);
             prefix = "Ngày ";
         } else if (currentPeriodType === 'quarter') {
-            // Quý 1: tháng 1,2,3 | Quý 2: tháng 4,5,6...
             const startMonth = (currentPeriodValue - 1) * 3 + 1;
             expectedPeriods = [startMonth, startMonth + 1, startMonth + 2];
             prefix = "T";
         } else if (currentPeriodType === 'year') {
-            // 12 tháng trong năm
+
             expectedPeriods = Array.from({ length: 12 }, (_, i) => i + 1);
             prefix = "T";
         }
 
-        // Map dữ liệu từ API vào khung thời gian chuẩn
+
         return expectedPeriods.map(p => {
-            // So sánh kiểu số để tránh lỗi string "01" vs "1"
+
             const record = apiData.find(d => Number(d.period) === p);
             
             const total = record ? record.totalCustomers : 0;
             const newCus = record ? record.newCustomers : 0;
-            // Tính số lượng khách cũ
+
             const oldCus = Math.max(0, total - newCus); 
 
             return {
-                periodDisplay: `${prefix}${p}`, // Nhãn hiển thị trên trục X (vd: Ngày 1, T2)
+                periodDisplay: `${prefix}${p}`,
                 revenue: record ? record.revenue : 0,
                 totalCustomers: total,
                 newCustomers: newCus,
@@ -56,7 +51,6 @@ const Statistic = () => {
         });
     }, []);
 
-    // --- CALL API ---
     const fetchData = useCallback(async () => {
         try {
             const res = await authApis().get(endpoints['provider-statistics'](metric), {
@@ -68,13 +62,11 @@ const Statistic = () => {
                 }
             });
             
-            // Đưa dữ liệu qua hàm xử lý để lấp đầy các ngày/tháng trống
             const processedData = fillMissingData(res.data, timePeriod, periodValue, year);
             setChartData(processedData);
             
         } catch (ex) {
             console.error("Lỗi khi tải dữ liệu thống kê:", ex);
-            // Kể cả khi lỗi, vẫn hiển thị biểu đồ rỗng đầy đủ mốc thời gian
             setChartData(fillMissingData([], timePeriod, periodValue, year));
         }
     }, [metric, timePeriod, serviceType, periodValue, year, fillMissingData]);
@@ -83,7 +75,7 @@ const Statistic = () => {
         fetchData();
     }, [fetchData]);
 
-    // --- HANDLERS ---
+
     const handleTimePeriodChange = (e) => {
         const newPeriod = e.target.value;
         setTimePeriod(newPeriod);
@@ -97,7 +89,7 @@ const Statistic = () => {
         }
     };
 
-    // --- RENDER HELPERS ---
+
     const formatYAxis = (value) => {
         if (metric === 'revenue') {
             return value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : value;
@@ -111,7 +103,6 @@ const Statistic = () => {
                 <h3 className="mb-4 text-dark fst-italic">Thống kê</h3>
                 
                 <div className="row">
-                    {/* CỘT TRÁI: BỘ LỌC (Giữ nguyên như thiết kế của bạn) */}
                     <div className="col-md-3 border-end pe-4">
                         <div className="mb-3">
                             <label className="form-label text-secondary fw-semibold small">Chỉ số báo cáo</label>
@@ -178,14 +169,12 @@ const Statistic = () => {
                         </div>
                     </div>
 
-                    {/* CỘT PHẢI: BIỂU ĐỒ NÂNG CAO */}
                     <div className="col-md-9 ps-4 d-flex flex-column">
                         <h5 className="text-center mb-4 text-secondary">
                             {metric === 'revenue' ? "Biểu đồ Doanh thu" : "Biểu đồ Phân bổ Khách hàng"}
                         </h5>
                         <div className="flex-grow-1" style={{ minHeight: '400px' }}>
                             <ResponsiveContainer width="100%" height="100%">
-                                {/* Chuyển thành ComposedChart để hỗ trợ mix Line/Area/Bar */}
                                 <ComposedChart
                                     data={chartData}
                                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -212,9 +201,8 @@ const Statistic = () => {
                                     />
                                     <Legend wrapperStyle={{ paddingTop: '20px' }} />
                                     
-                                    {/* 1. NẾU LÀ DOANH THU */}
+
                                     {metric === 'revenue' && timePeriod === 'year' && (
-                                        // Dài hạn (Cả năm) -> Dùng Area Chart đổ màu
                                         <Area 
                                             type="monotone" 
                                             dataKey="revenue" 
@@ -227,7 +215,6 @@ const Statistic = () => {
                                         />
                                     )}
                                     {metric === 'revenue' && timePeriod !== 'year' && (
-                                        // Ngắn hạn (Ngày/Quý) -> Dùng Bar Chart
                                         <Bar 
                                             dataKey="revenue" 
                                             name="Doanh thu" 
@@ -237,9 +224,7 @@ const Statistic = () => {
                                         />
                                     )}
 
-                                    {/* 2. NẾU LÀ KHÁCH HÀNG */}
                                     {metric === 'customers' && (
-                                        // Sử dụng Stacked Column (Chung stackId="a")
                                         <>
                                             <Bar 
                                                 dataKey="oldCustomers" 

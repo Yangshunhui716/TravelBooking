@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.configs;
 
 import com.cloudinary.Cloudinary;
@@ -12,10 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-/**
- *
- * @author PC
- */
+
 @Configuration
 @PropertySource("classpath:databases.properties")
 public class CloudinaryConfigs {

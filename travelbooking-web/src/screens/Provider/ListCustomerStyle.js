@@ -7,12 +7,12 @@ const ListCustomerStyle = {
     tableResponsive: {
         border: "2px solid #212529",
         borderRadius: "16px",
-        overflow: "hidden", // Giúp các góc bảng không bị tràn ra ngoài viền bo tròn
+        overflow: "hidden",
         backgroundColor: "#fff"
     },
     table: {
-        margin: 0, // Xóa bỏ margin mặc định của Bootstrap Table để khít viền ngoài
-        borderStyle: "hidden" // Ẩn viền vuông mặc định ngoài cùng để dùng viền của wrapper
+        margin: 0,
+        borderStyle: "hidden"
     },
     thWidthSm: {
         width: "60px"

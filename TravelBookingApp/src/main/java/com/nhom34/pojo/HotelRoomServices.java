@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.pojo;
 
 import jakarta.persistence.Basic;
@@ -17,10 +13,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
-/**
- *
- * @author PC
- */
 @Entity
 @Table(name = "hotel_room_services")
 @NamedQueries({
@@ -116,7 +108,6 @@ public class HotelRoomServices implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof HotelRoomServices)) {
             return false;
         }

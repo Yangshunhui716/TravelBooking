@@ -1,19 +1,13 @@
 import { Link } from "react-router-dom";
 import { Container, Nav, Navbar, Button, Badge } from "react-bootstrap";
-
 import { useContext } from "react";
-
-import cookies from "react-cookies";
-
 import { MyUserContext, MyCartContext } from "../configs/Context";
 
 const Header = () => {
-
-    const [user, dispatch] = useContext(MyUserContext);
-
-
+    const [user] = useContext(MyUserContext);
     const [cart,] = useContext(MyCartContext);
     const userRole = user?.users?.role;
+    
     return (
         <Navbar
             expand="lg"
@@ -24,7 +18,6 @@ const Header = () => {
         >
             <Container>
 
-                {/* Logo */}
                 <Navbar.Brand
                     as={Link}
                     to="/"
@@ -45,7 +38,6 @@ const Header = () => {
 
                 <Navbar.Collapse id="basic-navbar-nav">
 
-                    {/* MENU */}
                     <Nav className="mx-auto">
 
                         <Nav.Link
@@ -82,7 +74,6 @@ const Header = () => {
 
                     </Nav>
 
-                    {/* RIGHT SIDE */}
                     <div className="d-flex align-items-center">
                         {(user === null || userRole !== "ROLE_PROVIDER") && (
                             <Link
@@ -123,7 +114,7 @@ const Header = () => {
                             </>
                         ) : (
                             <>
-                                {/* THỐNG KÊ: Chỉ hiện khi người dùng đăng nhập với quyền PROVIDER */}
+
                                 {userRole === "ROLE_PROVIDER" && (
                                     <Link
                                         to="/statistic"

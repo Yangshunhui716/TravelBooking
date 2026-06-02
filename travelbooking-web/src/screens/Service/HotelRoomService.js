@@ -10,10 +10,9 @@ const HotelRoomService = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams(); 
-    const [page, setPage] = useState(1); // Thêm state quản lý số trang tương tự Tour và Transport
+    const [page, setPage] = useState(1);
     const navigate = useNavigate();
 
-    // Định dạng hiển thị giá tiền lẻ VNĐ
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
@@ -21,20 +20,17 @@ const HotelRoomService = () => {
     const loadRooms = async () => {
         try {
             setLoading(true);
-            let params = { page: page }; // Gửi kèm số trang lên API hệ thống
+            let params = { page: page };
 
-            // Đọc trực tiếp các tham số lọc từ URL xuống
             const destination = searchParams.get("destination");
             const checkInDate = searchParams.get("checkInDate");
             const checkOutDate = searchParams.get("checkOutDate");
             const sort = searchParams.get("sort") || "";
 
-            // Đóng gói tham số gửi lên Backend API đúng với cấu trúc map cũ của bạn
             if (destination) params.destination = destination;
             if (checkInDate) params.startDate = checkInDate;
             if (checkOutDate) params.endDate = checkOutDate;
 
-            // Xử lý Sort
             switch (sort) {
                 case "price_asc":   params.price = "asc"; break;
                 case "price_desc":  params.price = "desc"; break;
@@ -49,11 +45,10 @@ const HotelRoomService = () => {
             );
 
             if (res.data.length === 0) {
-                setPage(0); // Đánh dấu hết dữ liệu để ẩn nút Xem thêm
+                setPage(0);
                 return;
             }
 
-            // MAP API -> CARD DATA
             const mappedRooms = res.data.map((room) => ({
                 id: room.id,
                 title: room.services?.name, 
@@ -68,11 +63,10 @@ const HotelRoomService = () => {
                 onView: () => navigate(`/hotel-room-services/${room.id}`)
             }));
 
-            // Xử lý nạp dữ liệu chuẩn theo page tương thích cấu trúc của thầy
             if (page === 1) {
-                setRooms(mappedRooms); // Trang đầu hoặc lọc mới thì thay thế mảng
+                setRooms(mappedRooms); 
             } else if (page > 1) {
-                setRooms(prev => [...prev, ...mappedRooms]); // Các trang sau thì cộng dồn dữ liệu tiếp vào
+                setRooms(prev => [...prev, ...mappedRooms]);
             }
         } catch (err) {
             console.error("Lỗi khi tải danh sách phòng khách sạn:", err);
@@ -103,7 +97,6 @@ const HotelRoomService = () => {
         { key: "checkOutDate", label: "Ngày trả phòng", type: "date" }
     ];
 
-    // Đẩy các giá trị nhận được từ form lọc ghim lên thanh URL
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         
@@ -119,7 +112,6 @@ const HotelRoomService = () => {
         setSearchParams(newParams);
     };
 
-    // Đẩy giá trị sort lên thanh URL khi người dùng thay đổi dropdown sắp xếp
     const handleSortChange = (sortValue) => {
         const newParams = new URLSearchParams(searchParams);
         if (sortValue) newParams.set("sort", sortValue);
@@ -129,7 +121,6 @@ const HotelRoomService = () => {
 
     return (
         <div className="d-flex p-4 gap-4">
-            {/* BỘ LỌC ĐỘNG TÌM KIẾM PHÒNG */}
             <DynamicFilter
                 config={hotelConfig}
                 onFilterSubmit={handleFilter}
