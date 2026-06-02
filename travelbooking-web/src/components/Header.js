@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { Container, Nav, Navbar, Button, Badge } from "react-bootstrap";
 import { useContext } from "react";
-import { MyUserContext, MyCartContext } from "../configs/Context";
+import { MyUserContext, MyCartContext, MyCompareContext } from "../configs/Context";
 
 const Header = () => {
     const [user] = useContext(MyUserContext);
     const [cart,] = useContext(MyCartContext);
+    const [compareList] = useContext(MyCompareContext);
     const userRole = user?.users?.role;
     
     return (
@@ -16,155 +17,164 @@ const Header = () => {
                 background: "linear-gradient(to right, #0ea5e9, #0284c7)",
             }}
         >
-            <Container>
 
-                <Navbar.Brand
-                    as={Link}
-                    to="/"
-                    style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        fontSize: "30px",
-                        letterSpacing: "1px"
-                    }}
-                >
-                    AH TravelBooking
-                </Navbar.Brand>
+            <Navbar.Brand
+                as={Link}
+                to="/"
+                style={{
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "30px",
+                    letterSpacing: "1px",
+                    marginLeft:"30px",
+                }}
+            >
+                AH TravelBooking
+            </Navbar.Brand>
 
-                <Navbar.Toggle
-                    aria-controls="basic-navbar-nav"
-                    style={{ backgroundColor: "white" }}
-                />
+            <Navbar.Toggle
+                aria-controls="basic-navbar-nav"
+                style={{ backgroundColor: "white" }}
+            />
 
-                <Navbar.Collapse id="basic-navbar-nav">
+            <Navbar.Collapse id="basic-navbar-nav">
 
-                    <Nav className="mx-auto">
+                <Nav className="mx-auto">
 
-                        <Nav.Link
-                            as={Link}
-                            to="/"
-                            style={styles.navLink}
-                        >
-                            Trang chủ
-                        </Nav.Link>
+                    <Nav.Link
+                        as={Link}
+                        to="/"
+                        style={styles.navLink}
+                    >
+                        Trang chủ
+                    </Nav.Link>
 
-                        <Nav.Link
-                            as={Link}
-                            to="/tour-services"
-                            style={styles.navLink}
-                        >
-                            Tour
-                        </Nav.Link>
+                    <Nav.Link
+                        as={Link}
+                        to="/tour-services"
+                        style={styles.navLink}
+                    >
+                        Tour
+                    </Nav.Link>
 
-                        <Nav.Link
-                            as={Link}
-                            to="/hotel-room-services"
-                            style={styles.navLink}
-                        >
-                            Phòng khách sạn
-                        </Nav.Link>
+                    <Nav.Link
+                        as={Link}
+                        to="/hotel-room-services"
+                        style={styles.navLink}
+                    >
+                        Phòng khách sạn
+                    </Nav.Link>
 
-                        <Nav.Link
-                            as={Link}
-                            to="/transport-services"
-                            style={styles.navLink}
-                        >
-                            Phương tiện
-                        </Nav.Link>
+                    <Nav.Link
+                        as={Link}
+                        to="/transport-services"
+                        style={styles.navLink}
+                    >
+                        Phương tiện
+                    </Nav.Link>
 
-                    </Nav>
+                    <Nav.Link as={Link} to="/compare" style={styles.navLink}>
+                        So sánh dịch vụ  {compareList.services.length > 0 && (
+                            <Badge className="bg-danger">
+                                {compareList.services.length}
+                            </Badge>
+                        )}
+                    </Nav.Link>
 
-                    <div className="d-flex align-items-center">
-                        {(user === null || userRole !== "ROLE_PROVIDER") && (
+                </Nav>
+
+                <div className="d-flex align-items-center">
+                    {user === null ? (
+                        <>
+                            <Button
+                                as={Link}
+                                to="/login"
+                                variant="light"
+                                className="me-2 px-4 rounded-pill fw-bold"
+                            >
+                                Đăng nhập
+                            </Button>
+
+                            <Button
+                                as={Link}
+                                to="/register"
+                                className="px-4 rounded-pill fw-bold"
+                                style={{
+                                    backgroundColor: "#f97316",
+                                    border: "none",
+                                    marginRight:"20px"
+                                }}
+                            >
+                                Đăng ký
+                            </Button>
+                        </>
+                    ) : (
+                        <>
                             <Link
-                                to="/cart"
+                                to="/profile"
                                 style={{
                                     color: "white",
                                     fontWeight: "bold",
                                     marginRight: "15px",
                                     textDecoration: "none",
+                                    fontSize: "18px",
+                                    marginRight:"20px"
                                 }}
                             >
-                                 &#128722; Giỏ hàng <Badge className="bg-danger">{cart?.totalQuantity || 0}</Badge>
+                                Xin chào, {
+                                    user.fullname ||
+                                    user.businessName ||
+                                    user.users?.username
+                                }
                             </Link>
-                        )}
 
-                        {user === null ? (
-                            <>
-                                <Button
-                                    as={Link}
-                                    to="/login"
-                                    variant="light"
-                                    className="me-2 px-4 rounded-pill fw-bold"
-                                >
-                                    Đăng nhập
-                                </Button>
-
-                                <Button
-                                    as={Link}
-                                    to="/register"
-                                    className="px-4 rounded-pill fw-bold"
-                                    style={{
-                                        backgroundColor: "#f97316",
-                                        border: "none"
-                                    }}
-                                >
-                                    Đăng ký
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-
-                                {userRole === "ROLE_PROVIDER" && (
-                                    <Link
-                                        to="/statistic"
-                                        style={{
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            marginRight: "15px",
-                                            textDecoration: "none",
-                                        }}
-                                    >
-                                         &#128202;Thống kê
-                                    </Link>
-                                )}
-
+                            {userRole === "ROLE_PROVIDER" && (
                                 <Link
-                                    to="/conversations"
-                                        style={{
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            marginRight: "15px",
-                                            textDecoration: "none",
-                                        }}
-                                    >
-                                    💬 Tin nhắn
-                                </Link>
-
-                                <Link
-                                    to="/profile"
+                                    to="/statistic"
                                     style={{
                                         color: "white",
                                         fontWeight: "bold",
                                         marginRight: "15px",
                                         textDecoration: "none",
-                                        fontSize: "18px"
                                     }}
                                 >
-                                    Xin chào, {
-                                        user.fullname ||
-                                        user.businessName ||
-                                        user.users?.username
-                                    }
+                                        &#128202; Thống kê
                                 </Link>
-                            </>
-                        )}
+                            )}
 
-                    </div>
+                            {userRole === "ROLE_CUSTOMER" && (
+                                <Link
+                                    to="/cart"
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        marginRight: "15px",
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                        &#128722; Giỏ hàng <Badge className="bg-danger">{cart?.totalQuantity || 0}</Badge>
+                                </Link>
+                            )}
 
-                </Navbar.Collapse>
+                            <Link
+                                to="/conversations"
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        marginRight: "15px",
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                💬 Tin nhắn
+                            </Link>
 
-            </Container>
+                        </>
+                    )}
+
+                </div>
+
+            </Navbar.Collapse>
+
         </Navbar>
     );
 }

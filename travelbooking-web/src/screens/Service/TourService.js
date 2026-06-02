@@ -65,6 +65,7 @@ const TourService = () => {
                     `Khởi hành: ${formatDate(tour.departureTime)}`,
                     `Số chỗ: ${tour.services?.availableSlots}`
                 ],
+                typeService: "tour-services",
                 onView: () => navigate(`/tour-services/${tour.id}`)
             }));
             

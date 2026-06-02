@@ -79,6 +79,7 @@ const TransportService = () => {
                     `Khởi hành: ${formatTime(transport.departureTime)} - ${formatDate(transport.departureTime)}`,
                     `Số chỗ còn: ${transport.services?.availableSlots || 0} chỗ`
                 ],
+                typeService: "transport-services",
                 onView: () => navigate(`/transport-services/${transport.id}`)
             }));
 
