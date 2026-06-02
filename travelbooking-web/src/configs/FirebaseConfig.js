@@ -3,6 +3,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyBLyByTq3J1t9F7ZCSX2jcSRiy6ENM0dDQ",
   authDomain: "ahtravelbookingweb.firebaseapp.com",

@@ -26,6 +26,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @author QUANG AN
  */
 @Repository
+@PropertySource("classpath:configs.properties")
 @Transactional
 public class TransportRepositoryImpl implements TransportRepository{
+    @Autowired
+    private Environment env;
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -115,6 +120,17 @@ public class TransportRepositoryImpl implements TransportRepository{
         if (!orders.isEmpty()) q.orderBy(orders);
         
         Query query = s.createQuery(q);
+        
+        if (params != null) {
+            int page = Integer.parseInt(params.getOrDefault("page", "1"));
+            
+            int pageSize = this.env.getProperty("service.pageSize", Integer.class);
+            
+            int start = (page - 1) * pageSize;
+
+            query.setMaxResults(pageSize);
+            query.setFirstResult(start);
+        }
         return query.getResultList();
 
     }

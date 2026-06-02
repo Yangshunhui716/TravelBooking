@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom"; // Import hook điều hướng
+import React, { useEffect, useState } from "react"; // Xóa bỏ hoàn toàn useCallback
+import { useNavigate, useSearchParams } from "react-router-dom"; // Thêm useSearchParams giống thầy
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
@@ -9,10 +9,9 @@ import Apis, { endpoints } from "../../configs/Api";
 const TransportService = () => {
     const [transports, setTransports] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [filters, setFilters] = useState({});
-    const [sort, setSort] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams(); // Đọc và ghi trực tiếp lên thanh URL
     
-    const navigate = useNavigate(); // Khởi tạo điều hướng
+    const navigate = useNavigate();
 
     // Format tiền tệ
     const formatPrice = (price) => {
@@ -34,38 +33,32 @@ const TransportService = () => {
         });
     };
 
-    // Bọc hàm loadTransports bằng useCallback để tối ưu hóa hiệu năng và dependency
-    const loadTransports = useCallback(async () => {
+    // 1. Viết hàm async thường giống hệt thầy (không bọc useCallback)
+    const loadTransports = async () => {
         try {
             setLoading(true);
             let params = {};
 
-            // ================= FILTER =================
-            if (filters.departureLocation)
-                params.departureLocation = filters.departureLocation;
-            if (filters.destination)
-                params.destination = filters.destination;
-            if (filters.departureDate)
-                params.departureTime = filters.departureDate;
-            if (filters.transportType)
-                params.transportType = filters.transportType;
+            // Đọc trực tiếp các tham số lọc từ URL xuống
+            const departureLocation = searchParams.get("departureLocation");
+            const destination = searchParams.get("destination");
+            const departureDate = searchParams.get("departureDate");
+            const transportType = searchParams.get("transportType");
+            const sort = searchParams.get("sort") || "";
 
-            // ================= SORT =================
+            // Đóng gói gửi lên Backend API nếu tồn tại trên URL
+            if (departureLocation) params.departureLocation = departureLocation;
+            if (destination) params.destination = destination;
+            if (departureDate) params.departureTime = departureDate;
+            if (transportType) params.transportType = transportType;
+
+            // Xử lý Sort
             switch (sort) {
-                case "price_asc":
-                    params.price = "asc";
-                    break;
-                case "price_desc":
-                    params.price = "desc";
-                    break;
-                case "slot_asc":
-                    params.slot = "asc";
-                    break;
-                case "slot_desc":
-                    params.slot = "desc";
-                    break;
-                default:
-                    break;
+                case "price_asc":   params.price = "asc"; break;
+                case "price_desc":  params.price = "desc"; break;
+                case "slot_asc":    params.slot = "asc"; break;
+                case "slot_desc":   params.slot = "desc"; break;
+                default: break;
             }
 
             let res = await Apis.get(
@@ -73,22 +66,20 @@ const TransportService = () => {
                 { params: params }
             );
 
-            // ================= MAP API -> CARD DATA =================
+            // MAP API -> CARD DATA
             const mappedTransports = res.data.map((transport) => ({
                 id: transport.id,
-                title: transport.services?.name, // Tên nhà xe (Ví dụ: Nhà xe Phương Trang)
+                title: transport.services?.name, 
                 badge: transport.transportType === "BUS" ? "Xe khách" : 
                        transport.transportType === "PLANE" ? "Máy bay" : "Tàu hỏa",
                 image: transport.services?.imgUrl,
                 price: formatPrice(transport.services?.price),
                 details: [
-                    // Sửa lại theo đúng trường JSON thực tế: transport.departure và transport.services?.destination
                     `Tuyến: ${transport.departure} → ${transport.services?.destination || ""}`,
                     `Chi tiết: ${transport.loactionDetail || "Chưa cập nhật"}`,
                     `Khởi hành: ${formatTime(transport.departureTime)} - ${formatDate(transport.departureTime)}`,
                     `Số chỗ còn: ${transport.services?.availableSlots || 0} chỗ`
                 ],
-                // Hàm điều hướng chính xác sang trang chi tiết phương tiện vận chuyển
                 onView: () => navigate(`/transport-services/${transport.id}`)
             }));
 
@@ -98,30 +89,20 @@ const TransportService = () => {
         } finally {
             setLoading(false);
         }
-    }, [filters, sort, navigate]);
+    };
 
-    // Gọi lại API khi filter hoặc sort thay đổi mà không lo bị loop vô hạn
+    // 2. useEffect CHỈ lắng nghe searchParams (URL thay đổi thì load lại dữ liệu)
+    // Hoàn toàn không bỏ 'loadTransports' vào mảng này để tránh lỗi lặp vô hạn giống thầy bạn
     useEffect(() => {
         loadTransports();
-    }, [loadTransports]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
 
     // CẤU HÌNH BỘ LỌC (FILTER CONFIG)
     const transportConfig = [
-        {
-            key: "departureLocation",
-            label: "Điểm khởi hành",
-            type: "text"
-        },
-        {
-            key: "destination",
-            label: "Điểm đến",
-            type: "text"
-        },
-        {
-            key: "departureDate",
-            label: "Ngày khởi hành",
-            type: "date"
-        },
+        { key: "departureLocation", label: "Điểm khởi hành", type: "text" },
+        { key: "destination", label: "Điểm đến", type: "text" },
+        { key: "departureDate", label: "Ngày khởi hành", type: "date" },
         {
             key: "transportType",
             label: "Loại phương tiện",
@@ -134,8 +115,31 @@ const TransportService = () => {
         }
     ];
 
+    // 3. Đẩy các tham số lọc lên URL khi nhấn nút Submit bộ lọc
     const handleFilter = (values) => {
-        setFilters(values);
+        const newParams = new URLSearchParams(searchParams);
+        
+        if (values.departureLocation) newParams.set("departureLocation", values.departureLocation);
+        else newParams.delete("departureLocation");
+
+        if (values.destination) newParams.set("destination", values.destination);
+        else newParams.delete("destination");
+
+        if (values.departureDate) newParams.set("departureDate", values.departureDate);
+        else newParams.delete("departureDate");
+
+        if (values.transportType) newParams.set("transportType", values.transportType);
+        else newParams.delete("transportType");
+
+        setSearchParams(newParams);
+    };
+
+    // 4. Đẩy tham số sắp xếp lên URL khi bấm đổi Sort dropdown
+    const handleSortChange = (sortValue) => {
+        const newParams = new URLSearchParams(searchParams);
+        if (sortValue) newParams.set("sort", sortValue);
+        else newParams.delete("sort");
+        setSearchParams(newParams);
     };
 
     return (
@@ -154,10 +158,9 @@ const TransportService = () => {
                     title="Danh sách Phương tiện"
                     items={transports}
                     sortCategory="slot"
-                    currentSort={sort}
-                    onSortChange={setSort}
+                    currentSort={searchParams.get("sort") || ""} // Đọc trực tiếp từ URL để giữ trạng thái dropdown
+                    onSortChange={handleSortChange}
                 />
-                 {loading && <MySpinner />}
             </div>
         </div>
     );

@@ -24,12 +24,13 @@
                             <li class="nav-item" >
                                 <a class="nav-link" th:href="@{/admin/providers}" sec:authorize="hasRole('ADMIN')">Providers</a>
                             </li>
-                            <li class="nav-item" >
-                                <a class="nav-link" th:href="@{/logout}" sec:authorize="isAuthenticated()">Đăng xuất</a>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" th:href="@{/admin/stats}" sec:authorize="hasRole('ADMIN')">Thống kê</a>
                             </li>
+                            <li class="nav-item" >
+                                <a class="nav-link" th:href="@{/logout}" sec:authorize="isAuthenticated()">Đăng xuất</a>
+                            </li>
+
                         </ul>
                     </div>
                 </div>
