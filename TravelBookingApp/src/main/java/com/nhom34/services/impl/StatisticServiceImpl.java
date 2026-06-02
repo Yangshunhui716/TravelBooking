@@ -58,9 +58,8 @@ public class StatisticServiceImpl implements StatisticService{
     }
 
     @Override
-    public List<Object[]> getRevenueByTime(String time, int year) {
-        return this.statisticRepo.getRevenueByTime(time, year);
-       
+    public List<Object[]> getRevenueByTime(String time, int year, int month) {
+        return this.statisticRepo.getRevenueByTime(time, year, month);
     }
 
     @Override

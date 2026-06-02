@@ -11,16 +11,9 @@ const Header = () => {
 
     const [user, dispatch] = useContext(MyUserContext);
 
-    const logout = () => {
 
-        cookies.remove("token");
-
-        dispatch({
-            type: "LOGOUT"
-        });
-    }
     const [cart,] = useContext(MyCartContext);
-
+    const userRole = user?.users?.role;
     return (
         <Navbar
             expand="lg"
@@ -91,6 +84,19 @@ const Header = () => {
 
                     {/* RIGHT SIDE */}
                     <div className="d-flex align-items-center">
+                        {(user === null || userRole !== "ROLE_PROVIDER") && (
+                            <Link
+                                to="/cart"
+                                style={{
+                                    color: "white",
+                                    fontWeight: "bold",
+                                    marginRight: "15px",
+                                    textDecoration: "none",
+                                }}
+                            >
+                                 &#128722; Giỏ hàng <Badge className="bg-danger">{cart?.totalQuantity || 0}</Badge>
+                            </Link>
+                        )}
 
                         {user === null ? (
                             <>
@@ -117,31 +123,20 @@ const Header = () => {
                             </>
                         ) : (
                             <>
-                                <Link
-                                    as={Link}
-                                    to="/cart"
-                                    style={{
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        marginRight: "15px",
-                                        textDecoration: "none",
-                                    }}
-                                >
-                                    &#128722; Giỏ hàng <Badge variant="danger" className="bg-danger">{cart?.totalQuantity || 0}</Badge>
-                                </Link>
-
-                                <Link
-                                    as={Link}
-                                    to="/statistic"
-                                    style={{
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        marginRight: "15px",
-                                        textDecoration: "none",
-                                    }}
-                                >
-                                    &#128202; Thống kê
-                                </Link>
+                                {/* THỐNG KÊ: Chỉ hiện khi người dùng đăng nhập với quyền PROVIDER */}
+                                {userRole === "ROLE_PROVIDER" && (
+                                    <Link
+                                        to="/statistic"
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "bold",
+                                            marginRight: "15px",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                         &#128202;Thống kê
+                                    </Link>
+                                )}
 
                                 <Link
                                     to="/profile"

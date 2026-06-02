@@ -189,14 +189,16 @@ const TransportServiceDetail = () => {
                                             Còn trống: {transportService.services?.availableSlots} / {transportService.services?.slots} ghế
                                         </small>
                                     </div>
-                                    <Button 
-                                        variant="danger" 
-                                        size="lg" 
-                                        className="px-4 font-weight-bold" 
-                                        onClick={()=> order(transportService)}
-                                    >
-                                        Đặt 
-                                    </Button>
+                                    {(user === null || user?.users?.role !== "ROLE_PROVIDER") && (
+                                        <Button 
+                                            variant="danger" 
+                                            size="lg" 
+                                            className="px-4 font-weight-bold mt-2" 
+                                            onClick={() => order(transportService)}
+                                        >
+                                            Đặt
+                                        </Button>
+                                    )}
                                 </div>
 
                                 <hr />

@@ -1,18 +1,15 @@
-import React, { useEffect, useState, useCallback } from "react"; // 1. Thêm useCallback ở đây
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react"; // Xóa bỏ hoàn toàn useCallback cho nhẹ máy
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
 import MySpinner from "../../components/MySpinner";
 import Apis, { endpoints } from "../../configs/Api";
-// Xóa bớt import Spinner và SortDropdown thừa tại đây
 
 const TourService = () => {
     const [tours, setTours] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [filters, setFilters] = useState({});
-    const [sort, setSort] = useState("");
-    
+    const [searchParams, setSearchParams] = useSearchParams(); // Giống biến 'q' của thầy
     const navigate = useNavigate();
 
     // format tiền
@@ -25,34 +22,26 @@ const TourService = () => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
 
-    // 2. Bọc hàm loadTours trong useCallback để tối ưu dependency
-    const loadTours = useCallback(async () => {
+    // 1. Viết hàm async thường giống hệt thầy (không bọc useCallback)
+    const loadTours = async () => {
         try {
             setLoading(true);
             let params = {};
             
-            // FILTER
-            if (filters.destination)
-                params.destination = filters.destination;
-            if (filters.departureDate)
-                params.departureTime = filters.departureDate;
+            // Đọc tham số trực tiếp từ URL xuống giống cách thầy làm với cateId, kw
+            const destination = searchParams.get("destination");
+            const departureDate = searchParams.get("departureDate");
+            const sort = searchParams.get("sort") || "";
+            
+            if (destination) params.destination = destination;
+            if (departureDate) params.departureTime = departureDate;
                 
-            // SORT
             switch (sort) {
-                case "price_asc":
-                    params.price = "asc";
-                    break;
-                case "price_desc":
-                    params.price = "desc";
-                    break;
-                case "slot_asc":
-                    params.slot = "asc";
-                    break;
-                case "slot_desc":
-                    params.slot = "desc";
-                    break;
-                default:
-                    break;
+                case "price_asc":   params.price = "asc"; break;
+                case "price_desc":  params.price = "desc"; break;
+                case "slot_asc":    params.slot = "asc"; break;
+                case "slot_desc":   params.slot = "desc"; break;
+                default: break;
             }
 
             let res = await Apis.get(
@@ -60,7 +49,6 @@ const TourService = () => {
                 { params: params }
             );
             
-            // MAP API -> CARD DATA
             const mappedTours = res.data.map((tour) => ({
                 id: tour.id,
                 title: tour.services?.name,
@@ -81,40 +69,46 @@ const TourService = () => {
         } finally {
             setLoading(false);
         }
-    }, [filters, sort, navigate]); // Hàm sẽ chỉ đổi khi filters, sort hoặc navigate thay đổi
+    };
 
-    // 3. Thêm loadTours vào mảng dependency một cách an toàn
+    // 2. useEffect CHỈ lắng nghe searchParams (URL thay đổi thì load lại dữ liệu)
+    // Tuyệt đối không bỏ 'loadTours' vào mảng này giống hệt thầy của bạn
     useEffect(() => {
         loadTours();
-    }, [loadTours]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]); 
 
     // CONFIG CHO FILTER
     const tourConfig = [
-        {
-            key: "destination",
-            label: "Điểm đến",
-            type: "text"
-        },
-        {
-            key: "departureDate",
-            label: "Ngày khởi hành",
-            type: "date"
-        }
+        { key: "destination", label: "Điểm đến", type: "text" },
+        { key: "departureDate", label: "Ngày khởi hành", type: "date" }
     ];
 
     const handleFilter = (values) => {
-        setFilters(values);
+        const newParams = new URLSearchParams(searchParams);
+        if (values.destination) newParams.set("destination", values.destination);
+        else newParams.delete("destination");
+
+        if (values.departureDate) newParams.set("departureDate", values.departureDate);
+        else newParams.delete("departureDate");
+
+        setSearchParams(newParams);
+    };
+
+    const handleSortChange = (sortValue) => {
+        const newParams = new URLSearchParams(searchParams);
+        if (sortValue) newParams.set("sort", sortValue);
+        else newParams.delete("sort");
+        setSearchParams(newParams);
     };
 
     return (
         <div className="d-flex p-4 gap-4">
-            {/* FILTER */}
             <DynamicFilter
                 config={tourConfig}
                 onFilterSubmit={handleFilter}
             />
             
-            {/* LIST */}
             <div className="flex-grow-1">
                 <div className="d-flex justify-content-between align-items-center mb-3"></div>
                 
@@ -124,8 +118,8 @@ const TourService = () => {
                     title="Danh sách Tour"
                     items={tours}
                     sortCategory="slot"
-                    currentSort={sort}
-                    onSortChange={setSort}
+                    currentSort={searchParams.get("sort") || ""}
+                    onSortChange={handleSortChange}
                 />
             </div>
         </div>

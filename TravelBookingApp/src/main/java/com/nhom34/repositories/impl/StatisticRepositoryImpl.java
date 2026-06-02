@@ -187,35 +187,36 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
 
     @Override
-    public List<Object[]> getRevenueByTime(String time, int year) {
+    public List<Object[]> getRevenueByTime(String time, int year, int month) { // Đổi tên tham số ở đây
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<Object[]> q = b.createQuery(Object[].class);
 
         Root<Bookings> root = q.from(Bookings.class);
 
-        // Chuẩn hóa hàm cắt chuỗi thời gian: Nếu lọc theo 'YEAR' (Năm) -> lấy 'MONTH', ngược lại lấy 'DAY'
         String sqlFunction = "YEAR".equalsIgnoreCase(time) ? "MONTH" : "DAY";
 
-        // Multiselect: [Thời gian, Số lượt đặt, Tổng doanh thu]
         q.multiselect(
             b.function(sqlFunction, Integer.class, root.get("createdAt")),
             b.count(root.get("id")),
             b.sum(root.get("totalAmount"))
         );
 
-        // Mệnh đề WHERE lọc theo năm giống phong cách của thầy bạn
-        Predicate yearPredicate = b.equal(b.function("YEAR", Integer.class, root.get("createdAt")), year);
-        Predicate statusPredicate = b.equal(root.get("bookingStatus"), "CONFIRMED"); 
-        q.where(b.and(yearPredicate, statusPredicate));
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(b.function("YEAR", Integer.class, root.get("createdAt")), year));
+        predicates.add(b.equal(root.get("bookingStatus"), "CONFIRM")); 
 
+        // Ép đúng tháng được chọn khi chọn chế độ lọc MONTH
+        if ("MONTH".equalsIgnoreCase(time)) {
+            predicates.add(b.equal(b.function("MONTH", Integer.class, root.get("createdAt")), month)); // Thay bằng biến month
+        }
+
+        q.where(predicates.toArray(new Predicate[0]));
         q.groupBy(b.function(sqlFunction, Integer.class, root.get("createdAt")));
         q.orderBy(b.asc(b.function(sqlFunction, Integer.class, root.get("createdAt"))));
 
-        Query query = s.createQuery(q);
-        return query.getResultList();
+        return s.createQuery(q).getResultList();
     }
-
     @Override
     public List<Object[]> getTop5Services() {
         Session s = this.factory.getObject().getCurrentSession();
@@ -249,7 +250,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             CriteriaQuery<Long> qTour = b.createQuery(Long.class);
             Root<TourServices> rootTour = qTour.from(TourServices.class);
             // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp TourServices
-            jakarta.persistence.criteria.Join<TourServices, Services> joinTourService = rootTour.join("services");
+            Join<TourServices, Services> joinTourService = rootTour.join("services");
             
             qTour.select(b.count(rootTour));
             // Lọc điều kiện status = true từ bảng Services cha
@@ -260,7 +261,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             CriteriaQuery<Long> qHotel = b.createQuery(Long.class);
             Root<HotelRoomServices> rootHotel = qHotel.from(HotelRoomServices.class);
             // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp HotelRoomServices
-            jakarta.persistence.criteria.Join<HotelRoomServices, Services> joinHotelService = rootHotel.join("services");
+            Join<HotelRoomServices, Services> joinHotelService = rootHotel.join("services");
             
             qHotel.select(b.count(rootHotel));
             qHotel.where(b.equal(joinHotelService.get("status"), true));
@@ -270,7 +271,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             CriteriaQuery<Long> qTransport = b.createQuery(Long.class);
             Root<TransportServices> rootTransport = qTransport.from(TransportServices.class);
             // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp TransportServices
-            jakarta.persistence.criteria.Join<TransportServices, Services> joinTransportService = rootTransport.join("services");
+            Join<TransportServices, Services> joinTransportService = rootTransport.join("services");
             
             qTransport.select(b.count(rootTransport));
             qTransport.where(b.equal(joinTransportService.get("status"), true));

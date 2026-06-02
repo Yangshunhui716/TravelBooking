@@ -209,14 +209,16 @@ const HotelRoomServiceDetail = () => {
                                             {hotelService.services?.price?.toLocaleString()} VNĐ <small className="fs-6 text-muted fw-normal">/ đêm</small>
                                         </h3>
                                     </div>
-                                    <Button 
-                                        variant="danger" 
-                                        size="lg" 
-                                        className="px-4 font-weight-bold mt-2" 
-                                        onClick={()=> order(hotelService)}
-                                    >
-                                        Đặt
-                                    </Button>
+                                    {(user === null || user?.users?.role !== "ROLE_PROVIDER") && (
+                                        <Button 
+                                            variant="danger" 
+                                            size="lg" 
+                                            className="px-4 font-weight-bold mt-2" 
+                                            onClick={() => order(hotelService)}
+                                        >
+                                            Đặt
+                                        </Button>
+                                    )}
                                 </div>
 
                                 {/* Form chọn Ngày & Số lượng phòng */}

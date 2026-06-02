@@ -52,8 +52,7 @@ public class ApiPaymentController {
     @Autowired
     private TransferTransactionService ttService;
     
-    @PostMapping("/secure/pay")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping("/secure/customer/pay")
     public ResponseEntity<?> createPayment(@RequestBody RequestOrder requestPayload, Principal principal) {
         Customers customer = this.cusService.getCustomerByUsername(principal.getName());
         Bookings booking = this.bookingService.addBooking(requestPayload, customer);
@@ -72,8 +71,7 @@ public class ApiPaymentController {
         }
     }
     
-    @PostMapping("/secure/pay/{bookingId}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping("/secure/customer/pay/{bookingId}")
     public ResponseEntity<?> rePay(@PathVariable("bookingId") Long bookingId, @RequestBody RequestOrder requestPayload, Principal principal) {
         Customers customer = this.cusService.getCustomerByUsername(principal.getName());
         Bookings booking = this.bookingService.getBookingById(bookingId);

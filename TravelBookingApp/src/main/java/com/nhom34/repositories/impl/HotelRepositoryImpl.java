@@ -5,6 +5,7 @@ import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Reviews;
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.HotelRepository;
+import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -22,13 +23,18 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@PropertySource("classpath:configs.properties")
 @Transactional
 public class HotelRepositoryImpl implements HotelRepository {
+    @Autowired
+    private Environment env;
     @Autowired
     private LocalSessionFactoryBean factory;
     
@@ -120,8 +126,19 @@ public class HotelRepositoryImpl implements HotelRepository {
         q.where(predicates.toArray(new Predicate[0]));
 
         if (!orders.isEmpty()) q.orderBy(orders);
+        Query query = s.createQuery(q);
+        
+        if (params != null) {
+            int page = Integer.parseInt(params.getOrDefault("page", "1"));
+            
+            int pageSize = this.env.getProperty("service.pageSize", Integer.class);
+            
+            int start = (page - 1) * pageSize;
 
-        return s.createQuery(q).getResultList();
+            query.setMaxResults(pageSize);
+            query.setFirstResult(start);
+        }
+        return query.getResultList();
     }
     
     @Override
