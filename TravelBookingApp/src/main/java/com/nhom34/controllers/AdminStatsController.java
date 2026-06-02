@@ -1,7 +1,6 @@
 package com.nhom34.controllers;
 
 import com.nhom34.services.StatisticService;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +25,13 @@ public class AdminStatsController {
             year = java.time.Year.now().getValue(); 
         }
         if (month == null) {
-            month = java.time.LocalDate.now().getMonthValue(); // Tự động lấy tháng hiện tại nếu rỗng
+            month = java.time.LocalDate.now().getMonthValue();
         }
 
-        // Gọi nghiệp vụ thông qua Tầng Service
         Map<String, Long> serviceStats = this.statisticService.countActiveServices();
         List<Object[]> revenueTimes = this.statisticService.getRevenueByTime(filterType, year, month);
         List<Object[]> topServices = this.statisticService.getTop5Services();
 
-        // --- TÍNH TỔNG SỐ LƯỢNG DỊCH VỤ (MỤC 1) ---
         long totalServices = 0;
         if (serviceStats != null) {
             long tourCount = serviceStats.getOrDefault("Tour", 0L);
@@ -43,19 +40,16 @@ public class AdminStatsController {
             totalServices = tourCount + hotelCount + transportCount;
         }
 
-        // --- TÍNH TỔNG LƯỢT ĐẶT VÀ DOANH THU (MỤC 2) ---
         long totalBookings = 0;
         double totalRevenue = 0.0;
 
         if (revenueTimes != null) {
             for (Object[] row : revenueTimes) {
-                // Cộng thẳng trực tiếp bằng cách ép về kiểu dữ liệu bạn muốn
                 totalBookings += (Long) row[1];
                 totalRevenue += (Double) row[2];
             }
         }
 
-        // Gắn dữ liệu chuyển giao sang View
         model.addAttribute("serviceStats", serviceStats);
         model.addAttribute("revenueTimes", revenueTimes);
         model.addAttribute("topServices", topServices);
@@ -63,7 +57,6 @@ public class AdminStatsController {
         model.addAttribute("selectedYear", year);
         model.addAttribute("selectedMonth", month);
         
-        // Gắn thêm các giá trị tổng cộng mới tính toán được
         model.addAttribute("totalServices", totalServices);
         model.addAttribute("totalBookings", totalBookings);
         model.addAttribute("totalRevenue", totalRevenue);

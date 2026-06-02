@@ -17,11 +17,9 @@ const SortDropdown = ({ sortCategory, currentSort, onSortChange }) => {
                 >
                     <option value="">-- Mặc định --</option>
 
-                    {/* Tiêu chí Giá: Luôn hiển thị ở cả 3 page */}
                     <option value="price_asc">Giá từ thấp đến cao</option>
                     <option value="price_desc">Giá từ cao đến thấp</option>
 
-                    {/* Tiêu chí Slot (Độ phổ biến): Chỉ hiện khi truyền prop sortCategory="slot" */}
                     {sortCategory === 'slot' && (
                         <>
                             <option value="slot_asc">Độ phổ biến từ thấp đến cao</option>
@@ -29,7 +27,6 @@ const SortDropdown = ({ sortCategory, currentSort, onSortChange }) => {
                         </>
                     )}
 
-                    {/* Tiêu chí Đánh giá: Chỉ hiện khi truyền prop sortCategory="rating" */}
                     {sortCategory === 'rating' && (
                         <>
                             <option value="rating_asc">Đánh giá từ thấp đến cao</option>

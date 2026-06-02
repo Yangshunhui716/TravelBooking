@@ -114,14 +114,14 @@ const Register = () => {
                 <Alert variant="danger"> {err}</Alert>
             )}
             <Form onSubmit={register}>
-                {/* USERNAME */}
+
                 <Form.Group className="mb-3">
                     <Form.Label> Tên đăng nhập </Form.Label>
                     <Form.Control type="text" required  minLength={4} placeholder="Nhập username..."  value={user.username || ""}
                         onChange={(e) => setState( e.target.value,"username" )}
                     />
                 </Form.Group>
-                {/* PASSWORD */}
+
                 <Form.Group className="mb-3">
                     <Form.Label> Mật khẩu   </Form.Label>
                     <Form.Control    type="password"    required   minLength={6}    placeholder="Nhập password..."    value={user.password || ""}
@@ -129,7 +129,7 @@ const Register = () => {
                     />
                 </Form.Group>
                 <Row>
-                    {/* PHONE */}
+
                     <Col md={6}>
                         <Form.Group className="mb-3">
                             <Form.Label>  Số điện thoại </Form.Label>
@@ -138,7 +138,7 @@ const Register = () => {
                             />
                         </Form.Group>
                     </Col>
-                    {/* EMAIL */}
+
                     <Col md={6}>
                         <Form.Group className="mb-3">
                             <Form.Label> Email  </Form.Label>
@@ -148,7 +148,7 @@ const Register = () => {
                         </Form.Group>
                     </Col>
                 </Row>
-                {/* ROLE */}
+
                 <Form.Group className="mb-3">
                     <Form.Label> Vai trò  </Form.Label>
                     <Form.Select  value={user.role}
@@ -158,7 +158,7 @@ const Register = () => {
                         <option value="ROLE_PROVIDER">   Nhà cung cấp  </option>
                     </Form.Select>
                 </Form.Group>
-                {/* CUSTOMER */}
+
                 {user.role === "ROLE_CUSTOMER" && (
                     <>
                         <Form.Group className="mb-3">
@@ -178,7 +178,7 @@ const Register = () => {
                         </Form.Group>
                     </>
                 )}
-                {/* PROVIDER */}
+  
                 {user.role === "ROLE_PROVIDER" && (
                     <>
                         <Form.Group className="mb-3">
@@ -202,16 +202,13 @@ const Register = () => {
                         </Form.Group>
                     </>
                 )}
-                {/* AVATAR */}
+
                 <Form.Group className="mb-4">
                     <Form.Label>  Ảnh đại diện </Form.Label>
                     <Form.Control type="file" accept=".jpg,.jpeg,.png" ref={avatar}   />
                 </Form.Group>
-                {/* BUTTON */}
-                {/* <Button  type="submit" variant="info" disabled={loading} style={styles.button} >
-                    {loading  ? "Đang đăng ký...": "Đăng ký"}
-                </Button> */}
-                                <Form.Group className="mb-3" controlId="button">
+
+                <Form.Group className="mb-3" controlId="button">
                     {loading === true ? <MySpinner />:<Button variant="success" type="submit">Đăng ký</Button>}
                 </Form.Group>
                 

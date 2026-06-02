@@ -50,19 +50,16 @@ const Login = () => {
                 setLoading(true);
                 setErr("");
 
-                // LOGIN
                 let res = await Apis.post(endpoints["login"], {
                     ...user
                 });
 
-                // SAVE TOKEN
                 cookies.save("token", res.data.token);
 
                 let u = null;
 
                 try {
 
-                    // CUSTOMER
                     u = await authApis().get(
                         endpoints["customer-profile"]
                     );
@@ -71,7 +68,6 @@ const Login = () => {
 
                     try {
 
-                        // PROVIDER
                         u = await authApis().get(
                             endpoints["provider-profile"]
                         );

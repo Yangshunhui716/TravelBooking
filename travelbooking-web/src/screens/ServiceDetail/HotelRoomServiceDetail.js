@@ -19,7 +19,7 @@ const HotelRoomServiceDetail = () => {
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
     
-    // State chọn phòng đặt lịch
+
     const [checkInDate, setCheckInDate] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
     const [roomCount, setRoomCount] = useState(1);
@@ -33,7 +33,7 @@ const HotelRoomServiceDetail = () => {
             year: "numeric"
         });
     };
-    // 1. API lấy dữ liệu chi tiết phòng khách sạn
+
     const loadHotelDetail = async () => {
         try {
             setLoading(true);
@@ -46,7 +46,7 @@ const HotelRoomServiceDetail = () => {
         }
     };
 
-    // 2. API lấy danh sách bình luận dựa trên ID dịch vụ cốt lõi
+
     const loadReviews = async () => {
         try {
             const serviceId = hotelService?.services?.id;
@@ -69,10 +69,10 @@ const HotelRoomServiceDetail = () => {
             alert("Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 ngày!");
             return;
         }
-        // Tính số đêm lưu trú (Nights)
+
         const differenceInTime = date2.getTime() - date1.getTime();
         const calculatedNights = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-        // Hàm format chỉ lấy Ngày/Tháng/Năm
+
         const formatDateOnly = (dateObj) => {
             return dateObj.toLocaleDateString("vi-VN", {
                 day: "2-digit",
@@ -103,22 +103,18 @@ const HotelRoomServiceDetail = () => {
         alert("Đã thêm vào giỏ hàng thành công!");
     };
     
-
-    // VÒNG ĐỜI 1: Chỉ chạy duy nhất khi id trên đường dẫn URL thay đổi để lấy thông tin phòng
     useEffect(() => {
         if (serviceId) {
             loadHotelDetail();
         }
     }, [serviceId]);
 
-    // VÒNG ĐỜI 2: Chỉ chạy khi thông tin phòng đã tải xong xuôi để lấy danh sách review
     useEffect(() => {
         if (hotelService) {
             loadReviews();
         }
     }, [hotelService]);
 
-    // Điều hướng nhà cung cấp đối tác
     const handleViewProvider = () => {
         const providerId = hotelService.services?.providerId?.id;
         if (providerId) nav(`/providers/${providerId}`);
@@ -144,23 +140,19 @@ const HotelRoomServiceDetail = () => {
                 return;
             }
 
-            // 1. Gọi API bằng cách dùng thực thể authApis() để tự động đính kèm Token từ Cookie
-            // 2. Đổi endpoint sang đúng key: 'customer-create-review'
             let res = await authApis().post(
                 endpoints['customer-create-review'](serviceId), 
                 {
                     comment: comment,
-                    rating: String(rating) // Gửi dạng chuỗi hoặc số tùy Backend của bạn nhận loại nào
+                    rating: String(rating)
                 }
             );
 
-            // Nếu thành công, cập nhật danh sách hiển thị
             alert("Đánh giá thành công!");
             setReviews([res.data, ...reviews]); 
         } catch (ex) {
             console.error("Lỗi chi tiết từ hệ thống:", ex);
 
-            // Đọc thông báo chi tiết trả về từ Spring Boot (nếu có)
             if (ex.response && ex.response.data) {
                 alert(`Lỗi: ${ex.response.data.message || "Hệ thống từ chối quyền đánh giá!"}`);
             } else {
@@ -180,7 +172,6 @@ const HotelRoomServiceDetail = () => {
         <Container className="mt-4 mb-5">
             {hotelService && (
                 <>
-                    {/* TIÊU ĐỀ */}
                     <Row className="mb-4">
                         <Col>
                             <div style={styles.titleBox}>
@@ -191,20 +182,16 @@ const HotelRoomServiceDetail = () => {
                         </Col>
                     </Row>
 
-                    {/* THÂN CHI TIẾT DỊCH VỤ */}
                     <Row>
-                        {/* CỘT TRÁI: Hình ảnh */}
                         <Col md={5} xs={12} className="mb-4 d-flex align-items-center justify-content-center">
                             <div style={{ ...styles.imageWrapper, width: "100%" }}>
                                 <DisplayImage src={hotelService.services?.imgUrl} />
                             </div>
                         </Col>
 
-                        {/* CỘT PHẢI: Khung tương tác đặt và thông tin chi tiết */}
                         <Col md={7} xs={12}>
                             <div style={styles.infoCard}>
                                 
-                                {/* 1. Khung Giá & Booking */}
                                 <div className="d-flex justify-content-between align-items-start mb-3">
                                     <div>
                                         <span className="text-muted d-block small">Giá từ</span>
@@ -224,7 +211,6 @@ const HotelRoomServiceDetail = () => {
                                     )}
                                 </div>
 
-                                {/* Form chọn Ngày & Số lượng phòng */}
                                 <Row className="g-2 mb-3 p-2 bg-light rounded-3 align-items-center">
                                     <Col sm={4} xs={6}>
                                         <Form.Group>
@@ -272,7 +258,6 @@ const HotelRoomServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 2. Khung Đối tác quản lý */}
                                 <div className="d-flex justify-content-between align-items-center my-3 py-2">
                                     <div className="d-flex align-items-center">
                                         <Image 
@@ -315,7 +300,6 @@ const HotelRoomServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 3. Khung chi tiết dịch vụ */}
                                 <div className="mt-3">
                                     <h5 className="font-weight-bold text-dark mb-3">
                                         Thông tin chi tiết dịch vụ
@@ -341,9 +325,6 @@ const HotelRoomServiceDetail = () => {
                                 
                                 <hr />
                                 
-                                {/* 4. Tích hợp danh sách đánh giá */}
-
-                                {/* Đảm bảo có thuộc tính user={user} ở đây */}
                                 <ReviewSection 
                                     reviews={reviews} 
                                     onAddReview={handlePostReview} 

@@ -1,17 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.configs;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-/**
- *
- * @author QUANG AN
- */
+
 public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
@@ -43,8 +36,8 @@ public class DispatcherServeletInit extends AbstractAnnotationConfigDispatcherSe
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         String location = "/";
-        long maxFileSize = 5242880; // 5MB
-        long maxRequestSize = 20971520; // 20MB
+        long maxFileSize = 5242880;
+        long maxRequestSize = 20971520;
         int fileSizeThreshold = 0;
 
         registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));

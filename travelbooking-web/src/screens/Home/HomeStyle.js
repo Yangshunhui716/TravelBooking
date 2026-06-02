@@ -1,6 +1,5 @@
 const styles = {
 
-    /* ===== CAROUSEL ===== */
 
     carouselImage: {
         height: "750px",
@@ -31,7 +30,6 @@ const styles = {
         fontWeight: "bold"
     },
 
-    /* ===== INTRO ===== */
 
     introSection: {
         padding: "100px 80px",
@@ -57,7 +55,6 @@ const styles = {
         margin: "20px auto"
     },
 
-    /* ===== SERVICES ===== */
 
     serviceSection: {
         padding: "100px 20px"
@@ -89,7 +86,6 @@ const styles = {
         lineHeight: "1.8"
     },
 
-    /* ===== WHY SECTION ===== */
 
     whySection: {
         paddingBottom: "120px"

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,10 +14,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
-/**
- *
- * @author PC
- */
 @Entity
 @Table(name = "customers")
 @NamedQueries({

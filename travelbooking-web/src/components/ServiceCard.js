@@ -5,7 +5,6 @@ const ServiceCard = ({ data }) => {
     return (
         <Card className="h-100 shadow-sm rounded-4 overflow-hidden border-0">
 
-            {/* IMAGE */}
             <div
                 style={{
                     height: "200px",
@@ -31,14 +30,12 @@ const ServiceCard = ({ data }) => {
 
             </div>
 
-            {/* BODY */}
             <Card.Body className="d-flex flex-column">
 
                 <Card.Title className="fw-bold fs-5">
                     {data.title}
                 </Card.Title>
 
-                {/* DETAILS */}
                 <div className="text-muted mb-3">
 
                     {data.details?.map((item, index) => (
@@ -49,7 +46,6 @@ const ServiceCard = ({ data }) => {
 
                 </div>
 
-                {/* FOOTER */}
                 <div className="mt-auto d-flex justify-content-between align-items-center">
 
                     <span className="fw-bold text-danger fs-5">

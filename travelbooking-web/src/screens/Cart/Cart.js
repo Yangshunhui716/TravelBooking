@@ -23,23 +23,20 @@ const Cart = () => {
             let currentCart = cookies.load("cart") || null;
             if(currentCart !== null) {
                 try {
-                    setLoading(true); // Bật trạng thái loading khi đang gọi API
+                    setLoading(true);
 
-                    // Tạo mảng booking đúng định dạng API yêu cầu từ cấu trúc cart hiện tại
                     const bookingData = Object.values(currentCart).map(item => ({
                         id: item.id,
                         unitPrice: item.price,
                         quantity: item.quantity,
-                        // Nếu item không có ngày cụ thể hoặc duration thì fallback về null/0 hoặc dùng dữ liệu có sẵn
                         serviceStartDate: item.type === "hotel" 
                         ? new Date(item.checkIn).getTime() 
                         : (item.departure_time ? new Date(item.departure_time).getTime() : null),
                         serviceDuration: item.type === "hotel" ? (item.nights || 1) : 1
                     }));
 
-                    // Đóng gói request body khớp hoàn toàn với API của bạn
                     const requestBody = {
-                        payMethod: paymentMethod, // Lấy từ state paymentMethod ("CASH", "MOMO", "PAYPAL")
+                        payMethod: paymentMethod,
                         booking: bookingData
                     };
 
@@ -59,7 +56,7 @@ const Cart = () => {
                     console.error("Lỗi khi thanh toán:", error);
                     alert("Thanh toán thất bại, vui lòng thử lại sau!");
                 } finally {
-                    setLoading(false); // Tắt trạng thái loading
+                    setLoading(false);
                 }
             }
         }
@@ -101,12 +98,10 @@ const Cart = () => {
                 </Alert>
             ) : (
                 <>
-                    {/* DANH SÁCH DỊCH VỤ - HỘP ĐƠN GIẢN CÓ VIỀN */}
                     <div className="mb-4">
                         {Object.values(cart).map((item) => (
                             <div key={item.id} className="p-3 border rounded-3 mb-3 shadow-sm bg-white">
                                 <Row className="align-items-center g-2">
-                                    {/* Cột thông tin chữ */}
                                     <Col xs={12} sm={9}>
                                         <h5 className="fw-bold mb-2 text-primary">{item.name}</h5>
                                         <div className="mb-2 text-secondary small">
@@ -149,7 +144,6 @@ const Cart = () => {
                                        
                                     </Col>
 
-                                    {/* Cột các nút hành động */}
                                     <Col xs={12} sm={3} className="d-flex flex-sm-column gap-2 justify-content-end text-end">
                                         <Button variant="outline-secondary" size="sm" className="rounded-pill" onClick={() => handleViewDetail(item)}>
                                             Chi tiết
@@ -163,16 +157,13 @@ const Cart = () => {
                         ))}
                     </div>
 
-                    {/* KHUNG THANH TOÁN (BOTTOM BAR) */}
                     <div className="p-3 border rounded-3 bg-light shadow-sm">
                         <Row className="align-items-center g-3 text-center text-md-start">
-                            {/* Tổng tiền */}
                             <Col xs={12} md={4}>
                                 <div className="text-muted small">Tổng tiền thanh toán</div>
                                 <h4 className="fw-bold text-danger m-0">{calculateTotal().toLocaleString()} VNĐ</h4>
                             </Col>
 
-                            {/* Phương thức thanh toán */}
                             <Col xs={12} md={5} className="d-flex justify-content-center">
                                 <div className="d-flex gap-1 bg-white border p-1 rounded-pill">
                                     <Button variant={paymentMethod === "CASH" ? "primary" : "white"} size="sm" className="rounded-pill px-3" onClick={() => setPaymentMethod("CASH")}>Tiền mặt</Button>
@@ -181,7 +172,6 @@ const Cart = () => {
                                 </div>
                             </Col>
 
-                            {/* Nút hành động */}
                             <Col xs={12} md={3} className="text-md-end">
                                 {user === null ? (
                                     <Alert variant="warning" className="m-0 py-1 px-2 small rounded-3">

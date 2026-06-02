@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { Card, Image, Form, Button, Collapse, Alert } from "react-bootstrap";
 import moment from "moment";
-import "moment/locale/vi"; // Import ngôn ngữ tiếng Việt cho moment
-
-// Cấu hình moment sử dụng tiếng Việt mặc định cho toàn bộ component này
+import "moment/locale/vi"; 
 moment.locale("vi");
 
 const ReviewSection = ({ reviews = [], onAddReview, user }) => {
     const [comment, setComment] = useState("");
-    const [rating, setRating] = useState(5); // Mặc định là 5 sao khi mở form
+    const [rating, setRating] = useState(5);
     const [showReviews, setShowReviews] = useState(false);
 
-    // Xử lý khi bấm nút "Gửi đánh giá"
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!comment.trim()) {
@@ -27,15 +24,9 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
         }
     };
 
-    // Hàm xử lý thời gian bằng moment
     const formatReviewDate = (timestamp) => {
         if (!timestamp) return "";
-        
-        // Cách 1: Hiển thị dạng "X phút trước", "Một ngày trước" (Khuyên dùng cho phần bình luận)
         return moment(timestamp).fromNow();
-
-        // Cách 2: Nếu bạn vẫn muốn hiển thị ngày giờ cụ thể dạng "31/05/2026 11:30", hãy bỏ comment dòng dưới:
-        // return moment(timestamp).format("DD/MM/YYYY HH:mm");
     };
 
     return (
@@ -44,18 +35,16 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
                 Đánh giá từ khách hàng ({reviews.length})
             </h5>
 
-            {/* TRƯỜNG HỢP 1: Chưa đăng nhập */}
             {user === null ? (
                 <Alert variant="warning" className="py-2 px-3">
                     Bạn cần đăng nhập để thực hiện đánh giá cho dịch vụ này.
                 </Alert>
-            ) : /* TRƯỜNG HỢP 2: Là Nhà cung cấp -> Chặn không cho bình luận */
+            ) : 
             user?.users?.role === "ROLE_PROVIDER" ? (
                 <Alert variant="danger" className="py-2 px-3">
                     Tài khoản Nhà cung cấp (Provider) không có quyền đánh giá dịch vụ.
                 </Alert>
             ) : (
-                /* TRƯỜNG HỢP 3: Khách hàng hợp lệ (ROLE_CUSTOMER) -> Hiện ô nhập đánh giá */
                 <Card className="border-0 bg-white p-3 rounded-3 shadow-sm mb-4" style={{ border: "1px solid #eee" }}>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3 d-flex align-items-center">
@@ -96,7 +85,6 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
                 </Card>
             )}
 
-            {/* --- NÚT BẤM XỔ XUỐNG DANH SÁCH ĐÁNH GIÁ --- */}
             <div className="d-grid gap-2 mb-3">
                 <Button 
                     variant="outline-secondary" 
@@ -111,7 +99,6 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
                 </Button>
             </div>
 
-            {/* --- DANH SÁCH REVIEW ĐƯỢC BỌC TRONG COLLAPSE ĐỂ XỔ XUỐNG --- */}
             <Collapse in={showReviews}>
                 <div id="collapse-reviews-list">
                     {reviews.length === 0 ? (

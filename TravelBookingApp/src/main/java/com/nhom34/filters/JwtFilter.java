@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.filters;
 
 import com.nhom34.utils.JwtUtils;
@@ -19,10 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-/**
- *
- * @author huu-thanhduong
- */
+
 @Component
 public class JwtFilter implements Filter{
     @Autowired
@@ -68,7 +61,6 @@ public class JwtFilter implements Filter{
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return;
-            // Log lỗi
         }
     }
 }

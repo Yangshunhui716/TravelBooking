@@ -10,7 +10,7 @@ const styles = {
     },
     cardItem: {
         marginBottom: "1rem",
-        border: "1px solid #dee2e6", // Đã làm rõ nét đường viền bao quanh 1 dịch vụ
+        border: "1px solid #dee2e6",
         borderRadius: "16px",
         boxShadow: "0 0.125rem 0.25rem rgba(0, 0, 0, 0.04)",
         padding: "0.75rem"
@@ -34,7 +34,7 @@ const styles = {
         fontSize: "12px"
     },
     paymentCard: {
-        border: "1px solid #dee2e6", // Thêm đường viền cho cả khung tổng cộng phía dưới
+        border: "1px solid #dee2e6",
         borderRadius: "16px",
         boxShadow: "0 0.125rem 0.25rem rgba(0, 0, 0, 0.04)",
         backgroundColor: "#f8f9fa",

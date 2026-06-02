@@ -11,13 +11,16 @@ const ButtonServiceGroup = ({ currentType, onChangeType }) => {
 
     return (
         <ButtonGroup aria-label="Basic example" className="d-flex">
-            <Button className="flex-fill" variant={activeType === 'tour' ? 'primary' : 'secondary'} onClick={() => handleButtonClick('tour')}>
+            <Button className="flex-fill" variant={activeType === 'tour' ? 'primary' : 'secondary'} 
+            onClick={() => handleButtonClick('tour')}>
                 Tour
             </Button>
-            <Button className="flex-fill" variant={activeType === 'hotelRoom' ? 'primary' : 'secondary'} onClick={() => handleButtonClick('hotelRoom')}>
+            <Button className="flex-fill" variant={activeType === 'hotelRoom' ? 'primary' : 'secondary'} 
+            onClick={() => handleButtonClick('hotelRoom')}>
                 Phòng khách sạn
             </Button>
-            <Button className="flex-fill" variant={activeType === 'transport' ? 'primary' : 'secondary'} onClick={() => handleButtonClick('transport')}>
+            <Button className="flex-fill" variant={activeType === 'transport' ? 'primary' : 'secondary'} 
+            onClick={() => handleButtonClick('transport')}>
                 Phương tiện
             </Button>
         </ButtonGroup>

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.Users;
@@ -18,10 +14,7 @@ import java.util.Date;
 import java.util.Map;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-/**
- *
- * @author QUANG AN
- */
+
 @Repository
 @Transactional
 public class UserRepositoryImpl implements UserRepository{

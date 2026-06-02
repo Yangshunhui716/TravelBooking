@@ -3,9 +3,9 @@ import { Button, Col, Container, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
-import Api, { authApis, endpoints } from "../../configs/Api"; // Import thêm authApis để xử lý Token bảo mật
+import Api, { authApis, endpoints } from "../../configs/Api";
 import { MyUserContext, MyCartContext } from "../../configs/Context";
-import styles from "./ServiceDetailStyle"; // Import style dùng chung
+import styles from "./ServiceDetailStyle";
 import ReviewSection from "../../components/ReviewSection";
 import cookies from "react-cookies";
 const TourServiceDetail = () => {
@@ -16,7 +16,7 @@ const TourServiceDetail = () => {
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
     const [, dispatch] = useContext(MyCartContext);
-    // 1. API lấy dữ liệu chi tiết Tour từ backend
+
     const loadTourDetail = async () => {
         try {
             setLoading(true);
@@ -29,12 +29,12 @@ const TourServiceDetail = () => {
         }
     };
 
-    // 2. API lấy danh sách bình luận dựa trên ID dịch vụ cốt lõi (coreServiceId)
+
     const loadReviews = async () => {
         try {
             const coreServiceId = tourService?.services?.id;
             if (coreServiceId) {
-                // Gọi endpoint công khai lấy tất cả review thuộc dịch vụ này
+
                 let res = await Api.get(endpoints['service-reviews'](coreServiceId));
                 setReviews(res.data);
             }
@@ -56,7 +56,7 @@ const TourServiceDetail = () => {
                 id: serviceId,
                 name: service.services?.name,
                 price: service.services?.price,
-                departure_time: service.departureTime, // Đồng bộ key chính xác để Cart.js hiển thị được ngay
+                departure_time: service.departureTime,
                 type: "tour",
                 quantity: 1
             }; 
@@ -69,21 +69,20 @@ const TourServiceDetail = () => {
     };
     
 
-    // VÒNG ĐỜI 1: Tải chi tiết tour mỗi khi mã ID trên URL thay đổi
     useEffect(() => {
         if (serviceId) {
             loadTourDetail();
         }
     }, [serviceId]);
 
-    // VÒNG ĐỜI 2: Chỉ fetch review ngay sau khi dữ liệu Tour đã đổ về thành công
+
     useEffect(() => {
         if (tourService) {
             loadReviews();
         }
     }, [tourService]);
 
-    // Xử lý gửi đánh giá mới lên phân vùng bảo mật (/secure/) của Backend
+
     const handlePostReview = async (comment, rating) => {
         try {
             const coreServiceId = tourService?.services?.id;
@@ -92,7 +91,6 @@ const TourServiceDetail = () => {
                 return;
             }
 
-            // Dùng authApis() để đính kèm Token Bearer tự động từ cookie lên Header
             let res = await authApis().post(
                 endpoints['customer-create-review'](coreServiceId), 
                 {
@@ -102,7 +100,7 @@ const TourServiceDetail = () => {
             );
 
             alert("Đánh giá tour thành công!");
-            setReviews([res.data, ...reviews]); // Chèn bình luận mới nhất lên đầu danh sách hiển thị
+            setReviews([res.data, ...reviews]);
         } catch (ex) {
             console.error("Lỗi chi tiết khi gửi review tour:", ex);
             if (ex.response && ex.response.data) {
@@ -114,7 +112,6 @@ const TourServiceDetail = () => {
     };
 
 
-    // Xử lý xem chi tiết nhà cung cấp (Provider)
     const handleViewProvider = () => {
         const providerId = tourService.services?.providerId?.id;
         if (providerId) {
@@ -122,7 +119,7 @@ const TourServiceDetail = () => {
         }
     };
 
-    // Xử lý kích hoạt Chat với nhà cung cấp
+
     const handleChatProvider = async () => {
         if (user === null) {
             nav(`/login?next=/tour-services/${serviceId}`);
@@ -148,7 +145,6 @@ const TourServiceDetail = () => {
         <Container className="mt-4 mb-5">
             {tourService && (
                 <>
-                    {/* KHUNG TRÊN CÙNG: Tên Tour */}
                     <Row className="mb-4">
                         <Col>
                             <div style={styles.titleBox}>
@@ -159,9 +155,7 @@ const TourServiceDetail = () => {
                         </Col>
                     </Row>
 
-                    {/* PHẦN THÂN: Chia 2 cột Trái - Phải */}
                     <Row>
-                        {/* CỘT TRÁI: Hình ảnh dịch vụ */}
                         <Col md={5} xs={12} className="mb-4">
                             <div style={styles.imageWrapper}>
                                 <DisplayImage 
@@ -171,11 +165,9 @@ const TourServiceDetail = () => {
                             </div>
                         </Col>
 
-                        {/* CỘT PHẢI: Giá cả, Nhà cung cấp, Thông tin chi tiết */}
                         <Col md={7} xs={12}>
                             <div style={styles.infoCard}>
-                                
-                                {/* 1. Khung Giá cả & Nút Đặt */}
+
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div>
                                         <span className="text-muted d-block small">Giá từ</span>
@@ -200,7 +192,7 @@ const TourServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 2. Khung Thông tin Nhà Cung Cấp */}
+
                                 <div className="d-flex justify-content-between align-items-center my-3 py-2">
                                     <div className="d-flex align-items-center">
                                         <Image 
@@ -243,7 +235,6 @@ const TourServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 3. Khung Thông tin chi tiết dịch vụ */}
                                 <div className="mt-3">
                                     <h5 className="font-weight-bold text-dark mb-3">
                                         Thông tin chi tiết dịch vụ
@@ -269,7 +260,6 @@ const TourServiceDetail = () => {
 
                                 <hr />
 
-                                {/* 4. TÍCH HỢP HỆ THỐNG ĐÁNH GIÁ (Xổ xuống tự động khi viết xong) */}
                                 <ReviewSection 
                                     reviews={reviews}
                                     onAddReview={handlePostReview}
