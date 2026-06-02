@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; // Xóa bỏ hoàn toàn useCallback cho nhẹ máy
+import React, { useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import DynamicFilter from "../../components/DynamicFilter";
@@ -9,7 +9,8 @@ import Apis, { endpoints } from "../../configs/Api";
 const TourService = () => {
     const [tours, setTours] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams(); // Giống biến 'q' của thầy
+    const [searchParams, setSearchParams] = useSearchParams(); 
+    const [page, setPage] = useState(1);
     const navigate = useNavigate();
 
     // format tiền
@@ -22,13 +23,12 @@ const TourService = () => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
 
-    // 1. Viết hàm async thường giống hệt thầy (không bọc useCallback)
+    // ĐÃ SỬA: Hàm đọc trực tiếp từ state 'page' hiện tại, giống phong cách của thầy
     const loadTours = async () => {
         try {
             setLoading(true);
-            let params = {};
+            let params = { page: page };
             
-            // Đọc tham số trực tiếp từ URL xuống giống cách thầy làm với cateId, kw
             const destination = searchParams.get("destination");
             const departureDate = searchParams.get("departureDate");
             const sort = searchParams.get("sort") || "";
@@ -48,6 +48,11 @@ const TourService = () => {
                 endpoints['tour-services'],
                 { params: params }
             );
+
+            if (res.data.length === 0) {
+                setPage(0); // Đánh dấu hết dữ liệu để ẩn nút Xem thêm
+                return;
+            }
             
             const mappedTours = res.data.map((tour) => ({
                 id: tour.id,
@@ -63,7 +68,11 @@ const TourService = () => {
                 onView: () => navigate(`/tour-services/${tour.id}`)
             }));
             
-            setTours(mappedTours);
+            if (page === 1) {
+                setTours(mappedTours); 
+            } else if (page > 1) {
+                setTours(prev => [...prev, ...mappedTours]); 
+            }
         } catch (err) {
             console.error(err);
         } finally {
@@ -71,19 +80,24 @@ const TourService = () => {
         }
     };
 
-    // 2. useEffect CHỈ lắng nghe searchParams (URL thay đổi thì load lại dữ liệu)
-    // Tuyệt đối không bỏ 'loadTours' vào mảng này giống hệt thầy của bạn
     useEffect(() => {
-        loadTours();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams]); 
+        if (page > 0) {
+            loadTours();
+        }
+    }, [searchParams, page]); 
 
-    // CONFIG CHO FILTER
+    useEffect(() => {
+        setPage(1);
+    }, [searchParams]); 
+    const handleLoadMore = () => {
+        if (page > 0 && !loading) {
+            setPage(page + 1);
+        }
+    };
     const tourConfig = [
         { key: "destination", label: "Điểm đến", type: "text" },
         { key: "departureDate", label: "Ngày khởi hành", type: "date" }
     ];
-
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         if (values.destination) newParams.set("destination", values.destination);
@@ -91,7 +105,7 @@ const TourService = () => {
 
         if (values.departureDate) newParams.set("departureDate", values.departureDate);
         else newParams.delete("departureDate");
-
+        
         setSearchParams(newParams);
     };
 
@@ -108,20 +122,21 @@ const TourService = () => {
                 config={tourConfig}
                 onFilterSubmit={handleFilter}
             />
-            
-            <div className="flex-grow-1">
-                <div className="d-flex justify-content-between align-items-center mb-3"></div>
-                
-                {loading && <MySpinner />}
-                
-                <ServiceList
-                    title="Danh sách Tour"
-                    items={tours}
-                    sortCategory="slot"
-                    currentSort={searchParams.get("sort") || ""}
-                    onSortChange={handleSortChange}
-                />
-            </div>
+
+                <div className="flex-grow-1">
+                    <div className="d-flex justify-content-between align-items-center mb-3"></div>
+                    {loading && tours.length === 0 && <MySpinner />}
+                    <ServiceList
+                        title="Danh sách Tour"
+                        items={tours}
+                        sortCategory="slot"
+                        currentSort={searchParams.get("sort") || ""}
+                        onSortChange={handleSortChange}
+                        page={page}
+                        loading={loading}
+                        onLoadMore={handleLoadMore}
+                    />
+                </div>
         </div>
     );
 };

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"; // Xóa bỏ useCallback cho nhẹ code
-import { useNavigate, useSearchParams } from "react-router-dom"; // Thêm useSearchParams đồng bộ theo thầy
+import React, { useEffect, useState } from "react"; 
+import { useNavigate, useSearchParams } from "react-router-dom"; 
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
@@ -9,8 +9,8 @@ import Apis, { endpoints } from "../../configs/Api";
 const HotelRoomService = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams(); // Đọc/ghi bộ lọc thẳng lên URL
-    
+    const [searchParams, setSearchParams] = useSearchParams(); 
+    const [page, setPage] = useState(1); // Thêm state quản lý số trang tương tự Tour và Transport
     const navigate = useNavigate();
 
     // Định dạng hiển thị giá tiền lẻ VNĐ
@@ -18,11 +18,10 @@ const HotelRoomService = () => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
 
-    // 1. Hàm async thường giống hệt thầy (không bọc useCallback)
     const loadRooms = async () => {
         try {
             setLoading(true);
-            let params = {};
+            let params = { page: page }; // Gửi kèm số trang lên API hệ thống
 
             // Đọc trực tiếp các tham số lọc từ URL xuống
             const destination = searchParams.get("destination");
@@ -49,6 +48,11 @@ const HotelRoomService = () => {
                 { params: params }
             );
 
+            if (res.data.length === 0) {
+                setPage(0); // Đánh dấu hết dữ liệu để ẩn nút Xem thêm
+                return;
+            }
+
             // MAP API -> CARD DATA
             const mappedRooms = res.data.map((room) => ({
                 id: room.id,
@@ -64,7 +68,12 @@ const HotelRoomService = () => {
                 onView: () => navigate(`/hotel-room-services/${room.id}`)
             }));
 
-            setRooms(mappedRooms);
+            // Xử lý nạp dữ liệu chuẩn theo page tương thích cấu trúc của thầy
+            if (page === 1) {
+                setRooms(mappedRooms); // Trang đầu hoặc lọc mới thì thay thế mảng
+            } else if (page > 1) {
+                setRooms(prev => [...prev, ...mappedRooms]); // Các trang sau thì cộng dồn dữ liệu tiếp vào
+            }
         } catch (err) {
             console.error("Lỗi khi tải danh sách phòng khách sạn:", err);
         } finally {
@@ -72,21 +81,29 @@ const HotelRoomService = () => {
         }
     };
 
-    // 2. useEffect CHỈ lắng nghe searchParams (URL thay đổi thì tự động load lại dữ liệu)
-    // Cắt bỏ hoàn toàn 'loadRooms' khỏi mảng lắng nghe giống hệt phong cách của thầy
     useEffect(() => {
-        loadRooms();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams]);
+        if (page > 0) {
+            loadRooms();
+        }
+    }, [searchParams, page]); 
 
-    // CẤU HÌNH BỘ LỌC TÌM KIẾM PHÒNG (FILTER CONFIG)
+    useEffect(() => {
+        setPage(1);
+    }, [searchParams]); 
+
+    const handleLoadMore = () => {
+        if (page > 0 && !loading) {
+            setPage(page + 1);
+        }
+    };
+
     const hotelConfig = [
         { key: "destination", label: "Địa điểm", type: "text" },
         { key: "checkInDate", label: "Ngày nhận phòng", type: "date" },
         { key: "checkOutDate", label: "Ngày trả phòng", type: "date" }
     ];
 
-    // 3. Đẩy các giá trị nhận được từ form lọc ghim lên thanh URL
+    // Đẩy các giá trị nhận được từ form lọc ghim lên thanh URL
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         
@@ -102,7 +119,7 @@ const HotelRoomService = () => {
         setSearchParams(newParams);
     };
 
-    // 4. Đẩy giá trị sort lên thanh URL khi người dùng thay đổi dropdown
+    // Đẩy giá trị sort lên thanh URL khi người dùng thay đổi dropdown sắp xếp
     const handleSortChange = (sortValue) => {
         const newParams = new URLSearchParams(searchParams);
         if (sortValue) newParams.set("sort", sortValue);
@@ -117,19 +134,20 @@ const HotelRoomService = () => {
                 config={hotelConfig}
                 onFilterSubmit={handleFilter}
             />
-
-            {/* DANH SÁCH HIỂN THỊ PHÒNG KHÁCH SẠN */}
-            <div className="flex-grow-1">
-                {loading && <MySpinner />}
-                
-                <ServiceList
-                    title="Danh sách Phòng khách sạn"
-                    items={rooms}
-                    sortCategory="rating" 
-                    currentSort={searchParams.get("sort") || ""} // Đọc trực tiếp từ URL để giữ trạng thái active ở dropdown
-                    onSortChange={handleSortChange}
-                />
-            </div>
+                <div className="flex-grow-1">
+                    <div className="d-flex justify-content-between align-items-center mb-3"></div>
+                    {loading && rooms.length === 0 && <MySpinner />}
+                    <ServiceList
+                        title="Danh sách Phòng khách sạn"
+                        items={rooms}
+                        sortCategory="rating"
+                        currentSort={searchParams.get("sort") || ""}
+                        onSortChange={handleSortChange}
+                        page={page}
+                        loading={loading}
+                        onLoadMore={handleLoadMore}
+                    />
+                </div>
         </div>
     );
 };

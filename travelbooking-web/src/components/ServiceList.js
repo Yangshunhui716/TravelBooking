@@ -2,8 +2,9 @@ import { Col, Row } from "react-bootstrap";
 import ServiceCard from "./ServiceCard";
 import SortDropdown from "./SortDropdown";
 import ButtonServiceGroup from "./ButtonServiceGroup";
+import { Button } from "react-bootstrap";
 
-const ServiceList = ({ title, items, sortCategory, currentSort, onSortChange}) => {
+const ServiceList = ({ title, items, sortCategory, currentSort, onSortChange, page, loading, onLoadMore}) => {
   return (
     <div className="service-list-container">
       {/* Tiêu đề danh sách */}
@@ -32,6 +33,18 @@ const ServiceList = ({ title, items, sortCategory, currentSort, onSortChange}) =
           </Col>
         ))}
       </Row>
+      {page > 0 && onLoadMore && (
+        <div className="text-center mt-4 mb-3">
+          <Button 
+            variant="success" 
+            onClick={onLoadMore} 
+            disabled={loading}
+            className="px-4 py-2 fw-bold"
+          >
+            {loading ? "Đang tải..." : "Xem thêm..."}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
