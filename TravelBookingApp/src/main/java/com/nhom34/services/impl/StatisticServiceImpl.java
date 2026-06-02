@@ -9,10 +9,14 @@ import com.nhom34.pojo.Providers;
 import com.nhom34.repositories.StatisticRepository;
 import com.nhom34.services.StatisticService;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author PC
  */
 @Service
+@Transactional
 public class StatisticServiceImpl implements StatisticService{
     @Autowired
     private StatisticRepository statisticRepo;
-
+    @Autowired
+    private LocalSessionFactoryBean factory;
     @Override
     @Transactional
     public List<ProviderStatistic> providerStatistic(Map<String, String> filter, Providers prov, String metric) {
@@ -44,6 +50,22 @@ public class StatisticServiceImpl implements StatisticService{
         }
         
         return null;
+    }
+
+    @Override
+    public Map<String, Long> countActiveServices() {
+        return this.statisticRepo.countActiveServices();
+    }
+
+    @Override
+    public List<Object[]> getRevenueByTime(String time, int year) {
+        return this.statisticRepo.getRevenueByTime(time, year);
+       
+    }
+
+    @Override
+    public List<Object[]> getTop5Services() {
+        return this.statisticRepo.getTop5Services();
     }
     
 }

@@ -16,16 +16,6 @@ const TourServiceDetail = () => {
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
     const [, dispatch] = useContext(MyCartContext);
-    const formatDateTime = (timestamp) => {
-        if (!timestamp) return "";
-        return new Date(timestamp).toLocaleString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        });
-    };
     // 1. API lấy dữ liệu chi tiết Tour từ backend
     const loadTourDetail = async () => {
         try {
@@ -66,7 +56,7 @@ const TourServiceDetail = () => {
                 id: serviceId,
                 name: service.services?.name,
                 price: service.services?.price,
-                departure_time: formatDateTime(service.departureTime), // Đồng bộ key chính xác để Cart.js hiển thị được ngay
+                departure_time: service.departureTime, // Đồng bộ key chính xác để Cart.js hiển thị được ngay
                 type: "tour",
                 quantity: 1
             }; 

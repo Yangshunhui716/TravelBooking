@@ -31,7 +31,9 @@ const Cart = () => {
                         unitPrice: item.price,
                         quantity: item.quantity,
                         // Nếu item không có ngày cụ thể hoặc duration thì fallback về null/0 hoặc dùng dữ liệu có sẵn
-                        serviceStartDate: item.type === "hotel" ? new Date(item.checkIn).getTime() : (item.departure_time ? new Date(item.departure_time).getTime() : null),
+                        serviceStartDate: item.type === "hotel" 
+                        ? new Date(item.checkIn).getTime() 
+                        : (item.departure_time ? new Date(item.departure_time).getTime() : null),
                         serviceDuration: item.type === "hotel" ? (item.nights || 1) : 1
                     }));
 
@@ -117,9 +119,10 @@ const Cart = () => {
                                              
                                                 </span>
                                             ) : (
-                                                <span>
-                                                     Ngày khởi hành: <b>{item.departure_time }</b>
-                                                </span>
+                                           
+                                            <span>
+                                                Ngày khởi hành: <b>{new Date(item.departure_time).toLocaleString("vi-VN")}</b>
+                                            </span>
                                             )}
                                         </div>
                                         <Row className="small text-muted align-items-center">
