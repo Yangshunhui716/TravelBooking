@@ -23,7 +23,6 @@ import MyCartReducer from "./reducers/MyCartReducer";
 import Cart from "./screens/Cart/Cart";
 import ProviderProfile from "./screens/PublicProfile/ProviderProfile";
 import Statistic from "./screens/Statistic/Statistic";
-import Chatroom from "./screens/Conversation/Chatroom";
 import Conversations from "./screens/Conversation/Conversations";
 import PaymentResult from "./screens/Payment/AnnouncementResult";
 
@@ -59,7 +58,6 @@ const App = () => {
                             <Route path="/providers/:providerId" element={<ProviderProfile />} />
                             <Route path="/statistic" element={<Statistic />} />
                             <Route path="/conversations" element={<Conversations />} />
-                            <Route path="/conversations/:conversationId" element={<Chatroom />} />
                             <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
                         </Routes>
 

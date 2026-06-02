@@ -70,10 +70,7 @@ const ProviderServices = () => {
 
     const navigateModifierService = (s) => {
         if (s){
-            navigate("/modifier-service",
-                {
-                    state: { isEditMode: true, existingService: s, type: serviceType }
-                });
+            navigate("/modifier-service",{ state: { isEditMode: true, existingService: s, type: serviceType } });
         }else {
             navigate("/modifier-service", { state: { isEditMode: false, type: serviceType } });
         }
@@ -103,9 +100,14 @@ const ProviderServices = () => {
                     <div className="d-flex justify-content-between align-items-end">
                         <div>
                         { s.services.status && (
+                            <>
                                 <Button variant="secondary" className="rounded-pill px-3" onClick={() => closeService(s.services.id)}>
                                     Đóng dịch vụ
                                 </Button>
+                                <Button variant="outline-primary" className="rounded-pill px-3" onClick={() => navigateModifierService(s)}>
+                                    Chỉnh sửa chi tiết
+                                </Button>
+                            </>
                         ) }
                         </div>
 
@@ -114,9 +116,6 @@ const ProviderServices = () => {
                                 Danh sách khách hàng
                             </Button>
 
-                            <Button variant="outline-primary" className="rounded-pill px-3" onClick={() => navigateModifierService(s)}>
-                                Xem chi tiết
-                            </Button>
                         </div>
                     </div>
                 </Card>
