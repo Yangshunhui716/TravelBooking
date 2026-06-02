@@ -6,8 +6,8 @@ export const endpoints={
     'login': '/auth/login',
     'firebase-token': '/secure/firebase-token',
 
-    'pay': '/secure/pay',
-    'handle-paypal': '/secure/paypal/capture',
+    'pay': '/secure/customer/pay',
+    'handle-paypal': '/secure/customer/paypal/capture',
 
     'conversation': '/secure/conversations',
     'conversation-create': (targetId) => `/secure/conversations/${targetId}`,

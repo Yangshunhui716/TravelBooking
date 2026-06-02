@@ -52,7 +52,7 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
             ) : /* TRƯỜNG HỢP 2: Là Nhà cung cấp -> Chặn không cho bình luận */
             user?.users?.role === "ROLE_PROVIDER" ? (
                 <Alert variant="danger" className="py-2 px-3">
-                    Tài khoản Đối tác (Provider) không có quyền đánh giá dịch vụ.
+                    Tài khoản Nhà cung cấp (Provider) không có quyền đánh giá dịch vụ.
                 </Alert>
             ) : (
                 /* TRƯỜNG HỢP 3: Khách hàng hợp lệ (ROLE_CUSTOMER) -> Hiện ô nhập đánh giá */
