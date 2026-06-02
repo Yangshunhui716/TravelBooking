@@ -138,5 +138,19 @@ public class UserServiceImpl implements UserService{
 
     }
 
-
+    @Override
+    @Transactional
+    public void updateAvatar(Long id, MultipartFile avatar) {
+        String avatarUrl=null;
+        if (!avatar.isEmpty()) {
+            try {
+                Map res = this.cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+                avatarUrl = res.get("secure_url").toString();
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("Xảy ra lỗi khi tải ảnh lên hệ thống");
+            }
+        }
+        this.userRepo.updateAvatar(id, avatarUrl);
+    }
 }

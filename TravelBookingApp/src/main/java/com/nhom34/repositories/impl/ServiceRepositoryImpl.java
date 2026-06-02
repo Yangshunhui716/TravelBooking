@@ -11,6 +11,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +64,17 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         Services service = this.getServiceById(id);
         
         s.remove(service);
+    }
+    
+    @Override
+    public void updateImg(String img, Long id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Services service;
+        if (img!=null){
+            service = this.getServiceById(id);
+            service.setImgUrl(img);
+            service.setUpdatedAt(new Date());
+            s.merge(service);
+        }
     }
 }

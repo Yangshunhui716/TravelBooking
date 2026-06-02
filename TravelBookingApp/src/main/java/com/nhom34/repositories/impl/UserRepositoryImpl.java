@@ -99,11 +99,21 @@ public class UserRepositoryImpl implements UserRepository{
         if (params.containsKey("email")) {
             user.setEmail(params.get("email"));
         }
-        if (params.containsKey("avatar")) {
-            user.setAvatar(params.get("avatar"));
-        }
         user.setUpdatedAt(new Date());
         s.merge(user);
         return user;
     }
+    
+    @Override
+    public void updateAvatar(Long id,String avatar) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Users user;
+        if (avatar!=null) {
+            user = s.get(Users.class, id);
+            user.setAvatar(avatar);
+            user.setUpdatedAt(new Date());
+            s.merge(user);
+        }
+    }
+    
 }

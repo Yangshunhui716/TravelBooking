@@ -19,7 +19,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -43,12 +42,12 @@ public class TransportServiceImpl implements TransportService{
 
     @Override
     @Transactional
-    public TransportServices addDetailService(Map<String, String> info, MultipartFile img, Providers prov) {
+    public TransportServices addDetailService(Map<String, String> info, Providers prov) {
         TransportServices newTransport = new TransportServices();
-        Services newService = this.serviceService.addService(info, img, prov);
+        Services newService = this.serviceService.addService(info, prov);
         
-        newTransport.setDepartureTime(Timestamp.valueOf(info.get("departureTime")));
-        newTransport.setEndTime(Timestamp.valueOf(info.get("endTime")));
+        newTransport.setDepartureTime(new Timestamp(Long.parseLong(info.get("departureTime"))));
+        newTransport.setEndTime(new Timestamp(Long.parseLong(info.get("endTime"))));
         newTransport.setDeparture(info.get("departure"));
         newTransport.setLoactionDetail(info.get("locationDetail"));
         newTransport.setTicketType(info.get("ticketType"));

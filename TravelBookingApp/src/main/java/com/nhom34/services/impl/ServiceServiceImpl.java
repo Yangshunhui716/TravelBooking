@@ -39,22 +39,15 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     @Transactional
-    public Services addService(Map<String, String> info, MultipartFile img, Providers prov) {
+    public Services addService(Map<String, String> info, Providers prov) {
         Services newService = new Services();
-        
-        try {
-            Map res = this.cloudinary.uploader().upload(img.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-            newService.setImgUrl(res.get("secure_url").toString());
-        } catch (IOException ex) {
-            Logger.getLogger(TransportServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException("Xảy ra lỗi khi tải ảnh lên hệ thống");
-        }
         
         newService.setName(info.get("name"));
         newService.setPrice(Double.parseDouble(info.get("price")));
         newService.setDescription(info.get("description"));
         newService.setDestination(info.get("destination"));
-        newService.setAvailableSlots(Integer.parseInt(info.get("slot")));
+        newService.setAvailableSlots(Integer.parseInt(info.get("slots")));
+        newService.setSlots(Integer.parseInt(info.get("slots")));
         newService.setStatus(true);
         newService.setCreatedAt(new Date());
         newService.setUpdatedAt(new Date());
@@ -83,5 +76,21 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public boolean checkAvailableSlots(int slotsOrder, Long id) {
         return slotsOrder>=this.serviceRepo.getServiceById(id).getAvailableSlots();
+    }
+    
+    @Override
+    @Transactional
+    public void updateImg(MultipartFile img, Long id) {
+        String imgUrl=null;
+        if (!img.isEmpty()) {
+            try {
+                Map res = this.cloudinary.uploader().upload(img.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+                imgUrl = res.get("secure_url").toString();
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("Xảy ra lỗi khi tải ảnh lên hệ thống");
+            }
+        }
+        this.serviceRepo.updateImg(imgUrl, id);
     }
 }

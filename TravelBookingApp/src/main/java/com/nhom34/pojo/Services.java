@@ -93,9 +93,7 @@ public class Services implements Serializable {
     @NotNull
     @Column(name = "status")
     private boolean status;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     @Column(name = "img_url")
     private String imgUrl;
     @JoinColumn(name = "provider_id", referencedColumnName = "id")
@@ -110,7 +108,7 @@ public class Services implements Serializable {
         this.id = id;
     }
 
-    public Services(Long id, String name, double price, String destination, int availableSlots, int slots, String description, Date createdAt, Date updatedAt, boolean status, String imgUrl) {
+    public Services(Long id, String name, double price, String destination, int availableSlots, int slots, String description, Date createdAt, Date updatedAt, boolean status) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -121,7 +119,6 @@ public class Services implements Serializable {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.status = status;
-        this.imgUrl = imgUrl;
     }
 
     public Long getId() {

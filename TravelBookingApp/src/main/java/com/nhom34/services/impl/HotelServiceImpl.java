@@ -40,9 +40,9 @@ public class HotelServiceImpl implements HotelService{
 
     @Override
     @Transactional
-    public HotelRoomServices addDetailService(Map<String, String> info, MultipartFile img, Providers prov) {
+    public HotelRoomServices addDetailService(Map<String, String> info, Providers prov) {
         HotelRoomServices newHotelRoom = new HotelRoomServices();
-        Services newService = this.serviceService.addService(info, img, prov);
+        Services newService = this.serviceService.addService(info, prov);
         
         newHotelRoom.setHotelName(info.get("hotelName"));
         newHotelRoom.setAddress(info.get("address"));

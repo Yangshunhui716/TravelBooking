@@ -79,24 +79,21 @@ public class ApiProviderController {
     }
     
     @PostMapping("/tour-services")
-    public ResponseEntity<TourServices> addTourService(@RequestParam Map<String, String> info, 
-            @RequestParam(value = "img") MultipartFile img, Principal principal) {
+    public ResponseEntity<TourServices> addTourService(@RequestBody Map<String, String> info, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        return new ResponseEntity<>(this.tourService.addDetailService(info, img, provider),HttpStatus.CREATED);
+        return new ResponseEntity<>(this.tourService.addDetailService(info, provider),HttpStatus.CREATED);
     }
     
     @PostMapping("/transport-services")
-    public ResponseEntity<TransportServices> addTransportService(@RequestParam Map<String, String> info, 
-            @RequestParam(value = "img") MultipartFile img, Principal principal) {
+    public ResponseEntity<TransportServices> addTransportService(@RequestBody Map<String, String> info, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        return new ResponseEntity<>(this.transportService.addDetailService(info, img, provider),HttpStatus.CREATED);
+        return new ResponseEntity<>(this.transportService.addDetailService(info, provider),HttpStatus.CREATED);
     } 
     
     @PostMapping("/hotel-room-services")
-    public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestParam Map<String, String> info, 
-            @RequestParam(value = "img") MultipartFile img, Principal principal) {
+    public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestBody Map<String, String> info, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
-        return new ResponseEntity<>(this.hotelRoomService.addDetailService(info, img, provider),HttpStatus.CREATED);
+        return new ResponseEntity<>(this.hotelRoomService.addDetailService(info, provider),HttpStatus.CREATED);
     }
     
     @PatchMapping("/tour-services/{serviceId}")
@@ -151,6 +148,14 @@ public class ApiProviderController {
         }
     }
     
+    @PatchMapping("/services/{serviceId}/image")
+    public void getServiceCustomer(@PathVariable(value = "serviceId") Long servId ,@RequestParam(value = "img") MultipartFile img, Principal principal){
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(this.servService.checkOwner(provider.getId(),servId)){
+            this.servService.updateImg(img, servId);
+        }
+    }
+    
     @GetMapping("/profile")
     public ResponseEntity<Providers> getProfile(Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
@@ -158,7 +163,7 @@ public class ApiProviderController {
     }
     
     @PatchMapping("/profile")
-    public ResponseEntity<Providers> updateProfile(@RequestBody Map<String, String> params,Principal principal) {
+    public ResponseEntity<Providers> updateProfile(@RequestBody Map<String, String> params, Principal principal) {
         Users user = this.userService.getUserByUsername(principal.getName());
         Providers provider = this.provService.updateProfile(params, user.getId());
         return new ResponseEntity<>(provider, HttpStatus.OK);

@@ -7,6 +7,7 @@ package com.nhom34.controllers;
 import com.nhom34.pojo.Users;
 import com.nhom34.services.UserService;
 import com.nhom34.utils.JwtUtils;
+import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,11 @@ public class ApiUserController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai thông tin đăng nhập");
+    }
+    
+    @PatchMapping("/secure/user/avatar")
+    public void updateAvatar(@RequestParam(value = "avatar") MultipartFile avatar, Principal principal) {
+        Users user = this.userService.getUserByUsername(principal.getName());
+        this.userService.updateAvatar(user.getId(), avatar);
     }
 }

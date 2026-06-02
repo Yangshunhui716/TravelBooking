@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ServiceDetailService<T> {
     List<T> getDetailServices(Map<String, String> params);
     T getDetailServiceById(Long id);
-    T addDetailService(Map<String, String> info, MultipartFile img, Providers prov);
+    T addDetailService(Map<String, String> info, Providers prov);
     T updatePartial(Map<String, String> params, Long id);
     
 }

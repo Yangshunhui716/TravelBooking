@@ -131,16 +131,25 @@ public class TourRepositoryImpl implements TourRepository {
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));
         }
-        if(params.containsKey("slot")){
-            serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
+        if(params.containsKey("slots")){
+            int preSlots = serv.getServices().getSlots();
+            int afterSlots = Integer.parseInt(params.get("slots"));
+            int addSlots = afterSlots-preSlots;
+            int availableSlots = serv.getServices().getAvailableSlots();
+            if(addSlots>0)
+                serv.getServices().setSlots(afterSlots);
+                serv.getServices().setAvailableSlots(availableSlots+addSlots);
         }
         if(params.containsKey("description")){
             serv.getServices().setDescription(params.get("description"));
         }
         if(params.containsKey("departureTime")){
-            serv.setDepartureTime(Timestamp.valueOf(params.get("departureTime")));
+            long newTimeInMillis = Long.parseLong(params.get("departureTime"));
+            Date oldDepartureTime = serv.getDepartureTime();
+            if (newTimeInMillis > System.currentTimeMillis() && newTimeInMillis > oldDepartureTime.getTime()) {
+                serv.setDepartureTime(new Timestamp(newTimeInMillis));
+            }
         }
-        
         s.merge(serv);
         return serv;
     }
