@@ -124,15 +124,18 @@ const HotelRoomServiceDetail = () => {
         if (providerId) nav(`/providers/${providerId}`);
     };
 
-    const handleChatProvider = () => {
+    const handleChatProvider = async () => {
         if (user === null) {
             nav(`/login?next=/hotel-room-services/${serviceId}`);
             return;
         }
         const providerUserId = hotelService.services?.providerId?.users?.id;
-        if (providerUserId) nav(`/chat?withUser=${providerUserId}`);
+        if (providerUserId) {
+            let conversation = await authApis().post(endpoints["conversation-create"](providerUserId));
+            nav("/conversations", { state: { conversationId: conversation.data.id } });
+        }
     };
-    // Xử lý gửi đánh giá mới lên Backend
+
     const handlePostReview = async (comment, rating) => {
         try {
             const serviceId = hotelService?.services?.id;

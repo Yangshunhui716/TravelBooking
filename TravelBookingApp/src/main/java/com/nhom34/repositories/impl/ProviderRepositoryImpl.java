@@ -66,6 +66,7 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         CriteriaQuery<TransportServices> query = builder.createQuery(TransportServices.class);
         Root rTS = query.from(TransportServices.class);
         query.where(builder.equal(rTS.get("services").get("providerId").get("id"), provId));
+        query.orderBy(builder.desc(rTS));
         Query q = s.createQuery(query);
         return q.getResultList();
     }
@@ -77,6 +78,7 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         CriteriaQuery<HotelRoomServices> query = builder.createQuery(HotelRoomServices.class);
         Root rH = query.from(HotelRoomServices.class);
         query.where(builder.equal(rH.get("services").get("providerId").get("id"), provId));
+        query.orderBy(builder.desc(rH));
         Query q = s.createQuery(query);
         return q.getResultList();
     }
@@ -88,6 +90,7 @@ public class ProviderRepositoryImpl implements ProviderRepository{
         CriteriaQuery<TourServices> query = builder.createQuery(TourServices.class);
         Root rT = query.from(TourServices.class);
         query.where(builder.equal(rT.get("services").get("providerId").get("id"), provId));
+        query.orderBy(builder.desc(rT));
         Query q = s.createQuery(query);
         return q.getResultList();
     }

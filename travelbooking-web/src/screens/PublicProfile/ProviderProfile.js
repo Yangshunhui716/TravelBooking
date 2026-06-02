@@ -75,7 +75,7 @@ const ProviderProfile = () => {
     const handleChat = async () => {
         try {
             let conversation = await authApis().post(endpoints["conversation-create"](provider.id));
-            navigate(`/conversations/${conversation.data.id}`);
+            navigate("/conversations", { state: { conversationId: conversation.data.id } });
         } catch (ex) {
             console.error(ex);
         }

@@ -123,7 +123,7 @@ const TourServiceDetail = () => {
     };
 
     // Xử lý kích hoạt Chat với nhà cung cấp
-    const handleChatProvider = () => {
+    const handleChatProvider = async () => {
         if (user === null) {
             nav(`/login?next=/tour-services/${serviceId}`);
             return;
@@ -131,7 +131,8 @@ const TourServiceDetail = () => {
         
         const providerUserId = tourService.services?.providerId?.users?.id;
         if (providerUserId) {
-            nav(`/chat?withUser=${providerUserId}`);
+            let conversation = await authApis().post(endpoints["conversation-create"](providerUserId));
+            nav("/conversations", { state: { conversationId: conversation.data.id } });
         }
     };
 

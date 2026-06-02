@@ -139,6 +139,18 @@ const Header = () => {
                                 )}
 
                                 <Link
+                                    to="/conversations"
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "bold",
+                                            marginRight: "15px",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                    💬 Tin nhắn
+                                </Link>
+
+                                <Link
                                     to="/profile"
                                     style={{
                                         color: "white",

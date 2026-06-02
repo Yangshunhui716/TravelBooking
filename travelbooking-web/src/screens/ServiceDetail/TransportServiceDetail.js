@@ -133,13 +133,16 @@ const TransportServiceDetail = () => {
         if (providerId) nav(`/providers/${providerId}`);
     };
 
-    const handleChatProvider = () => {
+    const handleChatProvider = async () => {
         if (user === null) {
             nav(`/login?next=/transport-services/${serviceId}`);
             return;
         }
         const providerUserId = transportService.services?.providerId?.users?.id;
-        if (providerUserId) nav(`/chat?withUser=${providerUserId}`);
+        if (providerUserId) {
+            let conversation = await authApis().post(endpoints["conversation-create"](providerUserId));
+            nav("/conversations", { state: { conversationId: conversation.data.id } });
+        }
     };
 
     if (loading) {
