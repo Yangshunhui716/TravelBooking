@@ -15,9 +15,11 @@ import com.paypal.orders.Order;
 import com.paypal.orders.OrderRequest;
 import com.paypal.orders.OrdersCaptureRequest;
 import com.paypal.orders.OrdersCreateRequest;
+import com.paypal.orders.OrdersGetRequest;
 import com.paypal.orders.PurchaseUnitRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,15 +40,15 @@ public class PaypalServiceImpl implements PaymentService{
     @Override
     public String call(String orderId, String amount, String orderInfo) {
         double totalUSD = Double.parseDouble(amount) / 25000.0;
-        String totalAmountStr = String.format("%.2f", totalUSD);
+        String totalAmountStr = String.format(Locale.US, "%.2f", totalUSD);
         
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.checkoutPaymentIntent("CAPTURE");
         
         ApplicationContext applicationContext = new ApplicationContext()
                 .brandName("AH Travel Booking")
-                .returnUrl("http://localhost:3000/payment/success")
-                .cancelUrl("http://localhost:3000/payment/cancel");
+                .returnUrl(paypalConfigs.getReturnUrl())
+                .cancelUrl(paypalConfigs.getCancelUrl());
         orderRequest.applicationContext(applicationContext);
         
         List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
@@ -75,18 +77,35 @@ public class PaypalServiceImpl implements PaymentService{
         return null;
     }
     
+    public Order getOrderDetails(String token) {
+        OrdersGetRequest request = new OrdersGetRequest(token);
+        try {
+            HttpResponse<Order> response = paypalConfigs.payPalHttpClient().execute(request);
+            return response.result(); 
+        } catch (Exception e) {
+            System.err.println("Không thể lấy thông tin chi tiết đơn hàng từ PayPal: " + e.getMessage());
+            return null;
+        }
+    }
+    
     public Order capturePayment(String token) {
         OrdersCaptureRequest captureRequest = new OrdersCaptureRequest(token);
+        captureRequest.prefer("return=representation"); 
         captureRequest.requestBody(new OrderRequest());
-        Order order = new Order();
         try {
             HttpResponse<Order> response = paypalConfigs.payPalHttpClient().execute(captureRequest);
-            order = response.result();
+            return response.result();
         } catch (Exception e) {
             System.err.println("Lỗi capture PayPal: " + e.getMessage());
+            Order originalOrder = this.getOrderDetails(token);
+            
+            if (originalOrder != null) {
+                originalOrder.status("FAILED"); 
+                return originalOrder; 
+            }
+            
+            return null;
         }
-        
-        return order;
     }
     
 }

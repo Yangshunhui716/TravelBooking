@@ -102,6 +102,16 @@ public class BookingRepositoryImpl implements BookingRepository{
             s.merge(b);
         }
     }
+    
+    @Override
+    public void changeBookingPayMethod(Long id, String payMethod){
+        Session s = this.factory.getObject().getCurrentSession();
+        Bookings b = this.getBookingById(id);
+        if (!b.getPaymentMethod().equals(payMethod)){
+            b.setPaymentMethod(payMethod);
+            s.merge(b);
+        }
+    }
 
     @Override
     public List<Object[]> getCustomerByServiceId(Long serviceId) {

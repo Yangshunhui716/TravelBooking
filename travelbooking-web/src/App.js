@@ -23,6 +23,9 @@ import MyCartReducer from "./reducers/MyCartReducer";
 import Cart from "./screens/Cart/Cart";
 import ProviderProfile from "./screens/PublicProfile/ProviderProfile";
 import Statistic from "./screens/Statistic/Statistic";
+import Chatroom from "./screens/Conversation/Chatroom";
+import Conversations from "./screens/Conversation/Conversations";
+import PaymentResult from "./screens/Payment/AnnouncementResult";
 
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, cookies.load("user") || null);
@@ -39,7 +42,7 @@ const App = () => {
                     <Header />
 
                         <Routes>
-                            <Route path="/" element={<Home />} />
+                            <Route path="*" element={<Home />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/tour-services" element={<TourService/>} />
@@ -49,13 +52,15 @@ const App = () => {
                             <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
                             <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
                             <Route path="/profile" element={<Profile />} />
-                            <Route path="/profile/*" element={<Profile />} />
                             <Route path="/modifier-service" element={<ModifierService />} />
                             <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
                             <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/providers/:providerId" element={<ProviderProfile />} />
                             <Route path="/statistic" element={<Statistic />} />
+                            <Route path="/conversations" element={<Conversations />} />
+                            <Route path="/conversations/:conversationId" element={<Chatroom />} />
+                            <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
                         </Routes>
 
                     <Footer />

@@ -48,16 +48,18 @@ public class ConversationServiceImpl implements ConversationService{
         if(user.getRole().equals("ROLE_PROVIDER")&&conversation.getProvider().getId().equals(user.getId())){
             this.conversationRepo.setLastMessage(conversation, message);
             this.conversationRepo.setUnreadForCustomer(conversation, (conversation.getCustomerUnread()+1));
+            this.conversationRepo.setUnreadForProvider(conversation, 0);
         }
         else if(user.getRole().equals("ROLE_CUSTOMER")&&conversation.getCustomer().getId().equals(user.getId())){
             this.conversationRepo.setLastMessage(conversation, message);
             this.conversationRepo.setUnreadForProvider(conversation, (conversation.getProviderUnread()+1));
+            this.conversationRepo.setUnreadForCustomer(conversation, 0);
         }
     }
 
     @Override
     @Transactional
-    public void createConversation(Users currentUser, Users targetUser) {
+    public Conversation createConversation(Users currentUser, Users targetUser) {
         Long uid1 = Math.min(currentUser.getId(), targetUser.getId());
         Long uid2 = Math.max(currentUser.getId(), targetUser.getId());
         String conversationId = "user_" + uid1 + "_" + uid2;
@@ -75,17 +77,26 @@ public class ConversationServiceImpl implements ConversationService{
                 newConversation.setCustomer(this.cusSerivce.getCustomerByUserId(currentUser.getId()));
             }
             
+            newConversation.setCustomerUnread(0);
+            newConversation.setProviderUnread(0);
             newConversation.setCreatedAt(new Date());
             newConversation.setUpdatedAt(new Date());
             newConversation.setId(conversationId);
             
-            this.conversationRepo.createConversation(newConversation);
+            return this.conversationRepo.createConversation(newConversation);
         }
+        return newConversation;
     }
 
     @Override
-    public List<Conversation> getConversationsByUser(Users userId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    @Transactional
+    public List<Conversation> getConversationsByUser(Users user) {
+        if(user.getRole().equals("ROLE_PROVIDER")){
+            return this.conversationRepo.getConversationsByProviderId(user.getId());
+        }else if(user.getRole().equals("ROLE_CUSTOMER")){
+            return this.conversationRepo.getConversationsByCustomerId(user.getId());
+        }
+        return null;
     }
     
 }

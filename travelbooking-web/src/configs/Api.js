@@ -1,8 +1,17 @@
 import axios from "axios";
-import cookies from 'react-cookies'
+import cookies from 'react-cookies';
+
 export const endpoints={
     'register': '/auth/register',
     'login': '/auth/login',
+    'firebase-token': '/secure/firebase-token',
+
+    'pay': '/secure/pay',
+    'handle-paypal': '/secure/paypal/capture',
+
+    'conversation': '/secure/conversations',
+    'conversation-create': (targetId) => `/secure/conversations/${targetId}`,
+    'conversation-detail': (conversationId) => `/secure/conversations/${conversationId}`,
 
     'customer-profile': '/secure/customer/profile',
     'customer-bookings': '/secure/customer/bookings',
@@ -31,13 +40,12 @@ export const endpoints={
 
     'service-reviews': (serviceId) => `/services/${serviceId}/reviews`,
 
-    'pay': '/secure/pay',
-
     'public-provider-profile': (providerId) => `provider/${providerId}`,
     'public-provider-tour-services': (providerId) => `provider/${providerId}/tour-services`,
     'public-provider-hotel-room-services': (providerId) => `provider/${providerId}/hotel-room-services`,
     'public-provider-transport-services': (providerId) => `provider/${providerId}/transport-services`,
 }
+
 export const authApis = () => {
     return axios.create({
         baseURL: 'http://localhost:8000/TravelBookingApp/api/',
@@ -46,6 +54,7 @@ export const authApis = () => {
         }
     })
 }
+
 export default axios.create({
     baseURL: "http://localhost:8000/TravelBookingApp/api"
 });

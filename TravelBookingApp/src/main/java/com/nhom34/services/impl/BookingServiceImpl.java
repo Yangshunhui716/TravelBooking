@@ -88,19 +88,26 @@ public class BookingServiceImpl implements BookingService{
     public void changeBookingStatus(Long id, String bookingStatus) {
         this.bookingRepo.changeBookingStatus(id, bookingStatus);
     }
+    
+    @Override
+    @Transactional
+    public void changeBookingPayMethod(Long id, String payMethod) {
+        this.bookingRepo.changeBookingPayMethod(id, payMethod);
+    }
 
     @Override
     @Transactional
-    public void bookingPaySuccess(String transactionCode, String transStatus, Long id, String paymentStatus, String bookingStatus) {
-        this.ttService.addTransferTransaction(transactionCode, transStatus, id);
-        this.bookingRepo.changePaymentStatus(id, paymentStatus);
-        this.bookingRepo.changeBookingStatus(id, bookingStatus);
+    public void bookingPaySuccess(String transactionCode, Long id) {
+        this.ttService.addTransferTransaction(transactionCode, "SUCCESS", id);
+        this.bookingRepo.changePaymentStatus(id, "PAID");
+        this.bookingRepo.changeBookingStatus(id, "CONFIRM");
     }
 
     @Override
     public List<Object[]> getCustomerByServiceId(Long serviceId) {
         return this.bookingRepo.getCustomerByServiceId(serviceId);
     }
+    
     @Override
     public boolean checkCustomerPaidService(Long customerId, Long serviceId) {
         return this.bookingRepo.checkCustomerPaidService(customerId, serviceId);

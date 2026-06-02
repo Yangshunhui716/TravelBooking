@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,34 @@ public class ApiPaymentController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }else{
             this.bookingService.changeBookingStatus(booking.getId(), "CONFIRM");
-            this.bookingService.changePaymentStatus(booking.getId(), "PAID");
+            this.bookingService.changePaymentStatus(booking.getId(), "UNPAID");
+            return new ResponseEntity<>(null,HttpStatus.OK);
+        }
+    }
+    
+    @PostMapping("/secure/pay/{bookingId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<?> rePay(@PathVariable("bookingId") Long bookingId, @RequestBody RequestOrder requestPayload, Principal principal) {
+        Customers customer = this.cusService.getCustomerByUsername(principal.getName());
+        Bookings booking = this.bookingService.getBookingById(bookingId);
+
+        if(booking.getPaymentStatus().equals("PAID")){
+            return new ResponseEntity<>("Đơn đã thanh toán",HttpStatus.BAD_REQUEST);
+        }
+        
+        this.bookingService.changeBookingPayMethod(bookingId, requestPayload.getPayMethod());
+        
+        if(!"CASH".equals(requestPayload.getPayMethod())){
+            PaymentService payMethod = paymentFactory.getMethod(requestPayload.getPayMethod());
+            String id = booking.getId().toString();
+            String orderInfo = "Thanh toán đơn "+ id;
+            String totalAmount = String.format("%.0f", booking.getTotalAmount());
+            Map<String, String> response = new HashMap<>();
+            response.put("payUrl", payMethod.call(id, totalAmount, orderInfo));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else{
+            this.bookingService.changeBookingStatus(booking.getId(), "CONFIRM");
+            this.bookingService.changePaymentStatus(booking.getId(), "UNPAID");
             return new ResponseEntity<>(null,HttpStatus.OK);
         }
     }
@@ -80,10 +108,13 @@ public class ApiPaymentController {
         
         Integer resultCode = (Integer) momoIpn.get("resultCode");
         String transactionCode = "MOMO_" + String.valueOf(momoIpn.get("transId"));
-        Long orderId = Long.valueOf(momoIpn.get("orderId").toString());
+        
+        String momoReturnOrderId = momoIpn.get("orderId").toString();
+        String realOrderId = momoReturnOrderId.split("_")[0];
+        Long orderId = Long.parseLong(realOrderId);
         
         if (resultCode != null && resultCode == 0) {
-            this.bookingService.bookingPaySuccess(transactionCode, "SUCCESS", orderId, "PAID", "CONFIRM");
+            this.bookingService.bookingPaySuccess(transactionCode, orderId);
         } else {
             this.ttService.addTransferTransaction(transactionCode, "FAILED", orderId);
         }
@@ -91,16 +122,23 @@ public class ApiPaymentController {
         return ResponseEntity.noContent().build();
     } 
     
-    @PostMapping("/paypal/capture")
+    @PostMapping("/secure/paypal/capture")
     public ResponseEntity<?> capturePaypalPayment(@RequestParam("token") String token) {
         Order order= paypalService.capturePayment(token);
-        Long orderId = Long.valueOf(order.purchaseUnits().get(0).customId());
-        String transactionCode = "PAYPAL_" + order.purchaseUnits().get(0).payments().captures().get(0).id();
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giao dịch không hợp lệ");
+        }
         if ("COMPLETED".equals(order.status())) {    
-            this.bookingService.bookingPaySuccess(transactionCode, "SUCCESS", orderId, "PAID", "CONFIRM");
+            Long orderId = Long.valueOf(order.purchaseUnits().get(0).customId());
+            String transactionCode = "PAYPAL_" + order.purchaseUnits().get(0).payments().captures().get(0).id();
+            this.bookingService.bookingPaySuccess(transactionCode, orderId);
             return ResponseEntity.status(HttpStatus.OK).body("Thanh toán thành công! Đã ghi nhận đơn hàng");
         } else {
-            this.ttService.addTransferTransaction(transactionCode, "FAILED", orderId);
+            if (order.purchaseUnits() != null && !order.purchaseUnits().isEmpty()) {
+                Long orderId = Long.valueOf(order.purchaseUnits().get(0).customId());
+                String transactionCode = "PAYPAL_" + System.currentTimeMillis();
+                this.ttService.addTransferTransaction(transactionCode, "FAILED", orderId);
+            }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giao dịch chưa hoàn tất hoặc thất bại");
         }
     }

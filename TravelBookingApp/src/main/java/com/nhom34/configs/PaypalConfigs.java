@@ -6,11 +6,10 @@ package com.nhom34.configs;
 
 import com.paypal.core.PayPalEnvironment;
 import com.paypal.core.PayPalHttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 
 /**
  *
@@ -19,37 +18,59 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("classpath:payments.properties")
 public class PaypalConfigs {
-    @Autowired
-    private Environment env;
+    @Value("${paypal.mode}")
+    private String mode;
     
-    @Bean
-    public String getMode(){
-        return env.getProperty("paypal.mode");
-    }
+    @Value("${paypal.clientId}")
+    private String clientId;
     
-    @Bean
-    public String getClientId(){
-        return env.getProperty("paypal.clientId");
-    }
+    @Value("${paypal.clientSecret}")
+    private String clientSecret;
     
-    @Bean
-    public String getClientSecret(){
-        return env.getProperty("paypal.clientSecret");
-    }
+    @Value("${paypal.returnUrl}")
+    private String returnUrl;
     
-    @Bean
-    public String getReturnUrl(){
-        return env.getProperty("paypal.returnUrl");
-    }
-    
-    @Bean
-    public String getCancelUrl(){
-        return env.getProperty("paypal.cancelUrl");
-    }
+    @Value("${paypal.cancelUrl}")
+    private String cancelUrl;
     
     @Bean
     public PayPalHttpClient payPalHttpClient() {
         PayPalEnvironment environment = new PayPalEnvironment.Sandbox(this.getClientId(), this.getClientSecret());
         return new PayPalHttpClient(environment);
+    }
+
+    /**
+     * @return the mode
+     */
+    public String getMode() {
+        return mode;
+    }
+
+    /**
+     * @return the clientId
+     */
+    public String getClientId() {
+        return clientId;
+    }
+
+    /**
+     * @return the clientSecret
+     */
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    /**
+     * @return the returnUrl
+     */
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    /**
+     * @return the cancelUrl
+     */
+    public String getCancelUrl() {
+        return cancelUrl;
     }
 }

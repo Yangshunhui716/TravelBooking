@@ -48,9 +48,10 @@ public class ConversationRepositoryImpl implements ConversationRepository{
     }
 
     @Override
-    public void createConversation(Conversation newConversation) {
+    public Conversation createConversation(Conversation newConversation) {
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(newConversation);
+        return newConversation;
     }
 
     @Override
