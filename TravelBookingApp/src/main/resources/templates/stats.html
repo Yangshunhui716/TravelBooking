@@ -12,9 +12,9 @@
     </style>
 </head>
 <body>
-
+ <div th:replace="base :: header"></div>
 <div class="container-fluid px-4 py-4">
-    <div th:replace="base :: header"></div>
+
     <h2 class="text-center mb-4 fw-bold text-dark">THỐNG KÊ HỆ THỐNG</h2>
 
     <div class="row">
@@ -118,6 +118,7 @@
 
     </div>
 </div>
+        
 
 <script th:inline="javascript">
     var rawData = [[${revenueTimes}]];
@@ -180,6 +181,5 @@
         }
     });
 </script>
-
 </body>
 </html>
