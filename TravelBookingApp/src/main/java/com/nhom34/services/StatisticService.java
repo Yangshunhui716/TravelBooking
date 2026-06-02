@@ -15,4 +15,8 @@ import java.util.Map;
  */
 public interface StatisticService {
     List<ProviderStatistic> providerStatistic(Map<String, String> filter, Providers prov, String metric);
+    
+    Map<String, Long> countActiveServices();
+    List<Object[]> getRevenueByTime(String time, int year);
+    List<Object[]> getTop5Services();
 }

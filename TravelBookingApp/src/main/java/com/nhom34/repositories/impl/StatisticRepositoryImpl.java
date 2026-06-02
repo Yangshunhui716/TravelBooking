@@ -22,8 +22,11 @@ import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -180,5 +183,112 @@ public class StatisticRepositoryImpl implements StatisticRepository {
         }
 
         return session.createQuery(query).getResultList();
+    }
+
+
+    @Override
+    public List<Object[]> getRevenueByTime(String time, int year) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Object[]> q = b.createQuery(Object[].class);
+
+        Root<Bookings> root = q.from(Bookings.class);
+
+        // Chuẩn hóa hàm cắt chuỗi thời gian: Nếu lọc theo 'YEAR' (Năm) -> lấy 'MONTH', ngược lại lấy 'DAY'
+        String sqlFunction = "YEAR".equalsIgnoreCase(time) ? "MONTH" : "DAY";
+
+        // Multiselect: [Thời gian, Số lượt đặt, Tổng doanh thu]
+        q.multiselect(
+            b.function(sqlFunction, Integer.class, root.get("createdAt")),
+            b.count(root.get("id")),
+            b.sum(root.get("totalAmount"))
+        );
+
+        // Mệnh đề WHERE lọc theo năm giống phong cách của thầy bạn
+        Predicate yearPredicate = b.equal(b.function("YEAR", Integer.class, root.get("createdAt")), year);
+        Predicate statusPredicate = b.equal(root.get("bookingStatus"), "CONFIRMED"); 
+        q.where(b.and(yearPredicate, statusPredicate));
+
+        q.groupBy(b.function(sqlFunction, Integer.class, root.get("createdAt")));
+        q.orderBy(b.asc(b.function(sqlFunction, Integer.class, root.get("createdAt"))));
+
+        Query query = s.createQuery(q);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> getTop5Services() {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Object[]> q = b.createQuery(Object[].class);
+
+        Root<BookingsServiceDetail> root = q.from(BookingsServiceDetail.class);
+        Join<BookingsServiceDetail, Services> serviceJoin = root.join("serviceId", JoinType.INNER);
+
+        q.multiselect(
+            serviceJoin.get("name"), 
+            b.count(root.get("id"))
+        );
+
+        q.groupBy(serviceJoin.get("id"), serviceJoin.get("name"));
+        q.orderBy(b.desc(b.count(root.get("id"))));
+
+        Query query = s.createQuery(q);
+        query.setMaxResults(5);
+
+        return query.getResultList();
+    }
+    @Override
+    public Map<String, Long> countActiveServices() {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        Map<String, Long> stats = new HashMap<>();
+
+        try {
+            // --- 1. ĐẾM SỐ LƯỢNG TOUR ĐANG HOẠT ĐỘNG ---
+            CriteriaQuery<Long> qTour = b.createQuery(Long.class);
+            Root<TourServices> rootTour = qTour.from(TourServices.class);
+            // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp TourServices
+            jakarta.persistence.criteria.Join<TourServices, Services> joinTourService = rootTour.join("services");
+            
+            qTour.select(b.count(rootTour));
+            // Lọc điều kiện status = true từ bảng Services cha
+            qTour.where(b.equal(joinTourService.get("status"), true)); 
+            Long tourCount = s.createQuery(qTour).getSingleResult();
+
+            // --- 2. ĐẾM SỐ LƯỢNG KHÁCH SẠN ĐANG HOẠT ĐỘNG ---
+            CriteriaQuery<Long> qHotel = b.createQuery(Long.class);
+            Root<HotelRoomServices> rootHotel = qHotel.from(HotelRoomServices.class);
+            // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp HotelRoomServices
+            jakarta.persistence.criteria.Join<HotelRoomServices, Services> joinHotelService = rootHotel.join("services");
+            
+            qHotel.select(b.count(rootHotel));
+            qHotel.where(b.equal(joinHotelService.get("status"), true));
+            Long hotelCount = s.createQuery(qHotel).getSingleResult();
+
+            // --- 3. ĐẾM SỐ LƯỢNG PHƯƠNG TIỆN ĐANG HOẠT ĐỘNG ---
+            CriteriaQuery<Long> qTransport = b.createQuery(Long.class);
+            Root<TransportServices> rootTransport = qTransport.from(TransportServices.class);
+            // Thực hiện JOIN sang bảng Services thông qua thuộc tính "services" trong lớp TransportServices
+            jakarta.persistence.criteria.Join<TransportServices, Services> joinTransportService = rootTransport.join("services");
+            
+            qTransport.select(b.count(rootTransport));
+            qTransport.where(b.equal(joinTransportService.get("status"), true));
+            Long transportCount = s.createQuery(qTransport).getSingleResult();
+
+            // Đổ số liệu thực tế vào Map kết quả
+            stats.put("Tour", tourCount);
+            stats.put("Hotel", hotelCount);
+            stats.put("Transport", transportCount);
+
+        } catch (Exception ex) {
+            // Ghi nhận lỗi chi tiết ra màn hình Console nếu có phát sinh lỗi trong quá trình truy vấn
+            ex.printStackTrace(); 
+            stats.put("Tour", 0L);
+            stats.put("Hotel", 0L);
+            stats.put("Transport", 0L);
+        }
+
+        return stats;
     }
 }

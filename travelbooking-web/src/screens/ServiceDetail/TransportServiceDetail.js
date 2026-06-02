@@ -70,7 +70,7 @@ const TransportServiceDetail = () => {
                 id: serviceId,
                 name: service.services?.name,
                 price: service.services?.price,
-                departure_time: formatDateTime(service.departureTime), // Đồng bộ key chính xác để Cart.js hiển thị được ngay
+                departure_time: service.departureTime, // Đồng bộ key chính xác để Cart.js hiển thị được ngay
                 type: "transport",
                 quantity: 1
             }; 
