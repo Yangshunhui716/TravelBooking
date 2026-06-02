@@ -21,6 +21,5 @@ public interface UserRepository {
     Users addUser(Users u);
     boolean authenticate(String username, String password);
     Users updateProfile(Map<String, String> params, Long id);
-    
-    
+    void updateAvatar(Long id,String avatar);
 }

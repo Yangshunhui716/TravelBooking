@@ -19,7 +19,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -44,11 +43,11 @@ public class TourServiceImpl implements TourService{
 
     @Override
     @Transactional
-    public TourServices addDetailService(Map<String, String> info, MultipartFile img, Providers prov) {
+    public TourServices addDetailService(Map<String, String> info, Providers prov) {
         TourServices newTour = new TourServices();
-        Services newService = this.serviceService.addService(info, img, prov);
+        Services newService = this.serviceService.addService(info, prov);
         
-        newTour.setDepartureTime(Timestamp.valueOf(info.get("departureTime")));
+        newTour.setDepartureTime(new Timestamp(Long.parseLong(info.get("departureTime"))));
         newTour.setDurationDays(Integer.parseInt(info.get("durationDays")));
         newTour.setServices(newService);
         newTour.setId(newService.getId());

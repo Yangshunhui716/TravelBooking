@@ -157,16 +157,19 @@ public class TransportRepositoryImpl implements TransportRepository{
         if(params.containsKey("price")){
             serv.getServices().setPrice(Double.parseDouble(params.get("price")));
         }
-        if(params.containsKey("slot")){
-            serv.getServices().setAvailableSlots(Integer.parseInt(params.get("slot")));
+        if(params.containsKey("slots")){
+            int preSlots = serv.getServices().getSlots();
+            int afterSlots = Integer.parseInt(params.get("slots"));
+            int addSlots = afterSlots-preSlots;
+            int availableSlots = serv.getServices().getAvailableSlots();
+            if(addSlots>0)
+                serv.getServices().setSlots(afterSlots);
+                serv.getServices().setAvailableSlots(availableSlots+addSlots);
         }
         if(params.containsKey("description")){
             serv.getServices().setDescription(params.get("description"));
         }
-        if(params.containsKey("departureLocation")){
-            serv.setDeparture(params.get("departure"));
-        }
-        if(params.containsKey("endLocation")){
+        if(params.containsKey("locationDetail")){
             serv.setLoactionDetail(params.get("locationDetail"));
         }
         

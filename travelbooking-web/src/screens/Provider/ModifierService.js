@@ -15,7 +15,7 @@ const ModifierService = () => {
     const [serviceType, setServiceType] = useState(type);
     const [service, setService] = useState({});
     const [payload, setPayload] = useState({});
-    const [serviceImage, setServiceImage] = useState();
+    const [serviceImage, setServiceImage] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const tourFieldsConfig = [
@@ -68,11 +68,6 @@ const ModifierService = () => {
             }
 
         }
-
-        const imageUrl = existingService?.services?.imgUrl;
-        if (imageUrl && imageUrl !== serviceImage) {
-            setServiceImage(existingService.services.imgUrl);
-        }
     }, [isEditMode, existingService]);
 
     const createPayload = (key, value) => {
@@ -84,28 +79,39 @@ const ModifierService = () => {
         setService(prev => ({ ...prev, [key]: value }));
     };
 
-    const saveService = () => {
+    const saveService = async () => {
         try {
             setLoading(true);
+            let res;
+
             if (isEditMode) {
                 if (serviceType === 'tour') {
-                    authApis().patch(endpoints["provider-tour-service"](service.id), payload)
+                    res = await authApis().patch(endpoints["provider-tour-service"](service.id), payload)
                 } else if (serviceType === 'hotelRoom') {
-                    authApis().patch(endpoints["provider-hotel-room-service"](service.id), payload)
+                    res = await authApis().patch(endpoints["provider-hotel-room-service"](service.id), payload)
                 } else if (serviceType === 'transport') {
-                    authApis().patch(endpoints["provider-transport-service"](service.id), payload)
+                    res = await authApis().patch(endpoints["provider-transport-service"](service.id), payload)
                 }
             } else {
                 if (serviceType === 'tour') {
-                    authApis().post(endpoints["provider-tour-services"], payload)
+                    res = await authApis().post(endpoints["provider-tour-services"], payload)
                 } else if (serviceType === 'hotelRoom') {
-                    authApis().post(endpoints["provider-hotel-room-services"], payload)
+                    res = await authApis().post(endpoints["provider-hotel-room-services"], payload)
                 } else if (serviceType === 'transport') {
-                    authApis().post(endpoints["provider-transport-services"], payload)
+                    res = await authApis().post(endpoints["provider-transport-services"], payload)
                 }
             }
+
+            if (serviceImage!==null && serviceImage !== existingService?.services?.imgUrl && res.data.id) {
+                const form = new FormData();
+                form.append("img", serviceImage);
+                await authApis().patch(endpoints["service-image"](res.data.id), form);
+            }
+
+            alert(isEditMode ? "Cập nhật dịch vụ thành công!" : "Thêm dịch vụ thành công!");
         } catch (ex) {
             console.error(ex);
+            alert(isEditMode ? "Cập nhật dịch vụ thất bại!" : "Thêm dịch vụ thất bại!");
         } finally {
             setLoading(false);
         }
@@ -117,10 +123,18 @@ const ModifierService = () => {
                 <Col md={4}>
                     <Card className="p-3 shadow-sm rounded-4">
                         <Form.Label>Ảnh dịch vụ</Form.Label>
-                        <Form.Control type="file" accept="image/*" />
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) =>
+                                setServiceImage(
+                                    e.target.files[0]
+                                )
+                            }
+                        />
                     </Card>
 
-                    <DisplayImage imageUrl={serviceImage} />
+                    <DisplayImage imageUrl={serviceImage ? URL.createObjectURL(serviceImage) : existingService?.services?.imgUrl || null} />
 
                     <div className="mt-4 d-flex justify-content-start gap-3">
                         {isEditMode ? (

@@ -22,25 +22,24 @@ const ProfileSidebar = () => {
         email: "",
     });
 
-    // LOAD USER DATA
     useEffect(() => {
         if (user) {
             setFormData({
-                fullname: user?.fullname || "",
-                gender: user?.gender || "",
-                businessName: user?.businessName || "",
-                tax: user?.tax || "",
-                address: user?.address || "",
-                phone: user?.users?.phone || "",
-                email: user?.users?.email || "",
+                fullname: user.fullname || "",
+                gender: user.gender || "",
+                businessName: user.businessName || "",
+                tax: user.tax || "",
+                address: user.address || "",
+                phone: user.users.phone || "",
+                email: user.users.email || "",
             });
+        }else {
+            return;
         }
     }, [user]);
-    if (!user) return null;
-    const isProvider =
-        user?.users?.role === "ROLE_PROVIDER";
+    
+    const isProvider = user.users.role === "ROLE_PROVIDER";
 
-    // HANDLE INPUT
     const change = (e) => {
         setFormData({
             ...formData,
@@ -48,7 +47,6 @@ const ProfileSidebar = () => {
         });
     };
 
-    // LOGOUT
     const logout = () => {
         cookies.remove("token");
         dispatch({
@@ -57,35 +55,12 @@ const ProfileSidebar = () => {
         nav("/");
     };
 
-    // UPLOAD AVATAR TO CLOUDINARY
-    const uploadAvatar = async () => {
-        if (!avatarFile) return null;
-        const data = new FormData();
-        data.append("file", avatarFile);
-        data.append(
-            "upload_preset",
-            "travelbooking"
-        );
-        const res = await fetch("https://api.cloudinary.com/v1_1/durpn2bki/image/upload",
-            {
-                method: "POST",
-                body: data
-            }
-        );
-        const fileData = await res.json();
-        return fileData.secure_url;
-    };
-
-    // SAVE PROFILE
     const saveProfile = async () => {
         try {
             setLoading(true);
-            // UPLOAD AVATAR
-            const avatarUrl =
-                await uploadAvatar();
             const url = isProvider ? endpoints["provider-profile"]: endpoints["customer-profile"];
             let payload = {};
-            // PROVIDER
+
             if (isProvider) {
                 payload = {
                     business_name:  formData.businessName,
@@ -95,7 +70,6 @@ const ProfileSidebar = () => {
                     email: formData.email
                 };
             }
-            // CUSTOMER
             else {
                 payload = {
                     fullname: formData.fullname,
@@ -104,15 +78,15 @@ const ProfileSidebar = () => {
                     email: formData.email
                 };
             }
-            // ADD AVATAR
-            if (avatarUrl) {
-                payload.avatar = avatarUrl;
+
+            if (avatarFile && avatarFile !== user.users?.avatar) {
+                const form = new FormData();
+                form.append("avatar", avatarFile);
+                await authApis().patch(endpoints["user-avatar"], form);
             }
-            console.log("URL:", url);
-            console.log("PAYLOAD:", payload);
+
             const res = await authApis().patch( url, payload);
-            console.log(  "RESPONSE:",res.data );
-            // UPDATE CONTEXT
+
             dispatch({
                 type: "LOGIN",
                 payload: {
@@ -145,7 +119,7 @@ const ProfileSidebar = () => {
             <div className="text-center mb-3">
                 <img
                     src={
-                        avatarFile? URL.createObjectURL( avatarFile): user?.users?.avatar
+                        avatarFile? URL.createObjectURL(avatarFile): user.users.avatar
                     }
                     alt="avatar"
                     width="100"
@@ -174,7 +148,7 @@ const ProfileSidebar = () => {
             )}
             {/* TITLE */}
             <h4 className="text-center mb-4">
-                {isProvider ? formData.businessName: formData.fullname ||user?.users?.username}
+                {isProvider ? formData.businessName: formData.fullname ||user.users.username}
             </h4>
             {/* PROVIDER */}
             {isProvider ? (

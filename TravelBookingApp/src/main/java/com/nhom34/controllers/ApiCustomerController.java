@@ -47,7 +47,7 @@ public class ApiCustomerController {
     }
     
     @PatchMapping("/profile")
-    public ResponseEntity<Customers> updateProfile(@RequestBody Map<String, String> params,Principal principal) {
+    public ResponseEntity<Customers> updateProfile(@RequestBody Map<String, String> params, Principal principal) {
         Users user = this.userService.getUserByUsername(principal.getName());
         Customers customer = this.customerService.updateProfile(params, user.getId());
         return new ResponseEntity<>(customer, HttpStatus.OK);
