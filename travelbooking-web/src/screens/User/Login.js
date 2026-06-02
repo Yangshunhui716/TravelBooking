@@ -1,15 +1,13 @@
 import { useContext, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 import cookies from "react-cookies";
-
 import Apis, { authApis, endpoints } from "../../configs/Api";
 import { MyUserContext } from "../../configs/Context";
-
 import MySpinner from "../../components/MySpinner";
-
 import styles from "./UserStyle";
+import { auth } from "../../configs/FirebaseConfig";
+import { signInWithCustomToken } from "firebase/auth";
 
 const Login = () => {
 
@@ -88,6 +86,15 @@ const Login = () => {
                     "type": "LOGIN",
                     "payload": u.data
                 });
+
+                let firebaseToken = await authApis().get(endpoints["firebase-token"]);
+                try {
+                    await signInWithCustomToken(auth, firebaseToken.data);
+                    cookies.save("firebase-token", firebaseToken.data);
+                } catch (error) {
+                    console.error("Lỗi khi đăng nhập Firebase:", error);
+                }
+                
                 let next = q.get("next");
                 if (next) nav(next);
                 else nav("/");

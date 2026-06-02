@@ -1,93 +1,58 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Badge, Image } from "react-bootstrap";
-import { endpoints, authApis } from "../config/Apis";
-import { MyUserContext } from "../utils/mycontext";
+import { endpoints, authApis } from "../../configs/Api";
+import { MyUserContext } from "../../configs/Context";
 
 const Conversations = () => {
-    const [chatrooms, setChatRooms] = useState([]);
     const [conversations, setConversations] = useState([]);
     const [user] = useContext(MyUserContext);
 
     const nav = useNavigate();
 
-    const loadConversation = async () => {
+    const loadConversations = async () => {
         try {
-            // Sử dụng localStorage thay cho AsyncStorage trên Web
-            const token = localStorage.getItem("token");
-            if (!token) return;
-
-            const chatroom = await authApis(token).get(endpoints['chat']);
-            setChatRooms(chatroom.data.results);
-            
-            const conversation = await authApis(token).get(endpoints['conversation']);
-            setConversations(conversation.data.results);
+            const conversation = await authApis().get(endpoints['conversation']);
+            setConversations(conversation.data);
         } catch (e) {
             console.error(e);
         }
     };
 
     useEffect(() => {
-        loadConversation();
-        // CẢNH BÁO: Đã đổi thành [] để tránh lỗi infinite loop (Render liên tục) 
-        // từ dependency [conversations] của file React Native cũ.
+        loadConversations();
     }, []);
     
-    const renderItem = (room) => {
-        const conversation = conversations?.find(
-            c => c.conversation.chat_room_id === room.chat_room_id
-        );
-
-        // Gom logic để tái sử dụng thay vì viết lại 2 khối Card giống hệt nhau
-        const isCandidate = user?.role === 'CANDIDATE';
-        const targetUser = isCandidate ? room.employer : room.candidate;
-
-        if (!targetUser) return null;
+    const renderConversations = (conversation) => {
+        const isCustomer = user?.users.role === 'ROLE_CUSTOMER';
+        const targetUser = isCustomer ? conversation.provider : conversation.customer;
+        const unreadCount = isCustomer ? conversation.customerUnread : conversation.providerUnread;
 
         return (
-            <Card 
-                key={room.chat_room_id} 
-                className="mb-2 shadow-sm border-0" 
+            <Card key={conversation.id} className="mb-2 shadow-sm border-0" 
                 style={{ cursor: "pointer" }}
-                onClick={() => nav(`/chat-room/${room.chat_room_id}`)}
-                // Lưu ý: Đường dẫn nav tùy thuộc vào cấu hình route của bạn
+                onClick={() => nav(`/conversations/${conversation.id}`)}
             >
                 <Card.Body className="d-flex align-items-center p-3">
-                    {/* Phần Avatar (Bên trái) */}
                     <div className="me-3">
-                        {targetUser.avatar ? (
-                            <Image 
-                                src={targetUser.avatar} 
-                                roundedCircle 
-                                width={48} 
-                                height={48} 
-                                style={{ objectFit: 'cover' }} 
-                            />
-                        ) : (
-                            <div 
-                                className="d-flex justify-content-center align-items-center bg-secondary text-white rounded-circle"
-                                style={{ width: '48px', height: '48px', fontSize: '20px' }}
-                            >
-                                {targetUser.full_name.charAt(0)}
-                            </div>
-                        )}
+                        <Image 
+                            src={targetUser.users.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+                            roundedCircle width={48} height={48} 
+                            style={{ objectFit: 'cover' }} 
+                        />
                     </div>
 
-                    {/* Phần Nội dung (Ở giữa) */}
                     <div className="flex-grow-1">
-                        <h6 className="mb-1 fw-bold">{targetUser.full_name}</h6>
+                        <h6 className="mb-1 fw-bold">{targetUser.fullname || targetUser.businessName}</h6>
                         <small className="text-muted">
-                            {room.last_message 
-                                ? `Tin nhắn cuối cùng: ${room.last_message}` 
-                                : "Chưa có tin nhắn"}
+                            {conversation.lastMessage ? `Tin nhắn cuối cùng: ${conversation.lastMessage}` : "Chưa có tin nhắn"}
                         </small>
                     </div>
-
-                    {/* Phần Badge (Bên phải) */}
-                    {conversation?.unread_count > 0 && (
+                    
+                    {unreadCount > 0 && (
                         <div className="ms-3 align-self-center">
                             <Badge bg="danger" pill>
-                                {conversation.unread_count}
+                                {unreadCount}
                             </Badge>
                         </div>
                     )}
@@ -98,10 +63,13 @@ const Conversations = () => {
 
     return (
         <div className="container mt-3">
-            {/* Tương đương với FlatList trên Web */}
+        {conversations.length === 0 ? (
+            <p>Không có cuộc trò chuyện nào.</p>
+        ) : (
             <div className="chat-list-container">
-                {chatrooms.map((room) => renderItem(room))}
+                {conversations.map((conversation) => renderConversations(conversation))}
             </div>
+        )}
         </div>
     );
 };

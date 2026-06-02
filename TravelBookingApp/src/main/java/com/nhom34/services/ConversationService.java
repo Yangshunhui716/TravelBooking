@@ -15,6 +15,6 @@ import java.util.List;
 public interface ConversationService {
     void setReaded(Users user, String conversationId);
     void setLastMessage(Users user, String conversationId, String message);
-    void createConversation(Users currentUser, Users targetUser);
+    Conversation createConversation(Users currentUser, Users targetUser);
     List<Conversation> getConversationsByUser(Users user);
 }

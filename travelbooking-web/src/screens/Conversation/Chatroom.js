@@ -1,21 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Spinner, Form, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { ref, onValue, push } from "firebase/database";
-import { db, auth } from "../utils/firebase";
-import { endpoints, authApis } from "../config/Apis";
-import { MyUserContext } from "../utils/mycontext";
+import { db, auth } from "../../configs/FirebaseConfig";
+import { authApis, endpoints } from "../../configs/Api";
+import { useNavigate, useParams } from "react-router-dom";
+import MySpinner from "../../components/MySpinner";
 
 const Chatroom = () => {
-    const location = useLocation();
-    // Giả định bạn truyền chatRoom qua state của React Router: navigate('/chat', { state: { chatRoom: room } })
-    const { chatRoom } = location.state || {}; 
-    const roomId = chatRoom?.chat_room_id;
-    
-    const [user] = useContext(MyUserContext);
+    const { conversationId } = useParams();
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const formatDate = (ts) => {
         const d = new Date(ts);
@@ -35,58 +31,59 @@ const Chatroom = () => {
     };
 
     useEffect(() => {
-        if (!roomId) return;
-
+        if (!conversationId) return;
         setLoading(true);
 
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (token) {
-                    await authApis(token).get(endpoints["chatroom"](roomId));
-                }
-            } catch (error) {
-                console.error("Lỗi khi tải thông tin chat room:", error);
+        const msgRef = ref(db, `chat_rooms/${conversationId}/messages`);
+
+        const unsub = onValue(msgRef, 
+            (snap) => {
+                const data = snap.val() || {};
+                const list = Object.entries(data)
+                    .map(([id, v]) => ({ id, ...v }))
+                    .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+                setMessages(list);
+                authApis().patch(endpoints["conversation-detail"](conversationId), {});
+                setLoading(false);
+            }, 
+            (error) => {
+                console.error("Lỗi đọc dữ liệu Firebase:", error);
+                navigate("/conversations");
             }
-        };
-
-        fetchData();
-
-        const msgRef = ref(db, `chat_rooms/${roomId}/messages`);
-
-        const unsub = onValue(msgRef, snap => {
-            const data = snap.val() || {};
-            const list = Object.entries(data)
-                .map(([id, v]) => ({ id, ...v }))
-                .sort((a, b) => (b.created_at || 0) - (a.created_at || 0)); // Sắp xếp mới nhất lên đầu
-
-            setMessages(list);
-            setLoading(false);
-        });
-
+        );
         return () => unsub();
-    }, [roomId]);
+    }, [conversationId]);
+
+    const seen = setTimeout(async () => {
+        try {
+            await authApis().patch(endpoints["conversation-detail"](conversationId), {});
+        } catch (error) {
+            console.error("Lỗi khi bắn API báo Seen:", error);
+        }
+    }, 1500);
+
+    useEffect(() => {
+        return () => clearTimeout(seen);
+    }, [messages.length, conversationId]);
 
     const sendMessage = async (e) => {
-        e?.preventDefault(); // Ngăn chặn reload trang nếu dùng form
-        
+        e?.preventDefault();
         if (!text.trim() || !auth.currentUser) return;
 
         try {
-            await push(ref(db, `chat_rooms/${roomId}/messages`), {
+            let tmpText = text.trim();
+            setText("");
+
+            await push(ref(db, `chat_rooms/${conversationId}/messages`), {
                 sender: auth.currentUser.uid,
-                text,
+                text: tmpText,
                 created_at: Date.now(),
             });
 
-            const token = localStorage.getItem("token");
-            if (token) {
-                await authApis(token).patch(endpoints["chatroom"](roomId), {
-                    last_message: text,
-                });
-            }
+            await authApis().patch(endpoints["conversation-detail"](conversationId), {
+                "message": tmpText,
+            });
 
-            setText("");
         } catch (error) {
             console.error("Lỗi khi gửi tin nhắn:", error);
         }
@@ -99,14 +96,13 @@ const Chatroom = () => {
 
         return (
             <div key={item.id} className="w-100">
-                {/* Ngày tháng */}
                 {showDate && (
                     <div className="text-center my-2 text-muted" style={{ fontSize: "12px" }}>
                         {formatDate(item.created_at)}
                     </div>
                 )}
                 
-                {/* Dòng tin nhắn */}
+
                 <div className={`d-flex mb-2 ${isMe ? "justify-content-end" : "justify-content-start"}`}>
                     <div 
                         className="shadow-sm"
@@ -135,28 +131,18 @@ const Chatroom = () => {
     };
 
     if (loading) {
-        return (
-            <div className="d-flex vh-100 justify-content-center align-items-center">
-                <Spinner animation="border" variant="primary" />
-            </div>
-        );
-    }
-
-    if (!roomId) {
-        return <div className="text-center mt-5">Không tìm thấy phòng chat.</div>;
+        return <MySpinner />;
     }
 
     return (
         <div className="container d-flex flex-column" style={{ height: "100vh", maxWidth: "800px" }}>
-            {/* Vùng hiển thị tin nhắn (FlatList inverted -> flex-column-reverse) */}
-            <div 
-                className="flex-grow-1 d-flex flex-column-reverse p-3" 
+            <div className="flex-grow-1 d-flex flex-column-reverse p-3" 
                 style={{ overflowY: "auto", backgroundColor: "#fafafa", border: "1px solid #dee2e6", borderRadius: "8px" }}
             >
                 {messages.map((item, index) => renderItem(item, index))}
             </div>
 
-            {/* Vùng nhập tin nhắn */}
+
             <Form className="d-flex align-items-center py-3" onSubmit={sendMessage}>
                 <Form.Control
                     type="text"

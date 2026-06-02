@@ -1,9 +1,10 @@
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import ServicesList from "../../components/ServiceList";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { authApis, endpoints } from "../../configs/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
+import { MyUserContext } from "../../configs/Context";
 
 const ProviderProfile = () => {
     const { providerId } = useParams();
@@ -12,6 +13,7 @@ const ProviderProfile = () => {
     const [provider, setProvider] = useState(null);
     const [providerServices, setProviderServices] = useState([]);
     const [serviceType, setServiceType] = useState('tour');
+    const [user] = useContext(MyUserContext);
 
     const loadProfileProvider = useCallback(async () => {
         try {
@@ -70,6 +72,15 @@ const ProviderProfile = () => {
         loadServices();
     }, [loadServices]);
 
+    const handleChat = async () => {
+        try {
+            let conversation = await authApis().post(endpoints["conversation-create"](provider.id));
+            navigate(`/conversations/${conversation.data.id}`);
+        } catch (ex) {
+            console.error(ex);
+        }
+    };
+
     return (
         <Container>
             <Row className="justify-content-center mt-4 mb-5">
@@ -110,12 +121,15 @@ const ProviderProfile = () => {
                             <b className="text-muted">Email:</b>
                             <p className="mb-0 fw-medium">{provider?.users?.email || "Chưa cập nhật"}</p>
                         </div>
-
-                        <div className="d-flex justify-content-center mt-4">
-                            <Button variant="primary" className="px-5 rounded-pill shadow-sm"> 
-                                Chat ngay 
-                            </Button>
-                        </div>
+                        
+                        {user?.users.role === "ROLE_CUSTOMER" && (
+                            <div className="d-flex justify-content-center mt-4">
+                                <Button variant="primary" className="px-5 rounded-pill shadow-sm" onClick={handleChat}>
+                                    Chat ngay 
+                                </Button>
+                            </div>
+                        )}
+                        
                     </Card>
                 </Col>
 

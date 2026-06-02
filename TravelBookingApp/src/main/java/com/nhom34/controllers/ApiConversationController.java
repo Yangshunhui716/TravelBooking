@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author PC
  */
 @RestController
-@RequestMapping("/api/secure/")
+@RequestMapping("/api/secure")
 @CrossOrigin
 public class ApiConversationController {
     @Autowired
@@ -64,17 +64,17 @@ public class ApiConversationController {
         if(targetUser==null || currentUser.getRole().equals(targetUser.getRole())){
             return new ResponseEntity<>("Đối tượng nhắn tin không hợp lệ", HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>("Tạo hội thoại thành công", HttpStatus.OK);
+        Conversation c = this.conversationService.createConversation(currentUser, targetUser);
+        return new ResponseEntity<>(c, HttpStatus.OK);
     }
     
     @PatchMapping("/conversations/{conversationId}")
-    public void getConversationDetail(@PathVariable("conversationId") String conversationId, @RequestBody Map<String, String> params, Principal principal) {
+    public void getConversationDetail(@PathVariable("conversationId") String conversationId, @RequestBody Map<String, String> body, Principal principal) {
         Users u = this.userService.getUserByUsername(principal.getName());
-        if(params.isEmpty()){
+        if(body.isEmpty()){
             this.conversationService.setReaded(u, conversationId);
         }else{
-            this.conversationService.setLastMessage(u, conversationId, params.get("message"));
+            this.conversationService.setLastMessage(u, conversationId, body.get("message"));
         }
     }
 

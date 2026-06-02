@@ -34,15 +34,18 @@ public class MomoServiceImpl implements PaymentService{
     public String call(String orderId, String amount, String orderInfo) {
         String requestType = "payWithATM";
         String extraData = "";
+        
+        String uniqueOrderId = orderId + "_" + System.currentTimeMillis();
+        
         String rawData = "accessKey=" + momoConfigs.getAccessKey() + 
                          "&amount=" + amount + 
                          "&extraData=" + extraData +
                          "&ipnUrl=" + momoConfigs.getNotifyUrl() + 
-                         "&orderId=" + orderId + 
+                         "&orderId=" + uniqueOrderId + 
                          "&orderInfo=" + orderInfo +
                          "&partnerCode=" + momoConfigs.getPartnerCode() + 
                          "&redirectUrl=" + momoConfigs.getReturnUrl() +
-                         "&requestId=" + orderId + 
+                         "&requestId=" + uniqueOrderId + 
                          "&requestType=" + requestType;
 
         String signature;
@@ -56,9 +59,9 @@ public class MomoServiceImpl implements PaymentService{
         Map<String, String> body = new HashMap<>();
         body.put("partnerCode", momoConfigs.getPartnerCode());
         body.put("accessKey", momoConfigs.getAccessKey());
-        body.put("requestId", orderId);
+        body.put("requestId", uniqueOrderId);
         body.put("amount", amount);
-        body.put("orderId", orderId);
+        body.put("orderId", uniqueOrderId);
         body.put("orderInfo", orderInfo);
         body.put("redirectUrl", momoConfigs.getReturnUrl());
         body.put("ipnUrl", momoConfigs.getNotifyUrl());
@@ -114,9 +117,6 @@ public class MomoServiceImpl implements PaymentService{
                              "&transId=" + transId;
 
             String mySignature = MomoUtils.createSignature(rawData, momoConfigs.getSecretKey());
-            System.out.println("MoMo Signature : " + momoSignature);
-            System.out.println("My Signature   : " + mySignature);
-            System.out.println("Raw Data       : " + rawData);
             return mySignature.equals(momoSignature);
         } catch (Exception e) {
             e.printStackTrace();

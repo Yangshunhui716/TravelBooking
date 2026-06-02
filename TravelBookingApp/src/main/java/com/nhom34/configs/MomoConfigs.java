@@ -4,11 +4,9 @@
  */
 package com.nhom34.configs;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 
 /**
  *
@@ -17,37 +15,64 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("classpath:payments.properties")
 public class MomoConfigs {
-    @Autowired
-    private Environment env;
+    @Value("${momo.partnerCode}")
+    private String partnerCode;
     
-    @Bean
-    public String getPartnerCode(){
-        return env.getProperty("momo.partnerCode");
+    @Value("${momo.accessKey}")
+    private String accessKey;
+    
+    @Value("${momo.secretKey}")
+    private String secretKey;
+    
+    @Value("${momo.endpoint}")
+    private String endpoint;
+    
+    @Value("${momo.returnUrl}")
+    private String returnUrl;
+    
+    @Value("${momo.notifyUrl}")
+    private String notifyUrl;
+
+    /**
+     * @return the partnerCode
+     */
+    public String getPartnerCode() {
+        return partnerCode;
     }
-    
-    @Bean
-    public String getAccessKey(){
-        return env.getProperty("momo.accessKey");
+
+    /**
+     * @return the accessKey
+     */
+    public String getAccessKey() {
+        return accessKey;
     }
-    
-    @Bean
-    public String getSecretKey(){
-        return env.getProperty("momo.secretKey");
+
+    /**
+     * @return the secretKey
+     */
+    public String getSecretKey() {
+        return secretKey;
     }
-    
-    @Bean
-    public String getEndpoint(){
-        return env.getProperty("momo.endpoint");
+
+    /**
+     * @return the endpoint
+     */
+    public String getEndpoint() {
+        return endpoint;
     }
-    
-    @Bean
-    public String getReturnUrl(){
-        return env.getProperty("momo.returnUrl");
+
+    /**
+     * @return the returnUrl
+     */
+    public String getReturnUrl() {
+        return returnUrl;
     }
-    
-    @Bean
-    public String getNotifyUrl(){
-        return env.getProperty("momo.notifyUrl");
+
+    /**
+     * @return the notifyUrl
+     */
+    public String getNotifyUrl() {
+        return notifyUrl;
     }
     
 }
