@@ -20,8 +20,8 @@ public class StatisticServiceImpl implements StatisticService{
     private StatisticRepository statisticRepo;
     @Autowired
     private LocalSessionFactoryBean factory;
+    
     @Override
-    @Transactional
     public List<ProviderStatistic> providerStatistic(Map<String, String> filter, Providers prov, String metric) {
         Long providerId = prov.getId(); 
         String serviceType = filter.getOrDefault("serviceType", "all");

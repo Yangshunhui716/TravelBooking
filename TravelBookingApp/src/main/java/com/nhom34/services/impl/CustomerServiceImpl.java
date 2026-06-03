@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepo;
@@ -22,7 +23,6 @@ public class CustomerServiceImpl implements CustomerService {
     private UserRepository userRepo;
   
     @Override
-    @Transactional
     public Customers addCustomer(Map<String, String> info, Users u) {
         Customers newCustomer = new Customers();
         newCustomer.setId(u.getId());
@@ -44,7 +44,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
     
     @Override
-    @Transactional
     public Customers updateProfile(Map<String, String> params, Long id) {
         this.userRepo.updateProfile(params, id);
         return this.customerRepo.updatePartial(params, id);

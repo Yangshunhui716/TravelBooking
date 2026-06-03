@@ -18,11 +18,29 @@ const HotelRoomServiceDetail = () => {
     const [, dispatch] = useContext(MyCartContext);
     const nav = useNavigate();
     const [reviews, setReviews] = useState([]);
-    
 
-    const [checkInDate, setCheckInDate] = useState("");
-    const [checkOutDate, setCheckOutDate] = useState("");
+    const getDefaultDates = () => {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); 
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`; 
+        };
+        return {
+            today: formatDate(today),
+            tomorrow: formatDate(tomorrow)
+        };
+    };
+    const defaultDates = getDefaultDates();
+    const [checkInDate, setCheckInDate] = useState(defaultDates.today);
+    const [checkOutDate, setCheckOutDate] = useState(defaultDates.tomorrow);
     const [roomCount, setRoomCount] = useState(1);
+    const [availableSlots, setAvailableSlots] = useState(0);
+
+
     const formatDateTime = (timestamp) => {
         if (!timestamp) return "";
         return new Date(timestamp).toLocaleString("vi-VN", {
@@ -38,7 +56,7 @@ const HotelRoomServiceDetail = () => {
         try {
             setLoading(true);
             let res = await Api.get(endpoints['hotel-room-service-detail'](serviceId));
-            setHotelService(res.data);
+            setHotelService(res.data); 
         } catch (ex) {
             console.error("Lỗi khi tải chi tiết dịch vụ khách sạn:", ex);
         } finally {
@@ -46,18 +64,34 @@ const HotelRoomServiceDetail = () => {
         }
     };
 
+    const loadAvailableSlotsOnly = async () => {
+        try {
+            let res = await Api.get(`${endpoints['hotel-room-service-detail'](serviceId)}/available-slots`, {
+                params: {
+                    startDate: checkInDate,
+                    endDate: checkOutDate
+                }
+            });
+            setAvailableSlots(res.data);
+            
+            setRoomCount(1);
+        } catch (ex) {
+            console.error("Lỗi check phòng trống:", ex);
+        }
+    };
 
     const loadReviews = async () => {
         try {
-            const serviceId = hotelService?.services?.id;
-            if (serviceId) {
-                let res = await Api.get(endpoints['service-reviews'](serviceId));
+            const id = hotelService?.services?.id;
+            if (id) {
+                let res = await Api.get(endpoints['service-reviews'](id));
                 setReviews(res.data);
             }
         } catch (ex) {
             console.error("Lỗi khi fetch danh sách reviews:", ex);
         }
     };
+
     const order = (service) => {
         if (!checkInDate || !checkOutDate) {
             alert("Vui lòng chọn đầy đủ ngày nhận và trả phòng!");
@@ -74,11 +108,10 @@ const HotelRoomServiceDetail = () => {
         const calculatedNights = Math.ceil(differenceInTime / (1000 * 3600 * 24));
 
         const formatDateOnly = (dateObj) => {
-            return dateObj.toLocaleDateString("vi-VN", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         };
         let cart = cookies.load("cart") || null;
         if (cart === null) {
@@ -110,6 +143,12 @@ const HotelRoomServiceDetail = () => {
     }, [serviceId]);
 
     useEffect(() => {
+        if (serviceId && checkInDate && checkOutDate) {
+            loadAvailableSlotsOnly();
+        }
+    }, [checkInDate, checkOutDate]);
+
+    useEffect(() => {
         if (hotelService) {
             loadReviews();
         }
@@ -134,14 +173,14 @@ const HotelRoomServiceDetail = () => {
 
     const handlePostReview = async (comment, rating) => {
         try {
-            const serviceId = hotelService?.services?.id;
-            if (!serviceId) {
+            const id = hotelService?.services?.id;
+            if (!id) {
                 alert("Không tìm thấy thông tin dịch vụ để đánh giá!");
                 return;
             }
 
             let res = await authApis().post(
-                endpoints['customer-create-review'](serviceId), 
+                endpoints['customer-create-review'](id), 
                 {
                     comment: comment,
                     rating: String(rating)
@@ -160,6 +199,7 @@ const HotelRoomServiceDetail = () => {
             }
         }
     };
+    
     if (loading) {
         return (
             <div className="d-flex justify-content-center my-5">
@@ -244,12 +284,12 @@ const HotelRoomServiceDetail = () => {
                                                     onChange={(e) => setRoomCount(Number(e.target.value))}
                                                     style={{ width: "70%" }}
                                                 >
-                                                    {[...Array(hotelService.services?.availableSlots || 1).keys()].map((i) => (
+                                                    {[...Array(Math.max(1, availableSlots)).keys()].map((i) => (
                                                         <option key={i + 1} value={i + 1}>{i + 1} phòng</option>
                                                     ))}
                                                 </Form.Select>
                                                 <small className="text-muted text-end w-100 ps-1" style={{ fontSize: '11px' }}>
-                                                    (Còn {hotelService.services?.availableSlots} phòng trống)
+                                                    (Còn {availableSlots} phòng trống)
                                                 </small>
                                             </div>
                                         </Form.Group>

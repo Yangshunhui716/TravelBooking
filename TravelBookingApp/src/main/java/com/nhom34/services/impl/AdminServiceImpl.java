@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class AdminServiceImpl implements AdminService{
     @Autowired
     private AdminRepository adminRepo;
 
     @Override
-    @Transactional
     public Admins addAdmin(Map<String, String> info, Users u) {
         Admins newAdmin = new Admins();
         newAdmin.setId(u.getId());

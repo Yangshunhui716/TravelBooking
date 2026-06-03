@@ -70,7 +70,6 @@ public class ApiPaymentController {
     
     @PostMapping("/secure/customer/pay/{bookingId}")
     public ResponseEntity<?> rePay(@PathVariable("bookingId") Long bookingId, @RequestBody RequestOrder requestPayload, Principal principal) {
-        Customers customer = this.cusService.getCustomerByUsername(principal.getName());
         Bookings booking = this.bookingService.getBookingById(bookingId);
 
         if(booking.getPaymentStatus().equals("PAID")){
@@ -117,7 +116,7 @@ public class ApiPaymentController {
         return ResponseEntity.noContent().build();
     } 
     
-    @PostMapping("/secure/paypal/capture")
+    @PostMapping("/secure/customer/paypal/capture")
     public ResponseEntity<?> capturePaypalPayment(@RequestParam("token") String token) {
         Order order= paypalService.capturePayment(token);
         if (order == null) {

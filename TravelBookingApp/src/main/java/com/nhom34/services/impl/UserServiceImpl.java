@@ -59,19 +59,16 @@ public class UserServiceImpl implements UserService{
     }
     
     @Override
-    @Transactional
     public void updateActive(Long id, boolean active) {
          this.userRepo.updateActive(id, active);
     }
     
     @Override
-    @Transactional
     public void updateLastLogin(String username) {
         this.userRepo.updateLastLogin(username);
     }
 
     @Override
-    @Transactional
     public Users addUser(Map<String, String> info, MultipartFile avatar) {
         Users u = new Users();
         u.setPhone(info.get("phone"));
@@ -132,7 +129,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional
     public void updateAvatar(Long id, MultipartFile avatar) {
         String avatarUrl=null;
         if (!avatar.isEmpty()) {

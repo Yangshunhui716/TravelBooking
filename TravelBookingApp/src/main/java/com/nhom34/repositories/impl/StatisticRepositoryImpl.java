@@ -26,8 +26,10 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public class StatisticRepositoryImpl implements StatisticRepository {
     @Autowired
     private LocalSessionFactoryBean factory;

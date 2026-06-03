@@ -21,13 +21,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
     
     @Override
-    @Transactional
     public Reviews addReview(Reviews review) {
         return this.reviewRepo.addReview(review);
     }
     
     @Override
-    @Transactional
     public Reviews updateReview(Reviews review) {
         return this.reviewRepo.updateReview(review);
     }

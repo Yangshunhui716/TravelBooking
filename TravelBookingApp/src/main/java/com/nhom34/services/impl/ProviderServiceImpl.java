@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class ProviderServiceImpl implements ProviderService{
     @Autowired
     private ProviderRepository provRepo;
@@ -26,7 +27,6 @@ public class ProviderServiceImpl implements ProviderService{
     private UserService userService;
     
     @Override
-    @Transactional
     public Providers addProv(Map<String, String> info, Users u) {
         Providers newProv = new Providers();
         newProv.setId(u.getId());
@@ -74,7 +74,6 @@ public class ProviderServiceImpl implements ProviderService{
     }
 
     @Override
-    @Transactional
     public Providers updateProfile(Map<String, String> params, Long id) {
         this.userRepo.updateProfile(params, id);
         return this.provRepo.updatePartial(params, id);
