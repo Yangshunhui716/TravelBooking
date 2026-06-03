@@ -88,11 +88,21 @@ const Cart = () => {
         setCart(updatedCart);
         cartDispatch({ type: "UPDATE" });
     };
+
     const handleViewDetail = (item) => {
         if (item.type === "hotel") navigate(`/hotel-room-services/${item.id}`);
         else if (item.type === "transport") navigate(`/transport-services/${item.id}`);
         else navigate(`/tour-services/${item.id}`);
     };
+
+    const formatDateOnly = (dateObj) => {
+            return dateObj.toLocaleDateString("vi-VN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+        };
+
     return (
         <Container className="my-4">
             <h3 className="fw-bold text-dark mb-4 text-center text-sm-start">Các dịch vụ đã chọn</h3>
@@ -111,12 +121,7 @@ const Cart = () => {
                                         <div className="mb-2 text-secondary small">
                                             {item.type === "hotel" ? (
                                                 <span>
-                                                     Nhận phòng: <b>{item.checkIn}</b> → Trả phòng: <b>{item.checkOut}</b> 
-                                               
-                                                             <div className="mt-2 text-secondary extra-small">
-                                                                {item.nights} đêm ({item.checkIn} → {item.checkOut})
-                                                             </div>
-                                             
+                                                    Nhận phòng: <b>{formatDateOnly(new Date(item.checkIn))}</b> → Trả phòng: <b>{formatDateOnly(new Date(item.checkOut))}</b>  ({item.nights} đêm)
                                                 </span>
                                             ) : (
                                            

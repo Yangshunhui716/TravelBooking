@@ -78,7 +78,6 @@ public class HotelRepositoryImpl implements HotelRepository {
                 
                 Subquery<Long> bookedSub = q.subquery(Long.class);
                 Root<BookingsServiceDetail> bDetail = bookedSub.from(BookingsServiceDetail.class);
-
       
                 bookedSub.select(b.coalesce(b.sum(bDetail.get("quantity")), 0L));
                 Expression<Date> bookingEndDate = b.function("ADDDATE", Date.class, 
@@ -138,7 +137,7 @@ public class HotelRepositoryImpl implements HotelRepository {
     @Override
     public HotelRoomServices getDetailServiceById(Long id) {
        Session s = this.factory.getObject().getCurrentSession();
-        return s.get(HotelRoomServices.class, id);
+       return s.get(HotelRoomServices.class, id);
     }
 
     @Override
@@ -162,9 +161,10 @@ public class HotelRepositoryImpl implements HotelRepository {
             int afterSlots = Integer.parseInt(params.get("slots"));
             int addSlots = afterSlots-preSlots;
             int availableSlots = serv.getServices().getAvailableSlots();
-            if(addSlots>0)
+            if(addSlots > 0) {
                 serv.getServices().setSlots(afterSlots);
-                serv.getServices().setAvailableSlots(availableSlots+addSlots);
+                serv.getServices().setAvailableSlots(availableSlots + addSlots);
+            }
         }
         if(params.containsKey("description")){
             serv.getServices().setDescription(params.get("description"));
@@ -172,6 +172,34 @@ public class HotelRepositoryImpl implements HotelRepository {
         
         s.merge(serv);
         return serv;
+    }
+    
+    @Override
+    public int getAvailableSlots(Long id, Date startDate, Date endDate){
+        if(this.getDetailServiceById(id)==null) return -1;
+        
+        Session s = this.factory.getObject().getCurrentSession();
+        int totalSlots = this.getDetailServiceById(id).getServices().getSlots();
+        
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> sumQuery = b.createQuery(Long.class);
+        Root<BookingsServiceDetail> bDetail = sumQuery.from(BookingsServiceDetail.class);
+
+        Expression<Date> bookingEndDate = b.function("ADDDATE", Date.class, 
+                                                      bDetail.get("serviceStartDate"), 
+                                                      bDetail.get("serviceDuration"));
+
+        Predicate startOverlap = b.lessThan(bDetail.get("serviceStartDate"), endDate);
+        Predicate endOverlap = b.greaterThan(bookingEndDate, startDate);
+        Predicate sameService = b.equal(bDetail.get("serviceId").get("id"), id);
+
+        sumQuery.select(b.sumAsLong(bDetail.get("quantity")));
+        sumQuery.where(b.and(sameService, startOverlap, endOverlap));
+
+        Long bookedSlots = s.createQuery(sumQuery).uniqueResult();
+        int booked = (bookedSlots != null) ? bookedSlots.intValue() : 0;
+
+        return totalSlots - booked;
     }
 
     @Override

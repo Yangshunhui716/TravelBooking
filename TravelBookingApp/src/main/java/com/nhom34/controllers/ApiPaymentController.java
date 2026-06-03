@@ -70,7 +70,6 @@ public class ApiPaymentController {
     
     @PostMapping("/secure/customer/pay/{bookingId}")
     public ResponseEntity<?> rePay(@PathVariable("bookingId") Long bookingId, @RequestBody RequestOrder requestPayload, Principal principal) {
-        Customers customer = this.cusService.getCustomerByUsername(principal.getName());
         Bookings booking = this.bookingService.getBookingById(bookingId);
 
         if(booking.getPaymentStatus().equals("PAID")){

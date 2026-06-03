@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class TransferTransactionServiceImpl implements TransferTransactionService{
     @Autowired
     private TransferTransactionRepository ttRepo;
@@ -19,7 +20,6 @@ public class TransferTransactionServiceImpl implements TransferTransactionServic
     private BookingService bookingService;
 
     @Override
-    @Transactional
     public void addTransferTransaction(String transactionCode, String status, Long id) {
         Bookings b = this.bookingService.getBookingById(id);
         

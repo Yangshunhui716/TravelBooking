@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class TourServiceImpl implements TourService{
     @Autowired
     private TourRepository tourRepo;
@@ -35,7 +36,6 @@ public class TourServiceImpl implements TourService{
     }
 
     @Override
-    @Transactional
     public TourServices addDetailService(Map<String, String> info, Providers prov) {
         TourServices newTour = new TourServices();
         Services newService = this.serviceService.addService(info, prov);
@@ -49,7 +49,6 @@ public class TourServiceImpl implements TourService{
     }
     
     @Override
-    @Transactional
     public TourServices updatePartial(Map<String, String> params, Long id) {
         if(params.containsKey("status")){
             this.serviceService.updateStatus(id, Boolean.parseBoolean(params.get("status")));
@@ -63,7 +62,6 @@ public class TourServiceImpl implements TourService{
     @Override
     @EventListener(ContextRefreshedEvent.class)
     @Scheduled(cron = "0 0/10 * * * ?")
-    @Transactional
     public void autoUpdateStatusByCheckDate() {
         this.tourRepo.autoUpdateStatusByCheckDate();
     }

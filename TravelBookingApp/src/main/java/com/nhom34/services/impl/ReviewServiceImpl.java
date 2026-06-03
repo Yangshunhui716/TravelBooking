@@ -25,7 +25,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
     
     @Override
-    @Transactional
     public Reviews addReview(Reviews review) {
         Reviews savedReview = reviewRepo.addReview(review);
     
@@ -44,7 +43,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
     
     @Override
-    @Transactional
     public Reviews updateReview(Reviews review) {
         return this.reviewRepo.updateReview(review);
     }

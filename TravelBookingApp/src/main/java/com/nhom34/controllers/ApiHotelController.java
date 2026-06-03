@@ -30,5 +30,11 @@ public class ApiHotelController {
     @GetMapping("/hotel-room-services/{serviceId}")
     public ResponseEntity<HotelRoomServices> retrieve(@PathVariable(value = "serviceId") Long id) {
         return new ResponseEntity<>((HotelRoomServices)this.hotelService.getDetailServiceById(id), HttpStatus.OK);
-    }   
+    }
+    
+    @GetMapping("/hotel-room-services/{serviceId}/available-slots")
+    public ResponseEntity<Integer> checkAvailableSlots(@PathVariable(value = "serviceId") Long id, @RequestParam Map<String, String> params) {
+        int slots = this.hotelService.getAvailableSlots(id, params);
+        return new ResponseEntity<>(slots, HttpStatus.OK);
+    }
 }

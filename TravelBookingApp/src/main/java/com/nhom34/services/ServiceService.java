@@ -2,6 +2,7 @@ package com.nhom34.services;
 
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
+import java.util.Date;
 import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,6 @@ public interface ServiceService {
     void updateStatus(Long id, boolean status);
     void deleteService(Long id);
     boolean checkOwner(Long provId, Long id);
-    boolean updateAvailableSlots(int slotsOrder,Long id);
+    boolean updateAvailableSlots(int slotsOrder, Long id, int serviceDuration, Date serviceStartDate);
     void updateImg(MultipartFile img, Long id);
 }

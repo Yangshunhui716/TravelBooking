@@ -122,5 +122,5 @@ public class HotelRoomServices implements Serializable {
     public String toString() {
         return "com.nhom34.pojo.HotelRoomServices[ id=" + id + " ]";
     }
-    
+
 }

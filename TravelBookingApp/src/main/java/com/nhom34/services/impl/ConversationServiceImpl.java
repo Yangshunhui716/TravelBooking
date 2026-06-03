@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class ConversationServiceImpl implements ConversationService{
     @Autowired
     private ConversationRepository conversationRepo;
@@ -23,7 +24,6 @@ public class ConversationServiceImpl implements ConversationService{
     private CustomerService cusSerivce;
 
     @Override
-    @Transactional
     public void setReaded(Users user, String conversationId) {
         Conversation conversation = this.conversationRepo.getConversationById(conversationId);
         if(user.getRole().equals("ROLE_PROVIDER")&&conversation.getProvider().getId().equals(user.getId())){
@@ -35,7 +35,6 @@ public class ConversationServiceImpl implements ConversationService{
     }
 
     @Override
-    @Transactional
     public void setLastMessage(Users user, String conversationId, String message) {
         Conversation conversation = this.conversationRepo.getConversationById(conversationId);
         if(user.getRole().equals("ROLE_PROVIDER")&&conversation.getProvider().getId().equals(user.getId())){
@@ -51,7 +50,6 @@ public class ConversationServiceImpl implements ConversationService{
     }
 
     @Override
-    @Transactional
     public Conversation createConversation(Users currentUser, Users targetUser) {
         Long uid1 = Math.min(currentUser.getId(), targetUser.getId());
         Long uid2 = Math.max(currentUser.getId(), targetUser.getId());
@@ -82,7 +80,6 @@ public class ConversationServiceImpl implements ConversationService{
     }
 
     @Override
-    @Transactional
     public List<Conversation> getConversationsByUser(Users user) {
         if(user.getRole().equals("ROLE_PROVIDER")){
             return this.conversationRepo.getConversationsByProviderId(user.getId());

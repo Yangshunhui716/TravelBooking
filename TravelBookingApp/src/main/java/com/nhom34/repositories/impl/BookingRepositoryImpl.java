@@ -122,6 +122,7 @@ public class BookingRepositoryImpl implements BookingRepository{
         
         return q.getResultList();
     }
+    
     @Override
     public boolean checkCustomerPaidService(Long customerId, Long serviceId) {
         Session s = this.factory.getObject().getCurrentSession();

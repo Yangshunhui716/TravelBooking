@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class TransportServiceImpl implements TransportService{
     @Autowired
     private TransportRepository transportRepo;
@@ -34,7 +35,6 @@ public class TransportServiceImpl implements TransportService{
     }   
 
     @Override
-    @Transactional
     public TransportServices addDetailService(Map<String, String> info, Providers prov) {
         TransportServices newTransport = new TransportServices();
         Services newService = this.serviceService.addService(info, prov);
@@ -52,7 +52,6 @@ public class TransportServiceImpl implements TransportService{
     }
 
     @Override
-    @Transactional
     public TransportServices updatePartial(Map<String, String> params, Long id) {
         if(params.containsKey("status")){
             this.serviceService.updateStatus(id, Boolean.parseBoolean(params.get("status")));
@@ -66,7 +65,6 @@ public class TransportServiceImpl implements TransportService{
     @Override
     @EventListener(ContextRefreshedEvent.class)
     @Scheduled(cron = "0 0/10 * * * ?")
-    @Transactional
     public void autoUpdateStatusByCheckDate() {
         this.transportRepo.autoUpdateStatusByCheckDate();
     }

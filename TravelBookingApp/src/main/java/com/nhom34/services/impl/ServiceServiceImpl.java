@@ -5,8 +5,10 @@ import com.cloudinary.utils.ObjectUtils;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.ServiceRepository;
+import com.nhom34.services.HotelService;
 import com.nhom34.services.ServiceService;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
@@ -23,6 +25,8 @@ public class ServiceServiceImpl implements ServiceService {
     @Autowired
     private ServiceRepository serviceRepo;
     @Autowired
+    private HotelService hotelService;
+    @Autowired
     private Cloudinary cloudinary;
 
     @Override
@@ -31,7 +35,6 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    @Transactional
     public Services addService(Map<String, String> info, Providers prov) {
         Services newService = new Services();
         
@@ -50,7 +53,6 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    @Transactional
     public void updateStatus(Long id, boolean status) {
         this.serviceRepo.updateStatus(id, status);
     }
@@ -61,29 +63,35 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    @Transactional
     public void deleteService(Long id) {
         this.serviceRepo.deleteService(id);
     }
 
     @Override
-    @Transactional
-    public boolean updateAvailableSlots(int slotsOrder, Long id) {
-        Services s = this.serviceRepo.getServiceById(id);
-        if(slotsOrder<=s.getAvailableSlots()){
-            s.setAvailableSlots(s.getAvailableSlots()-slotsOrder);
-            if(s.getAvailableSlots()<=0){
-                s.setStatus(false);
-            }
-            this.serviceRepo.updateService(s);
+    public boolean updateAvailableSlots(int slotsOrder, Long id, int serviceDuration, Date serviceStartDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(serviceStartDate);
+        cal.add(Calendar.DAY_OF_MONTH, serviceDuration);
+        Date serviceEndDate = cal.getTime();
+        int availableSlot = this.hotelService.getAvailableSlots(id, serviceStartDate, serviceEndDate);
+        if(availableSlot>=slotsOrder){
             return true;
         }else{
-            return false;
+            Services s = this.serviceRepo.getServiceById(id);
+            if(slotsOrder<=s.getAvailableSlots()){
+                s.setAvailableSlots(s.getAvailableSlots()-slotsOrder);
+                if(s.getAvailableSlots()<=0){
+                    s.setStatus(false);
+                }
+                this.serviceRepo.updateService(s);
+                return true;
+            }else{
+                return false;
+            }
         }
     }
     
     @Override
-    @Transactional
     public void updateImg(MultipartFile img, Long id) {
         String imgUrl=null;
         if (!img.isEmpty()) {

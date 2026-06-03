@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class BookingServiceImpl implements BookingService{
     @Autowired
     private BookingRepository bookingRepo;
@@ -27,13 +28,12 @@ public class BookingServiceImpl implements BookingService{
     private ServiceService serviceService;
 
     @Override
-    @Transactional
     public Bookings addBooking(RequestOrder requestPayload, Customers customer) {
         List<OrderServices> bookingDetails = requestPayload.getBooking();
         List<BookingsServiceDetail> booking = new ArrayList<>();
         double total = 0;
         for(OrderServices o: bookingDetails){
-            if(this.serviceService.updateAvailableSlots(o.getQuantity(), o.getId())){
+            if(this.serviceService.updateAvailableSlots(o.getQuantity(), o.getId(), o.getServiceDuration(), o.getServiceStartDate())){
                 BookingsServiceDetail detail = new BookingsServiceDetail();
                 detail.setServiceId(this.serviceService.getServiceById(o.getId()));
                 detail.setQuantity(o.getQuantity());
@@ -76,25 +76,21 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    @Transactional
     public void changePaymentStatus(Long id, String paymentStatus) {
         this.bookingRepo.changePaymentStatus(id, paymentStatus);
     }
 
     @Override
-    @Transactional
     public void changeBookingStatus(Long id, String bookingStatus) {
         this.bookingRepo.changeBookingStatus(id, bookingStatus);
     }
     
     @Override
-    @Transactional
     public void changeBookingPayMethod(Long id, String payMethod) {
         this.bookingRepo.changeBookingPayMethod(id, payMethod);
     }
 
     @Override
-    @Transactional
     public void bookingPaySuccess(String transactionCode, Long id) {
         this.ttService.addTransferTransaction(transactionCode, "SUCCESS", id);
         this.bookingRepo.changePaymentStatus(id, "PAID");
@@ -110,5 +106,4 @@ public class BookingServiceImpl implements BookingService{
     public boolean checkCustomerPaidService(Long customerId, Long serviceId) {
         return this.bookingRepo.checkCustomerPaidService(customerId, serviceId);
     }
-    
 }
