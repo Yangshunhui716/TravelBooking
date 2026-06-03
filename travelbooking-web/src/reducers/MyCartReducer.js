@@ -8,7 +8,8 @@ export default function MyCartReducer(current, action) {
                 let totalAmount = 0;
                 let totalQuantity = 0;
                 for (let c of Object.values(cart)) {
-                    totalAmount += c.quantity * c.price;
+                    let days = (c.durationDays && c.durationDays > 0) ? c.durationDays : 1;
+                    totalAmount += c.quantity * c.price* days;
                     totalQuantity += c.quantity;
                 }
                 return { 

@@ -117,7 +117,7 @@ public class ApiPaymentController {
         return ResponseEntity.noContent().build();
     } 
     
-    @PostMapping("/secure/paypal/capture")
+    @PostMapping("/secure/customer/paypal/capture")
     public ResponseEntity<?> capturePaypalPayment(@RequestParam("token") String token) {
         Order order= paypalService.capturePayment(token);
         if (order == null) {

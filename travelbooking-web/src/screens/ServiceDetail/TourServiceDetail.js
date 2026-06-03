@@ -58,7 +58,8 @@ const TourServiceDetail = () => {
                 price: service.services?.price,
                 departure_time: service.departureTime,
                 type: "tour",
-                quantity: 1
+                quantity: 1,
+                durationDays: service.durationDays
             }; 
         } 
         cookies.save("cart", cart);

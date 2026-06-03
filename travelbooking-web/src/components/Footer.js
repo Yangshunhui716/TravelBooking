@@ -16,7 +16,7 @@ const Footer = () => {
                         marginBottom: "15px"
                     }}
                 >
-                    ✈ AH TravelBooking
+                    AH TravelBooking
                 </h3>
 
                 <p style={{ color: "#cbd5e1" }}>

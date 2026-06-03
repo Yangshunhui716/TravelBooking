@@ -158,10 +158,12 @@ const TransportService = () => {
 
     return (
         <div className="d-flex p-4 gap-4">
+        <div style={{ position: "sticky", top: "20px", height: "fit-content" }}>
             <DynamicFilter
                 config={transportConfig}
                 onFilterSubmit={handleFilter}
             />
+        </div>
 
                 <div className="flex-grow-1">
                     <div className="d-flex justify-content-between align-items-center mb-3"></div>

@@ -45,7 +45,7 @@ const ServiceCard = ({ data }) => {
 
             </div>
 
-            <Card.Body className="d-flex flex-column">
+            <Card.Body className="d-flex flex-column" >
 
                 <Card.Title className="fw-bold fs-5">
                     {data.title}
