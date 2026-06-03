@@ -94,6 +94,7 @@ const HotelRoomServiceDetail = () => {
             nights: calculatedNights, 
             type: "hotel",
             quantity: roomCount, 
+            durationDays: calculatedNights
         }; 
 
         cookies.save("cart", cart);

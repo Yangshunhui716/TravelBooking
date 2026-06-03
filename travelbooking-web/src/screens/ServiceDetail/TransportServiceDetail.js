@@ -73,7 +73,8 @@ const TransportServiceDetail = () => {
                 price: service.services?.price,
                 departure_time: service.departureTime,
                 type: "transport",
-                quantity: 1
+                quantity: 1,
+                durationDays:1
             }; 
         } 
         cookies.save("cart", cart);

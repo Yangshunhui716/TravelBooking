@@ -55,4 +55,9 @@ public class HotelServiceImpl implements HotelService{
             return this.hotelRepo.updatePartial(params, id);
         }
     }
+
+    @Override
+    public void updateHotelRate(Long hotelId, Double newRate) {
+        this.hotelRepo.updateHotelRate(hotelId, newRate);
+    }
 }
