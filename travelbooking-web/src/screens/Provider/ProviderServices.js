@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Card, Button, Spinner } from "react-bootstrap";
 import { authApis, endpoints } from "../../configs/Api";
 import ButtonServiceGroup from "../../components/ButtonServiceGroup";
 import { useNavigate } from "react-router-dom";
+import { MyUserContext } from "../../configs/Context";
 
 
 const ProviderServices = () => {
@@ -10,6 +11,7 @@ const ProviderServices = () => {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [serviceType, setServiceType] = useState('tour');
+    const [user] = useContext(MyUserContext);
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString("vi-VN");
@@ -81,6 +83,7 @@ const ProviderServices = () => {
             <h2>Quản lý dịch vụ</h2>
             <div className="d-flex justify-content-between mb-4 mt-4">
                 <ButtonServiceGroup onChangeType={setServiceType} className="w-75"/>
+                
                 <Button variant="primary" onClick={() => navigateModifierService(null)}>
                     Thêm dịch vụ mới
                 </Button>
@@ -99,7 +102,7 @@ const ProviderServices = () => {
 
                     <div className="d-flex justify-content-between align-items-end">
                         <div>
-                        { s.services.status && (
+                        { s.services.status && user.isActive && (
                             <>
                                 <Button variant="secondary" className="rounded-pill px-3" onClick={() => closeService(s.services.id)}>
                                     Đóng dịch vụ

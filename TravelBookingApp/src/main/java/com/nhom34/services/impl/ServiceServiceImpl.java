@@ -2,6 +2,7 @@ package com.nhom34.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.ServiceRepository;
@@ -69,23 +70,24 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public boolean updateAvailableSlots(int slotsOrder, Long id, int serviceDuration, Date serviceStartDate) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(serviceStartDate);
-        cal.add(Calendar.DAY_OF_MONTH, serviceDuration);
-        Date serviceEndDate = cal.getTime();
-        int availableSlot = this.hotelService.getAvailableSlots(id, serviceStartDate, serviceEndDate);
-        if(availableSlot>=slotsOrder){
-            return true;
-        }else{
+        HotelRoomServices hotel = this.hotelService.getDetailServiceById(id);
+        if (hotel != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(serviceStartDate);
+            cal.add(Calendar.DAY_OF_MONTH, serviceDuration);
+            Date serviceEndDate = cal.getTime();
+            int availableSlot = this.hotelService.getAvailableSlots(id, serviceStartDate, serviceEndDate);
+            return availableSlot >= slotsOrder;
+        } else {
             Services s = this.serviceRepo.getServiceById(id);
-            if(slotsOrder<=s.getAvailableSlots()){
-                s.setAvailableSlots(s.getAvailableSlots()-slotsOrder);
-                if(s.getAvailableSlots()<=0){
+            if (slotsOrder <= s.getAvailableSlots()) {
+                s.setAvailableSlots(s.getAvailableSlots() - slotsOrder);
+                if (s.getAvailableSlots() <= 0) {
                     s.setStatus(false);
                 }
                 this.serviceRepo.updateService(s);
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }

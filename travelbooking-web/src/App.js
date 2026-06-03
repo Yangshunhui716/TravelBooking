@@ -49,25 +49,48 @@ const App = () => {
                         <Header />
 
                             <Routes>
+                                
                                 <Route path="*" element={<Home />} />
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/register" element={<Register />} />
                                 <Route path="/tour-services" element={<TourService/>} />
                                 <Route path="/hotel-room-services" element={<HotelRoomService/>} />
                                 <Route path="/transport-services" element={<TransportService/>} />
                                 <Route path="/tour-services/:serviceId" element={<TourServiceDetail />} />
                                 <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
                                 <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
-                                <Route path="/profile" element={<Profile />} />
-                                <Route path="/modifier-service" element={<ModifierService />} />
-                                <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
-                                <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
                                 <Route path="/cart" element={<Cart />} />
-                                <Route path="/providers/:providerId" element={<ProviderProfile />} />
-                                <Route path="/statistic" element={<Statistic />} />
-                                <Route path="/conversations" element={<Conversations />} />
-                                <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
                                 <Route path="/compare" element={<CompareService />} />
+                                <Route path="/providers/:providerId" element={<ProviderProfile />} /> {/* Thường profile nhà cung cấp ai cũng xem được */}
+
+                                {!user && (
+                                    <>
+                                        <Route path="/login" element={<Login />} />
+                                        <Route path="/register" element={<Register />} />
+                                    </>
+                                )}
+
+                                {user && (
+                                    <>
+                                        <Route path="/profile" element={<Profile />} />
+                                        <Route path="/conversations" element={<Conversations />} />
+                                    </>
+                                )}
+
+                                {user && user.users.role==="ROLE_CUSTOMER" && (
+                                    <>
+                                        <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
+                                        <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
+                                    </>
+                                )}
+
+                                {user && user.users.role==="ROLE_PROVIDER" && (
+                                    <>
+                                        <Route path="/modifier-service" element={<ModifierService />} />
+                                        <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
+                                        <Route path="/statistic" element={<Statistic />} />
+ 
+                                    </>
+                                )}
+
                             </Routes>
 
                         <Footer />

@@ -49,6 +49,7 @@ const ProfileSidebar = () => {
 
     const logout = () => {
         cookies.remove("token");
+        cookies.remove("user");
         dispatch({
             type: "LOGOUT"
         });

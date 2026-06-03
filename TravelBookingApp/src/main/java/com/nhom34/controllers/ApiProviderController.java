@@ -72,20 +72,29 @@ public class ApiProviderController {
     }
     
     @PostMapping("/tour-services")
-    public ResponseEntity<TourServices> addTourService(@RequestBody Map<String, String> info, Principal principal) {
+    public ResponseEntity<?> addTourService(@RequestBody Map<String, String> info, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(!provider.getUsers().getIsActive()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
         return new ResponseEntity<>(this.tourService.addDetailService(info, provider),HttpStatus.CREATED);
     }
     
     @PostMapping("/transport-services")
-    public ResponseEntity<TransportServices> addTransportService(@RequestBody Map<String, String> info, Principal principal) {
+    public ResponseEntity<?> addTransportService(@RequestBody Map<String, String> info, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(!provider.getUsers().getIsActive()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
         return new ResponseEntity<>(this.transportService.addDetailService(info, provider),HttpStatus.CREATED);
     } 
     
     @PostMapping("/hotel-room-services")
-    public ResponseEntity<HotelRoomServices> addHotelRoomService(@RequestBody Map<String, String> info, Principal principal) {
+    public ResponseEntity<?> addHotelRoomService(@RequestBody Map<String, String> info, Principal principal) {
         Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(!provider.getUsers().getIsActive()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
         return new ResponseEntity<>(this.hotelRoomService.addDetailService(info, provider),HttpStatus.CREATED);
     }
     
@@ -96,6 +105,9 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(!provider.getUsers().getIsActive()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
         if(this.servService.checkOwner(provider.getId(),servId)){
             return new ResponseEntity<>(this.tourService.updatePartial(params, servId),HttpStatus.OK);
         }else{
@@ -110,6 +122,9 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(!provider.getUsers().getIsActive()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
         if(this.servService.checkOwner(provider.getId(),servId)){
             return new ResponseEntity<>(this.transportService.updatePartial(params, servId),HttpStatus.OK);
         }else{
@@ -124,6 +139,9 @@ public class ApiProviderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
         }
         Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(!provider.getUsers().getIsActive()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
         if(this.servService.checkOwner(provider.getId(),servId)){
             return new ResponseEntity<>(this.hotelRoomService.updatePartial(params, servId),HttpStatus.OK);
         }else{
@@ -142,7 +160,7 @@ public class ApiProviderController {
     }
     
     @PatchMapping("/services/{serviceId}/image")
-    public void getServiceCustomer(@PathVariable(value = "serviceId") Long servId ,@RequestParam(value = "img") MultipartFile img, Principal principal){
+    public void updateImage(@PathVariable(value = "serviceId") Long servId ,@RequestParam(value = "img") MultipartFile img, Principal principal){
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(this.servService.checkOwner(provider.getId(),servId)){
             this.servService.updateImg(img, servId);
