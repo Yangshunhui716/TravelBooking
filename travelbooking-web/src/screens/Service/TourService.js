@@ -13,17 +13,15 @@ const TourService = () => {
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
 
-    // format tiền
     const formatPrice = (price) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
     
-    // format ngày
+
     const formatDate = (timestamp) => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
 
-    // ĐÃ SỬA: Hàm đọc trực tiếp từ state 'page' hiện tại, giống phong cách của thầy
     const loadTours = async () => {
         try {
             setLoading(true);
@@ -50,7 +48,7 @@ const TourService = () => {
             );
 
             if (res.data.length === 0) {
-                setPage(0); // Đánh dấu hết dữ liệu để ẩn nút Xem thêm
+                setPage(0); 
                 return;
             }
             
@@ -119,10 +117,12 @@ const TourService = () => {
 
     return (
         <div className="d-flex p-4 gap-4">
+        <div style={{ position: "sticky", top: "20px", height: "fit-content" }}>
             <DynamicFilter
                 config={tourConfig}
                 onFilterSubmit={handleFilter}
             />
+        </div>
 
                 <div className="flex-grow-1">
                     <div className="d-flex justify-content-between align-items-center mb-3"></div>

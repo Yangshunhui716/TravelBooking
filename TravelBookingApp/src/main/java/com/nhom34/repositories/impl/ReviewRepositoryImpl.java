@@ -53,4 +53,17 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(Reviews.class, id);
     }
+
+    @Override
+    public Double getAverageRatingByServiceId(Long serviceId) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        String hql = "SELECT AVG(r.rating) FROM Reviews r WHERE r.serviceId.id = :serviceId";
+    
+        Query query = s.createQuery(hql, Double.class);
+        query.setParameter("serviceId", serviceId);
+    
+        Double result = (Double) query.getSingleResult();
+        return result != null ? result : 0.0; 
+    }
 }

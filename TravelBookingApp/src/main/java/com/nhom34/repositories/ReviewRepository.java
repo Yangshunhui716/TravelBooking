@@ -8,4 +8,5 @@ public interface ReviewRepository {
     Reviews addReview(Reviews review);
     Reviews updateReview(Reviews review);
     Reviews getReviewById(Long id);
+    Double getAverageRatingByServiceId(Long serviceId);
 }

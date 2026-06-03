@@ -86,6 +86,18 @@ const Header = () => {
                 <div className="d-flex align-items-center">
                     {user === null ? (
                         <>
+                            <Link
+                                to="/cart"
+                                style={{
+                                    color: "white",
+                                    fontWeight: "bold",
+                                    marginRight: "15px",
+                                    textDecoration: "none",
+                                }}
+                            >
+                                 &#128722; Giỏ hàng <Badge className="bg-danger">{cart?.totalQuantity || 0}</Badge>
+                            </Link>
+                            
                             <Button
                                 as={Link}
                                 to="/login"
@@ -102,7 +114,7 @@ const Header = () => {
                                 style={{
                                     backgroundColor: "#f97316",
                                     border: "none",
-                                    marginRight:"20px"
+                                    marginRight: "20px"
                                 }}
                             >
                                 Đăng ký
@@ -115,19 +127,13 @@ const Header = () => {
                                 style={{
                                     color: "white",
                                     fontWeight: "bold",
-                                    marginRight: "15px",
                                     textDecoration: "none",
                                     fontSize: "18px",
-                                    marginRight:"20px"
+                                    marginRight: "20px"
                                 }}
                             >
-                                Xin chào, {
-                                    user.fullname ||
-                                    user.businessName ||
-                                    user.users?.username
-                                }
+                                Xin chào, {user.fullname || user.businessName || user.users?.username}
                             </Link>
-
                             {userRole === "ROLE_PROVIDER" && (
                                 <Link
                                     to="/statistic"
@@ -138,11 +144,10 @@ const Header = () => {
                                         textDecoration: "none",
                                     }}
                                 >
-                                        &#128202; Thống kê
+                                     &#128202;Thống kê
                                 </Link>
                             )}
-
-                            {userRole === "ROLE_CUSTOMER" && (
+                            {userRole !== "ROLE_PROVIDER" && (
                                 <Link
                                     to="/cart"
                                     style={{
@@ -152,25 +157,23 @@ const Header = () => {
                                         textDecoration: "none",
                                     }}
                                 >
-                                        &#128722; Giỏ hàng <Badge className="bg-danger">{cart?.totalQuantity || 0}</Badge>
+                                     &#128722; Giỏ hàng <Badge className="bg-danger">{cart?.totalQuantity || 0}</Badge>
                                 </Link>
                             )}
 
                             <Link
                                 to="/conversations"
-                                    style={{
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        marginRight: "15px",
-                                        textDecoration: "none",
-                                    }}
-                                >
+                                style={{
+                                    color: "white",
+                                    fontWeight: "bold",
+                                    marginRight: "15px",
+                                    textDecoration: "none",
+                                }}
+                            >
                                 💬 Tin nhắn
                             </Link>
-
                         </>
                     )}
-
                 </div>
 
             </Navbar.Collapse>

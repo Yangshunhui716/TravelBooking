@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
+import org.hibernate.query.MutationQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -77,7 +78,7 @@ public class HotelRepositoryImpl implements HotelRepository {
                 
                 Subquery<Long> bookedSub = q.subquery(Long.class);
                 Root<BookingsServiceDetail> bDetail = bookedSub.from(BookingsServiceDetail.class);
-
+      
                 bookedSub.select(b.coalesce(b.sum(bDetail.get("quantity")), 0L));
                 Expression<Date> bookingEndDate = b.function("ADDDATE", Date.class, 
                                                               bDetail.get("serviceStartDate"), 
@@ -98,26 +99,19 @@ public class HotelRepositoryImpl implements HotelRepository {
             if (price != null && !price.isEmpty()) {
                 if (price.equals("asc")) {
                     orders.add(b.asc(services.get("price")));
-                } if (price.equals("desc")){
+                } 
+                if (price.equals("desc")){
                     orders.add(b.desc(services.get("price")));
                 }
             }
 
             String rate = params.get("rate");
             if (rate != null && !rate.isEmpty()) {
-
-                Subquery<Double> sub = q.subquery(Double.class);
-                Root<Reviews> r = sub.from(Reviews.class);
-
-                sub.select(b.avg(r.get("rating")));
-                sub.where(
-                    b.equal(r.get("serviceId").get("id"), services.get("id"))
-                );
-
                 if (rate.equals("asc")) {
-                    orders.add(b.asc(sub));
-                } if (rate.equals("desc")) {
-                    orders.add(b.desc(sub));
+                    orders.add(b.asc(root.get("rate")));
+                } 
+                if (rate.equals("desc")) {
+                    orders.add(b.desc(root.get("rate")));
                 }
             }
         }
@@ -207,4 +201,18 @@ public class HotelRepositoryImpl implements HotelRepository {
 
         return totalSlots - booked;
     }
+
+    @Override
+    public void updateHotelRate(Long hotelId, Double newRate) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        String hql = "UPDATE HotelRoomServices h SET h.rate = :newRate WHERE h.id = :hotelId";
+        MutationQuery query = s.createMutationQuery(hql);
+
+        query.setParameter("newRate", newRate);
+        query.setParameter("hotelId", hotelId);
+        query.executeUpdate();
+    }
+
+
 }

@@ -90,4 +90,9 @@ public class HotelServiceImpl implements HotelService{
         }
         return this.getAvailableSlots(id, startDate, endDate);
     }
+
+    @Override
+    public void updateHotelRate(Long hotelId, Double newRate) {
+        this.hotelRepo.updateHotelRate(hotelId, newRate);
+    }
 }

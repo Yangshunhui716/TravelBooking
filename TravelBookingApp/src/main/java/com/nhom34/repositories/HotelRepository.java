@@ -6,4 +6,6 @@ import java.util.Date;
 
 public interface HotelRepository extends ServiceDetailRepository<HotelRoomServices>{
     int getAvailableSlots(Long id, Date startDate, Date endDate);
+    void updateHotelRate(Long hotelId, Double newRate);
+
 }

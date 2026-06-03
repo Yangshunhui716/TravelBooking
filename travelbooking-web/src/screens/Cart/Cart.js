@@ -15,7 +15,10 @@ const Cart = () => {
     const navigate = useNavigate();
     const calculateTotal = () => {
         if (!cart) return 0;
-        return Object.values(cart).reduce((total, item) => total + (item.price * item.quantity), 0);
+        return Object.values(cart).reduce((total, item) => {
+            const days = (item.durationDays && item.durationDays > 0) ? item.durationDays : 1;
+            return total + (item.price * item.quantity * days);
+        }, 0);
     };
 
     const handlePay = async () => {
@@ -32,7 +35,8 @@ const Cart = () => {
                         serviceStartDate: item.type === "hotel" 
                         ? new Date(item.checkIn).getTime() 
                         : (item.departure_time ? new Date(item.departure_time).getTime() : null),
-                        serviceDuration: item.type === "hotel" ? (item.nights || 1) : 1
+                        serviceDuration: (item.durationDays && item.durationDays > 0) ? item.durationDays : 1,
+                        
                     }));
 
                     const requestBody = {
@@ -143,7 +147,9 @@ const Cart = () => {
                                                 />
                                             </Col>
                                             <Col xs={12} sm={4}>
-                                                Tổng: <span className="text-dark fw-bold">{(item.price * item.quantity)?.toLocaleString()}đ</span>
+                                                Tổng: <span className="text-dark fw-bold">
+                                                    {(item.price * item.quantity * ((item.durationDays && item.durationDays > 0) ? item.durationDays : 1))?.toLocaleString()}đ
+                                                </span>
                                             </Col>
                                         </Row>
                                        
