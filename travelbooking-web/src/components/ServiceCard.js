@@ -1,6 +1,7 @@
 import { Badge, Button, Card } from "react-bootstrap";
 import { useContext } from "react";
 import { MyCompareContext } from "../configs/Context";
+import ComponentStyle from "./ComponentStyle";
 
 const ServiceCard = ({ data }) => {
     const [, compareDispatch] = useContext(MyCompareContext);
@@ -9,7 +10,7 @@ const ServiceCard = ({ data }) => {
         const servicePayload = {
             id: data.id,
             name: data.title,
-            description: data.details ? data.details.join("<br/>") : "Chưa có mô tả", 
+            description: data.details.join("<br/>"), 
             price: data.price,
             image: data.image,
             typeService: data.typeService
@@ -18,8 +19,7 @@ const ServiceCard = ({ data }) => {
     };
 
     return (
-        <Card className="h-100 shadow-sm rounded-4 overflow-hidden border-0">
-
+        <Card className="h-100 shadow-sm rounded-4 overflow-hidden border-2">
             <div
                 style={{
                     height: "200px",
@@ -28,67 +28,47 @@ const ServiceCard = ({ data }) => {
                     backgroundPosition: "center",
                     position: "relative"
                 }}
-            >
+            />
 
-                {data.badge && (
-                    <Badge
-                        bg="success"
-                        className="position-absolute px-3 py-2 rounded-pill"
-                        style={{
-                            top: 12,
-                            right: 12
-                        }}
-                    >
-                        {data.badge}
-                    </Badge>
-                )}
-
-            </div>
+            {data.badge && (
+                <Badge bg="success" style={ComponentStyle.badgeCard}
+                className="position-absolute px-3 py-2 rounded-pill">
+                    {data.badge}
+                </Badge>
+            )}
 
             <Card.Body className="d-flex flex-column" >
-
-                <Card.Title className="fw-bold fs-5">
+                <Card.Title className="fw-bold">
                     {data.title}
                 </Card.Title>
 
-                <div className="text-muted mb-3">
-
+                <div className="text-muted mt-2 mb-2">
                     {data.details?.map((item, index) => (
                         <div key={index} className="mb-1">
                             {item}
                         </div>
                     ))}
-
                 </div>
 
                 <div className="mt-auto d-flex justify-content-between align-items-center">
-
-                    <span className="fw-bold text-danger fs-5">
+                    {data.details && <Button variant="outline-secondary"
+                        className="rounded-pill"
+                        onClick={handleAddCompare}
+                    >
+                        So sánh
+                    </Button>}
+                    
+                    <span className="fw-bold text-danger fs-5 me-2">
                         {data.price}
                     </span>
-
-                    <div>
-                        <Button
-                            variant="outline-secondary"
-                            className="rounded-pill px-3"
-                            onClick={handleAddCompare}
-                        >
-                            + So sánh
-                        </Button>
-                    </div>
-
                 </div>
 
-                <Button 
-                    variant="outline-primary"
-                    className="rounded-pill px-3 mt-3"
-                    onClick={data.onView}
+                <Button variant="primary" onClick={data.onView}
+                    className="rounded-pill mt-3"
                 >
-                    Xem
+                    Xem chi tiết
                 </Button>
-
             </Card.Body>
-
         </Card>
     );
 };

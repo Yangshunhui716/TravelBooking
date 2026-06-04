@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import {  Alert} from "react-bootstrap";
+import {  Alert, Container} from "react-bootstrap";
 import { useParams} from "react-router-dom";
 import { authApis, endpoints} from "../../configs/Api";
 import DetailStyle from "./BookingDetailStyle";
 import MySpinner from "../../components/MySpinner";
+import StaticStyle from "../StaticStyle";
 
 const BookingDetail = () => {
     const { bookingId } = useParams();
@@ -29,16 +30,21 @@ const BookingDetail = () => {
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString("vi-VN");
     };
-    if (loading) return <MySpinner />;
+
     if (!booking)
-        return (
+    return (
+        <Container style={StaticStyle.baseHeight}>
             <Alert variant="danger">
                 Không tìm thấy booking!
             </Alert>
-        );
+        </Container>
+    );
+    
     return (
-        <div style={DetailStyle.container}>
-            <h2 style={DetailStyle.title}>Chi tiết booking #{booking.id} </h2>
+        <Container style={StaticStyle.baseHeight} className="mt-4 mb-4">
+            {loading && <MySpinner />}
+
+            <h3 className="fw-bold text-dark text-center text-sm-start text-uppercase mb-3">Chi tiết booking #{booking.id} </h3>
             <div style={DetailStyle.infoBox}>
                 <div style={DetailStyle.row}>
                     <span>Trạng thái:</span>
@@ -67,7 +73,8 @@ const BookingDetail = () => {
                 </div>
             </div>
 
-            <h3 style={DetailStyle.sectionTitle}> Dịch vụ đã đặt </h3>
+            <h5 className="fw-bold text-dark text-center text-sm-start text-uppercase mb-3">Dịch vụ đã đặt </h5>
+            <div className="mb-4 overflow-auto" style={{ height: '20rem' }}>
             {booking.bookingsServiceDetailCollection.map(detail => {
                 const service = detail.serviceId;
                 return (
@@ -84,7 +91,7 @@ const BookingDetail = () => {
                             <h4 style={DetailStyle.serviceName}>
                                 {service.name}
                             </h4>
-                            <p> 📍 {service.destination} </p>
+                            <p> Địa điểm: {service.destination} </p>
                             <div style={DetailStyle.priceRow}>
                                 <span>  Đơn giá:{" "}
                                     <strong>
@@ -105,12 +112,13 @@ const BookingDetail = () => {
                     </div>
                 );
             })}
+            </div>
 
             <div style={DetailStyle.totalBox}>
                 Tổng thanh toán: {" "}
                 <strong> {formatPrice(booking.totalAmount)} đ</strong>
             </div>
-        </div>
+        </Container>
     );
 }
 

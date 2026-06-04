@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"; 
+import { useCallback, useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom"; 
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
-import MySpinner from "../../components/MySpinner";
 import Apis, { endpoints } from "../../configs/Api";
+import ServiceStyle from "./ServiceStyle";
+import StaticStyle from "../StaticStyle";
 
 const TransportService = () => {
     const [transports, setTransports] = useState([]);
@@ -32,7 +33,7 @@ const TransportService = () => {
         });
     };
 
-    const loadTransports = async () => {
+    const loadTransports = useCallback( async () => {
         try {
             setLoading(true);
             let params = { page: page };
@@ -77,7 +78,7 @@ const TransportService = () => {
                     `Tuyến: ${transport.departure} → ${transport.services?.destination || ""}`,
                     `Chi tiết: ${transport.loactionDetail || "Chưa cập nhật"}`,
                     `Khởi hành: ${formatTime(transport.departureTime)} - ${formatDate(transport.departureTime)}`,
-                    `Số chỗ còn: ${transport.services?.availableSlots || 0} chỗ`
+                    `Số chỗ: ${transport.services?.availableSlots || 0} / ${transport.services?.slots || 0} chỗ`
                 ],
                 typeService: "transport-services",
                 onView: () => navigate(`/transport-services/${transport.id}`)
@@ -93,26 +94,17 @@ const TransportService = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-
-    useEffect(() => {
-        if (page > 0) {
-            loadTransports();
-        }
-    }, [searchParams, page]); 
+    },[searchParams, page, navigate]);
 
     useEffect(() => {
-        setPage(1);
-    }, [searchParams]);
-
+        loadTransports();
+    }, [loadTransports]); 
 
     const handleLoadMore = () => {
         if (page > 0 && !loading) {
             setPage(page + 1);
         }
     };
-
 
     const transportConfig = [
         { key: "departureLocation", label: "Điểm khởi hành", type: "text" },
@@ -130,7 +122,6 @@ const TransportService = () => {
         }
     ];
 
-
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         
@@ -147,6 +138,7 @@ const TransportService = () => {
         else newParams.delete("transportType");
 
         setSearchParams(newParams);
+        setPage(1);
     };
 
     const handleSortChange = (sortValue) => {
@@ -154,31 +146,29 @@ const TransportService = () => {
         if (sortValue) newParams.set("sort", sortValue);
         else newParams.delete("sort");
         setSearchParams(newParams);
+        setPage(1);
     };
 
     return (
-        <div className="d-flex p-4 gap-4">
-        <div style={{ position: "sticky", top: "20px", height: "fit-content" }}>
-            <DynamicFilter
-                config={transportConfig}
-                onFilterSubmit={handleFilter}
-            />
-        </div>
+        <div className="d-flex pe-4 ps-4 gap-4" style={StaticStyle.baseHeight}>
+            <div className="pt-4" style={ServiceStyle.dynamicFilter}>
+                <DynamicFilter config={transportConfig}
+                    onFilterSubmit={handleFilter}/>
+            </div>
 
-                <div className="flex-grow-1">
-                    <div className="d-flex justify-content-between align-items-center mb-3"></div>
-                    {loading && transports.length === 0 && <MySpinner />}
-                    <ServiceList
-                        title="Danh sách Phương tiện"
-                        items={transports}
-                        sortCategory="slot"
-                        currentSort={searchParams.get("sort") || ""}
-                        onSortChange={handleSortChange}
-                        page={page}
-                        loading={loading}
-                        onLoadMore={handleLoadMore}
-                    />
-                </div>
+            <div className="flex-grow-1 mb-5">
+                <div className="mb-3"></div>
+                <ServiceList
+                    title="Danh sách Phương tiện"
+                    items={transports}
+                    sortCategory="slot"
+                    currentSort={searchParams.get("sort") || ""}
+                    onSortChange={handleSortChange}
+                    page={page}
+                    loading={loading}
+                    onLoadMore={handleLoadMore}
+                />
+            </div>
         </div>
     );
 };

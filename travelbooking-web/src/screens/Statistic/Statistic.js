@@ -4,6 +4,8 @@ import {
     ResponsiveContainer, Tooltip, XAxis, YAxis 
 } from "recharts";
 import { authApis, endpoints } from "../../configs/Api"; 
+import { Container } from "react-bootstrap";
+import StaticStyle from "../StaticStyle";
 
 const Statistic = () => {
     const [chartData, setChartData] = useState([]);
@@ -98,9 +100,9 @@ const Statistic = () => {
     };
 
     return (
-        <div className="container-fluid bg-light min-vh-100 p-4">
+        <Container className="mt-5" style={StaticStyle.baseHeight}>
             <div className="bg-white border rounded-4 p-4 shadow-sm">
-                <h3 className="mb-4 text-dark fst-italic">Thống kê</h3>
+                <h3 className="fw-bold text-dark text-center text-sm-start text-uppercase mb-3">Thống kê</h3>
                 
                 <div className="row">
                     <div className="col-md-3 border-end pe-4">
@@ -163,9 +165,6 @@ const Statistic = () => {
                                     <option value="all">Cả năm</option>
                                 )}
                             </select>
-                            <div className="form-text mt-2 fst-italic" style={{ fontSize: '0.75rem' }}>
-                                Ngày trong tháng (1-12) | Quý (1-4)
-                            </div>
                         </div>
                     </div>
 
@@ -249,7 +248,7 @@ const Statistic = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Container>
     );
 }
 

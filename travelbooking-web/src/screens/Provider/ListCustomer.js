@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { Button, Container, Image, Table } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
 import { authApis, endpoints } from "../../configs/Api";
 import styles from "./ListCustomerStyle";
+import StaticStyle from "../StaticStyle";
 
 const ListCustomer = () => {
     const { idservice } = useParams();
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const nav = useNavigate();
 
     const loadCustomers = async () => {
         try {
@@ -28,13 +30,16 @@ const ListCustomer = () => {
         }
     }, [idservice]);
 
-    const handleChat = (email) => {
-        alert(`Bắt đầu cuộc trò chuyện với: ${email}`);
+    const handleChat =  async (id) => {
+        if (id) {
+            let conversation = await authApis().post(endpoints["conversation-create"](id));
+            nav("/conversations", { state: { conversationId: conversation.data.id } });
+        }
     };
 
     return (
-        <Container className="mt-3">
-            <h2 className="mb-4" style={styles.title}>Danh sách khách hàng đã sử dụng</h2>
+        <Container className="mt-5" style={StaticStyle.baseHeight}>
+            <h3 className="fw-bold text-dark mb-4 text-center text-sm-start text-uppercase">Danh sách khách hàng đã đặt dịch vụ</h3>
 
             {loading && <MySpinner />}
 
@@ -55,8 +60,7 @@ const ListCustomer = () => {
                         <tbody>
                             {customers.length > 0 ? (
                                 customers.map((customer, index) => {
-                                    const [name, gender, phone, email, avatar] = customer;
-
+                                    const [id, name, gender, phone, email, avatar] = customer;
                                     return (
                                         <tr key={index} className="align-middle">
                                             <td className="text-center">{index + 1}</td>
@@ -76,7 +80,7 @@ const ListCustomer = () => {
                                                 <Button 
                                                     variant="outline-dark" 
                                                     size="sm"
-                                                    onClick={() => handleChat(email)}
+                                                    onClick={() => handleChat(id)}
                                                 >
                                                     Chat
                                                 </Button>

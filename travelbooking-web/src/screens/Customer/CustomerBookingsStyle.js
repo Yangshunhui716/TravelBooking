@@ -12,14 +12,6 @@ const BookingStyle = {
         fontSize: "24px"
     },
 
-    card: {
-        border: "2px solid #333",
-        borderRadius: "16px",
-        padding: "10px 14px",
-        marginBottom: "10px",
-        backgroundColor: "#fff"
-    },
-
     header: {
         display: "flex",
         justifyContent: "space-between",
@@ -46,26 +38,6 @@ const BookingStyle = {
         alignItems: "center",
         gap: "10px",
         marginBottom: "2px"
-    },
-
-    title: {
-        margin: 0,
-        fontSize: "16px",
-        fontWeight: "600",
-        maxWidth: "360px",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis"
-    },
-
-    detailBtn: {
-        background: "#a9d7ff",
-        border: "2px solid #333",
-        borderRadius: "8px",
-        padding: "4px 10px",
-        cursor: "pointer",
-        fontWeight: "600",
-        fontSize: "12px"
     },
 
     destination: {

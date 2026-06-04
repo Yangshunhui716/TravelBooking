@@ -108,6 +108,7 @@ const Register = () => {
         }
     }
     return (
+        <div style={styles.background}>
         <div style={styles.container}>
             <h1 style={styles.title}> Đăng ký tài khoản </h1>
             {err && (
@@ -215,6 +216,7 @@ const Register = () => {
         
  
             </Form>
+        </div>
         </div>
     );
 }

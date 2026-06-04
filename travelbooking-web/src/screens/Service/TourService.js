@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"; 
+import { useCallback, useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
-import MySpinner from "../../components/MySpinner";
 import Apis, { endpoints } from "../../configs/Api";
+import ServiceStyle from "./ServiceStyle";
+import StaticStyle from "../StaticStyle";
 
 const TourService = () => {
     const [tours, setTours] = useState([]);
@@ -22,7 +23,7 @@ const TourService = () => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
 
-    const loadTours = async () => {
+    const loadTours = useCallback( async () => {
         try {
             setLoading(true);
             let params = { page: page };
@@ -60,8 +61,8 @@ const TourService = () => {
                 price: formatPrice(tour.services?.price),
                 details: [
                     `Điểm đến: ${tour.services?.destination}`,
-                    `Khởi hành: ${formatDate(tour.departureTime)}`,
-                    `Số chỗ: ${tour.services?.availableSlots}`
+                    `Ngày khởi hành: ${formatDate(tour.departureTime)}`,
+                    `Số lượng: ${tour.services?.availableSlots} / ${tour.services?.slots}`
                 ],
                 typeService: "tour-services",
                 onView: () => navigate(`/tour-services/${tour.id}`)
@@ -77,26 +78,23 @@ const TourService = () => {
         } finally {
             setLoading(false);
         }
-    };
+    },[searchParams, page, navigate]);
 
     useEffect(() => {
-        if (page > 0) {
-            loadTours();
-        }
-    }, [searchParams, page]); 
+        loadTours();
+    }, [loadTours]); 
 
-    useEffect(() => {
-        setPage(1);
-    }, [searchParams]); 
     const handleLoadMore = () => {
         if (page > 0 && !loading) {
             setPage(page + 1);
         }
     };
+
     const tourConfig = [
         { key: "destination", label: "Điểm đến", type: "text" },
         { key: "departureDate", label: "Ngày khởi hành", type: "date" }
     ];
+    
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         if (values.destination) newParams.set("destination", values.destination);
@@ -106,6 +104,7 @@ const TourService = () => {
         else newParams.delete("departureDate");
         
         setSearchParams(newParams);
+        setPage(1);
     };
 
     const handleSortChange = (sortValue) => {
@@ -113,31 +112,29 @@ const TourService = () => {
         if (sortValue) newParams.set("sort", sortValue);
         else newParams.delete("sort");
         setSearchParams(newParams);
+        setPage(1);
     };
 
     return (
-        <div className="d-flex p-4 gap-4">
-        <div style={{ position: "sticky", top: "20px", height: "fit-content" }}>
-            <DynamicFilter
-                config={tourConfig}
-                onFilterSubmit={handleFilter}
-            />
-        </div>
+        <div className="d-flex pe-4 ps-4 gap-4" style={StaticStyle.baseHeight}>
+            <div className="pt-4" style={ServiceStyle.dynamicFilter}>
+                <DynamicFilter config={tourConfig}
+                    onFilterSubmit={handleFilter}/>
+            </div>
 
-                <div className="flex-grow-1">
-                    <div className="d-flex justify-content-between align-items-center mb-3"></div>
-                    {loading && tours.length === 0 && <MySpinner />}
-                    <ServiceList
-                        title="Danh sách Tour"
-                        items={tours}
-                        sortCategory="slot"
-                        currentSort={searchParams.get("sort") || ""}
-                        onSortChange={handleSortChange}
-                        page={page}
-                        loading={loading}
-                        onLoadMore={handleLoadMore}
-                    />
-                </div>
+            <div className="flex-grow-1 mb-5">
+                <div className="mb-3"></div>
+                <ServiceList
+                    title="Danh sách Tour"
+                    items={tours}
+                    sortCategory="slot"
+                    currentSort={searchParams.get("sort") || ""}
+                    onSortChange={handleSortChange}
+                    page={page}
+                    loading={loading}
+                    onLoadMore={handleLoadMore}
+                />
+            </div>
         </div>
     );
 };

@@ -30,7 +30,7 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
     };
 
     return (
-        <div className="mt-4 pt-2">
+        <>
             <h5 className="font-weight-bold text-dark mb-3">
                 Đánh giá từ khách hàng ({reviews.length})
             </h5>
@@ -109,7 +109,7 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
                                 <Card key={review.id} className="border-0 bg-light p-3 rounded-3 shadow-sm">
                                     <div className="d-flex align-items-start">
                                         <Image
-                                            src={review.customerId?.users?.avatar || "https://via.placeholder.com/40"}
+                                            src={review.customerId?.users?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             roundedCircle
                                             style={{ width: "40px", height: "40px", objectFit: "cover" }}
                                             alt="User Avatar"
@@ -142,7 +142,7 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
                     )}
                 </div>
             </Collapse>
-        </div>
+        </>
     );
 };
 

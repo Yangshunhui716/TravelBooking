@@ -1,9 +1,10 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Card, Button, Spinner } from "react-bootstrap";
+import { Card, Button, Spinner, Alert } from "react-bootstrap";
 import { authApis, endpoints } from "../../configs/Api";
 import ButtonServiceGroup from "../../components/ButtonServiceGroup";
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from "../../configs/Context";
+import MySpinner from "../../components/MySpinner";
 
 
 const ProviderServices = () => {
@@ -79,22 +80,27 @@ const ProviderServices = () => {
     };
 
     return (
-        <Card className="shadow rounded-4 p-4">
-            <h2>Quản lý dịch vụ</h2>
-            <div className="d-flex justify-content-between mb-4 mt-4">
-                <ButtonServiceGroup onChangeType={setServiceType} className="w-75"/>
+        <Card className="shadow rounded-4 p-4 border-0">
+            <h3 className="text-uppercase fw-bold">Quản lý dịch vụ</h3>
+            <div className="d-flex justify-content-between align-items-center mb-4 mt-2">
+                <ButtonServiceGroup onChangeType={setServiceType}/>
                 
+                {user.users.isActive ? 
                 <Button variant="primary" onClick={() => navigateModifierService(null)}>
                     Thêm dịch vụ mới
-                </Button>
+                </Button>:
+                <Alert variant="warning" className="py-2 px-2 small rounded-3">
+                    Tài khoản chưa được phê duyệt, vui lòng đợi hoặc liên hệ để được cấp quyền đăng tải
+                </Alert>
+                }
             </div>
 
-            {loading && <Spinner animation="border" />}
+            {loading && <MySpinner />}
 
             {services.map(s => (
-                <Card key={s.id} className="p-3 mb-3 rounded-4 border-secondary">
+                <Card key={s.id} className="p-3 mb-3 rounded-4 border-2 shadow-sm">
                     <Card.Title>{s.services.name}</Card.Title>
-                    <div className="d-flex justify-content-between mb-3 mt-2 fw-medium">
+                    <div className="d-flex justify-content-between mb-3 mt-1 me-3 fw-medium">
                         <div>Trạng thái: {s.services.status ? "Đang mở" : "Đã đóng"}</div>
                         <div>Ngày đăng: {formatDate(s.services.createdAt)}</div>
                         <div className="text-end">Số lượng: {s.services.availableSlots} / {s.services.slots}</div>
@@ -102,9 +108,9 @@ const ProviderServices = () => {
 
                     <div className="d-flex justify-content-between align-items-end">
                         <div>
-                        { s.services.status && user.isActive && (
+                        { s.services.status && user.users.isActive && (
                             <>
-                                <Button variant="secondary" className="rounded-pill px-3" onClick={() => closeService(s.services.id)}>
+                                <Button variant="outline-danger" className="rounded-pill px-3 me-2" onClick={() => closeService(s.services.id)}>
                                     Đóng dịch vụ
                                 </Button>
                                 <Button variant="outline-primary" className="rounded-pill px-3" onClick={() => navigateModifierService(s)}>
@@ -115,7 +121,7 @@ const ProviderServices = () => {
                         </div>
 
                         <div>
-                            <Button variant="info" className="me-2 rounded-pill px-4" onClick={() => navigate(`/provider/services/${s.services.id}/customers`)}>
+                            <Button variant="info" className="me-1 rounded-pill px-4" onClick={() => navigate(`/provider/services/${s.services.id}/customers`)}>
                                 Danh sách khách hàng
                             </Button>
 

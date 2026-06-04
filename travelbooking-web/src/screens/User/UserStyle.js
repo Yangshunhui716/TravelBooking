@@ -1,11 +1,22 @@
 const styles = {
+    background:{
+        backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "85vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
 
     container: {
-        maxWidth: "800px",
-        margin: "50px auto",
+        maxWidth: "600px",
+        width: "100%",
+        margin: 50,
         backgroundColor: "white",
-        padding: "20px",
-        borderRadius: "25px",
+        padding: 40,
+        borderRadius: 25,
         boxShadow: "0 5px 20px rgba(0,0,0,0.1)"
     },
 
