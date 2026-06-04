@@ -199,7 +199,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(b.equal(b.function("YEAR", Integer.class, root.get("createdAt")), year));
         predicates.add(b.equal(root.get("bookingStatus"), "CONFIRM")); 
-
+        predicates.add(b.equal(root.get("paymentStatus"), "PAID"));
         if ("MONTH".equalsIgnoreCase(time)) {
             predicates.add(b.equal(b.function("MONTH", Integer.class, root.get("createdAt")), month));
         }
