@@ -115,11 +115,11 @@ const ProfileSidebar = () => {
         }
     };
     return (
-        <Card className="shadow p-4 rounded-4">
+        <Card className="shadow p-4 rounded-4 border-0">
             <div className="text-center mb-3">
                 <img
                     src={
-                        avatarFile? URL.createObjectURL(avatarFile): user.users.avatar
+                        avatarFile? URL.createObjectURL(avatarFile): (user.users.avatar? user.users.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png")
                     }
                     alt="avatar"
                     width="100"
@@ -152,7 +152,7 @@ const ProfileSidebar = () => {
 
             {isProvider ? (
                 <>
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <b>Tên công ty:</b>
                         {editing ? (
                             <Form.Control
@@ -169,7 +169,7 @@ const ProfileSidebar = () => {
                         )}
 
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <b>Mã số thuế:</b>
                         {editing ? (
                             <Form.Control
@@ -183,7 +183,7 @@ const ProfileSidebar = () => {
                             <p>{user?.tax}</p>
                         )}
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <b>Địa chỉ:</b>
                         {editing ? (
                             <Form.Control
@@ -203,7 +203,7 @@ const ProfileSidebar = () => {
                 </>
             ) : (
                 <>
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <b>Họ tên:</b>
                         {editing ? (
                             <Form.Control
@@ -220,7 +220,7 @@ const ProfileSidebar = () => {
                         )}
 
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <b>Giới tính:</b>
                         {editing ? (
                             <Form.Select
@@ -239,7 +239,7 @@ const ProfileSidebar = () => {
                 </>
             )}
 
-            <div className="mb-3">
+            <div className="mb-2">
                 <b>SĐT:</b>
                 {editing ? (
                     <Form.Control
@@ -255,7 +255,7 @@ const ProfileSidebar = () => {
 
             </div>
 
-            <div className="mb-3">
+            <div className="mb-2">
                 <b>Email:</b>
                 {editing ? (
                     <Form.Control
@@ -270,7 +270,7 @@ const ProfileSidebar = () => {
                 )}
             </div>
 
-            <div className="d-flex justify-content-between mt-4">
+            <div className="d-flex justify-content-between mt-3">
                 {editing ? (
                     <Button
                         variant="success"

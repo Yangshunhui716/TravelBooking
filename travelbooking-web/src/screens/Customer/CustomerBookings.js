@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert } from "react-bootstrap";
+import { Alert, Button, Card } from "react-bootstrap";
 import { authApis, endpoints } from "../../configs/Api";
 import BookingStyle from "./CustomerBookingsStyle";
 import { useNavigate } from "react-router-dom";
@@ -38,9 +38,10 @@ const CustomerBookings = () => {
     };
 
     return (
-        <div style={BookingStyle.container}>
-            <h2 style={BookingStyle.pageTitle}>Lịch sử booking</h2>
+        <div style={BookingStyle.container} className="mt-3">
+            <h3 className="fw-bold text-dark text-center text-sm-start text-uppercase mb-3">Lịch sử đặt dịch vụ</h3>
             
+            <Card className="p-3 shadow rounded-4 border-0">
             {loading && <MySpinner />}
             
             {!loading && bookings.length === 0 && (
@@ -50,7 +51,7 @@ const CustomerBookings = () => {
             {Array.isArray(bookings) &&
                 bookings.map((booking) => {
                     return (
-                        <div key={booking.id} style={BookingStyle.card}>
+                        <Card className="p-4 shadow rounded-4 border-1 mb-3" key={booking.id}>
                             <div style={BookingStyle.header}>
                                 <div style={{ ...BookingStyle.serviceSection, width: "100%" }}>
                                     <div style={{ width: "100%" }}>
@@ -58,12 +59,11 @@ const CustomerBookings = () => {
                                             <h5 style={BookingStyle.title}>
                                                 Booking #{booking.id}
                                             </h5>
-                                            <button 
-                                                style={BookingStyle.detailBtn} 
+                                            <Button variant="primary" size="sm"
                                                 onClick={() => navigate(`/customer/bookings/${booking.id}`)}
                                             > 
                                                 Xem chi tiết 
-                                            </button>   
+                                            </Button>   
                                         </div>
                                     </div>
                                 </div>
@@ -98,10 +98,11 @@ const CustomerBookings = () => {
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </Card>
                     );
                 })
             }
+            </Card>
         </div>
     );
 };

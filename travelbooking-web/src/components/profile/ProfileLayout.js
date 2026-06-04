@@ -1,13 +1,13 @@
 import { Row, Col } from "react-bootstrap";
 
 import ProfileSidebar from "./ProfileSidebar";
+import ComponentStyle from "../ComponentStyle";
 
 const ProfileLayout = ({ children }) => {
 
     return (
-        <Row className="mt-4">
-
-            <Col md={3} style={{ position: "sticky", top: "20px", height: "fit-content" }}>
+        <Row>
+            <Col md={3} style={ComponentStyle.profileSticky}>
                 <ProfileSidebar />
             </Col>
 

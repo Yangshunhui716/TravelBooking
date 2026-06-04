@@ -113,7 +113,7 @@ public class BookingRepositoryImpl implements BookingRepository{
         Root rBD = query.from(BookingsServiceDetail.class);
         Join<BookingsServiceDetail, Bookings> join = rBD.join("bookingId", JoinType.LEFT);
         
-        query.multiselect(join.get("customerId").get("fullname"), join.get("customerId").get("gender"),
+        query.multiselect(join.get("customerId").get("id"), join.get("customerId").get("fullname"), join.get("customerId").get("gender"),
                 join.get("customerId").get("users").get("phone"), join.get("customerId").get("users").get("email"),
                 join.get("customerId").get("users").get("avatar"));
         query.where(builder.equal(rBD.get("serviceId").get("id"), serviceId));

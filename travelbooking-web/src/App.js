@@ -84,10 +84,9 @@ const App = () => {
 
                                 {user && user.users.role==="ROLE_PROVIDER" && (
                                     <>
-                                        <Route path="/modifier-service" element={<ModifierService />} />
+                                        {user.users.isActive && <Route path="/modifier-service" element={<ModifierService />} />}
                                         <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
                                         <Route path="/statistic" element={<Statistic />} />
- 
                                     </>
                                 )}
 

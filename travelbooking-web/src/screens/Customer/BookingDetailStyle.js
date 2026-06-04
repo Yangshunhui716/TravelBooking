@@ -40,8 +40,8 @@ const DetailStyle = {
     },
 
     image: {
-        width: "130px",
-        height: "130px",
+        width: "110px",
+        height: "110px",
         objectFit: "cover",
         borderRadius: "12px"
     },
@@ -58,7 +58,6 @@ const DetailStyle = {
     priceRow: {
         display: "flex",
         gap: "24px",
-        marginTop: "12px"
     },
 
     totalBox: {

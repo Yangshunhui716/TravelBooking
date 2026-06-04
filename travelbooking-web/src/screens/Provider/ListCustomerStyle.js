@@ -1,11 +1,6 @@
 const ListCustomerStyle = {
-    title: {
-        fontSize: "24px",
-        fontWeight: "600",
-        color: "#212529"
-    },
     tableResponsive: {
-        border: "2px solid #212529",
+        border: "1px solid #d4d4d4",
         borderRadius: "16px",
         overflow: "hidden",
         backgroundColor: "#fff"

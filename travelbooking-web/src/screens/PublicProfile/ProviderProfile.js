@@ -1,10 +1,12 @@
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Image, Row } from "react-bootstrap";
 import ServicesList from "../../components/ServiceList";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { authApis, endpoints } from "../../configs/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
 import { MyUserContext } from "../../configs/Context";
+import StaticStyle from "../StaticStyle";
+import ProviderProfileStyle from "./ProviderProfileStyle";
 
 const ProviderProfile = () => {
     const { providerId } = useParams();
@@ -82,21 +84,13 @@ const ProviderProfile = () => {
     };
 
     return (
-        <Container>
-            <Row className="justify-content-center mt-4 mb-5">
-                <Col md={4} className="mb-4">
+        <div className="p-4 gap-4 d-flex" style={StaticStyle.baseHeight}>
+                <div style={ProviderProfileStyle.profile}>
                     <Card className="shadow p-4 rounded-4 border-0">
                         <div className="text-center mb-3">
-                            <img
+                            <Image alt="avatar" width="100" height="100" 
                                 src={provider?.users?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                                alt="avatar"
-                                width="100"
-                                height="100"
-                                style={{
-                                    objectFit: "cover",
-                                    borderRadius: "50%",
-                                    border: "2px solid #e0e0e0"
-                                }}
+                                style={ProviderProfileStyle.image}
                             />
                         </div>
 
@@ -124,20 +118,21 @@ const ProviderProfile = () => {
                         
                         {user?.users.role === "ROLE_CUSTOMER" && (
                             <div className="d-flex justify-content-center mt-4">
-                                <Button variant="primary" className="px-5 rounded-pill shadow-sm" onClick={handleChat}>
+                                <Button variant="primary" className="px-5 rounded-pill shadow-sm" 
+                                onClick={handleChat}>
                                     Chat ngay 
                                 </Button>
                             </div>
                         )}
                         
                     </Card>
-                </Col>
+                </div>
 
-                <Col md={8}>
-                    <ServicesList title={`Dịch vụ của ${provider?.businessName || "nhà cung cấp"}`} items={providerServices} currentSort={serviceType} onSortChange={setServiceType} />
-                </Col>
-            </Row>
-        </Container>
+                <div className="flex-grow-1">
+                    <ServicesList title={`Dịch vụ của ${provider?.businessName || "nhà cung cấp"}`} 
+                    items={providerServices} currentSort={serviceType} onSortChange={setServiceType} />
+                </div>
+        </div>
     );
 };
 

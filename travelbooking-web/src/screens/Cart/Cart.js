@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MyCartContext, MyUserContext } from "../../configs/Context";
 import MySpinner from "../../components/MySpinner";
 import { authApis, endpoints } from "../../configs/Api";
+import StaticStyle from "../StaticStyle";
 
 const Cart = () => {
     const [cart, setCart] = useState(cookies.load("cart") || null);
@@ -104,17 +105,20 @@ const Cart = () => {
         };
 
     return (
-        <Container className="my-4">
-            <h3 className="fw-bold text-dark mb-4 text-center text-sm-start">Các dịch vụ đã chọn</h3>
+        <div className="container mt-5" style={StaticStyle.baseHeight}>
             {(!cart || Object.keys(cart).length === 0) ? (
-                <Alert variant="warning" className="text-center py-4">
-                    Không có sản phẩm nào trong giỏ! <Link to="/" className="fw-bold text-decoration-none">Khám phá ngay</Link>
+                <div className="text-center">
+                <Alert variant="warning">
+                    <h3 className="text-muted mt-3">Danh sách các dịch vụ đã chọn trống</h3>
+                    <p className="text-muted">Không có sản phẩm nào trong giỏ! <Link to="/" className="fw-bold text-decoration-none">Khám phá ngay</Link></p>
                 </Alert>
+                </div>
             ) : (
                 <>
-                    <div className="mb-4">
+                <h3 className="fw-bold text-dark mb-4 text-center text-sm-start text-uppercase">Các dịch vụ đã chọn</h3>
+                    <div className="mb-4 overflow-auto" style={{ height: '28rem' }}>
                         {Object.values(cart).map((item) => (
-                            <div key={item.id} className="p-3 border rounded-3 mb-3 shadow-sm bg-white">
+                            <div key={item.id} className="p-3 border rounded-4 mb-3 shadow-sm bg-white">
                                 <Row className="align-items-center g-2">
                                     <Col xs={12} sm={9}>
                                         <h5 className="fw-bold mb-2 text-primary">{item.name}</h5>
@@ -168,7 +172,7 @@ const Cart = () => {
                         ))}
                     </div>
 
-                    <div className="p-3 border rounded-3 bg-light shadow-sm">
+                    <div className="p-3 border rounded-4 bg-light shadow-sm mb-5">
                         <Row className="align-items-center g-3 text-center text-md-start">
                             <Col xs={12} md={4}>
                                 <div className="text-muted small">Tổng tiền thanh toán</div>
@@ -183,7 +187,7 @@ const Cart = () => {
                                 </div>
                             </Col>
 
-                            <Col xs={12} md={3} className="text-md-end">
+                            <Col xs={12} md={3} className="text-center">
                                 {user === null ? (
                                     <Alert variant="warning" className="m-0 py-1 px-2 small rounded-3">
                                         Vui lòng <Link to="/login?next=/cart" className="fw-bold">Đăng nhập</Link>
@@ -200,7 +204,7 @@ const Cart = () => {
                     </div>
                 </>
             )}
-        </Container>
+        </div>
     );
 };
 

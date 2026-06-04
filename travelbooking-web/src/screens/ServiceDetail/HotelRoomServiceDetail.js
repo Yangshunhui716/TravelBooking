@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
+import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { endpoints } from "../../configs/Api";
 import { MyUserContext, MyCartContext } from "../../configs/Context";
-import styles from "./ServiceDetailStyle"; 
+import ServiceDetailStyle from "./ServiceDetailStyle"; 
+import StaticStyle from "../StaticStyle";
 import ReviewSection from "../../components/ReviewSection";
 import { authApis } from "../../configs/Api";
 import cookies from "react-cookies";
@@ -40,17 +41,6 @@ const HotelRoomServiceDetail = () => {
     const [roomCount, setRoomCount] = useState(1);
     const [availableSlots, setAvailableSlots] = useState(0);
 
-
-    const formatDateTime = (timestamp) => {
-        if (!timestamp) return "";
-        return new Date(timestamp).toLocaleString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        });
-    };
 
     const loadHotelDetail = async () => {
         try {
@@ -203,181 +193,168 @@ const HotelRoomServiceDetail = () => {
     
     if (loading) {
         return (
-            <div className="d-flex justify-content-center my-5">
+            <div className="d-flex justify-content-center my-5" style={StaticStyle.baseHeight}>
                 <MySpinner />
             </div>
         );
     }
 
     return (
-        <Container className="mt-4 mb-5">
+        <div style={StaticStyle.baseHeight}>
             {hotelService && (
-                <>
-                    <Row className="mb-4">
-                        <Col>
-                            <div style={styles.titleBox}>
-                                <h2 className="m-0 text-dark font-weight-bold">
-                                    {hotelService.services?.name}
-                                </h2>
-                            </div>
-                        </Col>
-                    </Row>
+            <>
+                <div style={ServiceDetailStyle.titleBox} className=" m-4">
+                    <h2 className="text-dark font-weight-bold">
+                        {hotelService.services?.name}
+                    </h2>
+                </div>
 
-                    <Row>
-                        <Col md={5} xs={12} className="mb-4 d-flex align-items-center justify-content-center">
-                            <div style={{ ...styles.imageWrapper, width: "100%" }}>
-                                <DisplayImage src={hotelService.services?.imgUrl} />
-                            </div>
-                        </Col>
+                <Row className="m-3 d-flex justify-content-center">
+                    <Col md={5} xs={12} style={ServiceDetailStyle.sticky}>
+                        <div style={{ ...ServiceDetailStyle.imageWrapper, width: "100%" }}>
+                            <DisplayImage src={hotelService.services?.imgUrl} />
+                        </div>
 
-                        <Col md={7} xs={12}>
-                            <div style={styles.infoCard}>
-                                
-                                <div className="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <span className="text-muted d-block small">Giá từ</span>
-                                        <h3 style={styles.priceText}>
-                                            {hotelService.services?.price?.toLocaleString()} VNĐ <small className="fs-6 text-muted fw-normal">/ đêm</small>
-                                        </h3>
-                                    </div>
-                                    {(user === null || user?.users?.role !== "ROLE_PROVIDER") && (
-                                        <Button 
-                                            variant="danger" 
-                                            size="lg" 
-                                            className="px-4 font-weight-bold mt-2" 
-                                            onClick={() => order(hotelService)}
-                                        >
-                                            Đặt
-                                        </Button>
-                                    )}
-                                </div>
-
-                                <Row className="g-2 mb-3 p-2 bg-light rounded-3 align-items-center">
-                                    <Col sm={4} xs={6}>
-                                        <Form.Group>
-                                            <Form.Label className="small fw-bold text-secondary mb-1">Ngày nhận phòng</Form.Label>
-                                            <Form.Control 
-                                                type="date" 
-                                                size="sm"
-                                                value={checkInDate}
-                                                onChange={(e) => setCheckInDate(e.target.value)}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col sm={4} xs={6}>
-                                        <Form.Group>
-                                            <Form.Label className="small fw-bold text-secondary mb-1">Ngày trả phòng</Form.Label>
-                                            <Form.Control 
-                                                type="date" 
-                                                size="sm"
-                                                value={checkOutDate}
-                                                onChange={(e) => setCheckOutDate(e.target.value)}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col sm={4} xs={12}>
-                                        <Form.Group>
-                                            <Form.Label className="small fw-bold text-secondary mb-1">Số lượng phòng</Form.Label>
-                                            <div className="d-flex align-items-center justify-content-between">
-                                                <Form.Select 
-                                                    size="sm"
-                                                    value={roomCount}
-                                                    onChange={(e) => setRoomCount(Number(e.target.value))}
-                                                    style={{ width: "70%" }}
-                                                >
-                                                    {[...Array(Math.max(1, availableSlots)).keys()].map((i) => (
-                                                        <option key={i + 1} value={i + 1}>{i + 1} phòng</option>
-                                                    ))}
-                                                </Form.Select>
-                                                <small className="text-muted text-end w-100 ps-1" style={{ fontSize: '11px' }}>
-                                                    (Còn {availableSlots} phòng trống)
-                                                </small>
-                                            </div>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-
-                                <hr />
-
-                                <div className="d-flex justify-content-between align-items-center my-3 py-2">
-                                    <div className="d-flex align-items-center">
-                                        <Image 
-                                            src={hotelService.services?.providerId?.users?.avatar || "https://via.placeholder.com/50"} 
-                                            style={styles.providerAvatar} 
-                                            alt="Provider Avatar"
-                                        />
-                                        <div className="ms-3">
-                                            <h6 className="m-0 font-weight-bold text-primary">
-                                                {hotelService.services?.providerId?.businessName}
-                                            </h6>
-                                            <p className="m-0 text-muted small mt-1">
-                                                Trụ sở: {hotelService.services?.providerId?.address}
-                                            </p>
-                                            <p className="m-0 text-muted small">
-                                                Liên hệ: {hotelService.services?.providerId?.users?.phone}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="d-flex flex-column gap-2">
-                                        <Button 
-                                            variant="outline-primary" 
-                                            size="sm" 
-                                            className="font-weight-bold"
-                                            onClick={handleViewProvider}
-                                        >
-                                            Xem chi tiết
-                                        </Button>
-                                        <Button 
-                                            variant="outline-success" 
-                                            size="sm" 
-                                            className="font-weight-bold"
-                                            onClick={handleChatProvider}
-                                        >
-                                            Chat ngay
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                <hr />
-
-                                <div className="mt-3">
-                                    <h5 className="font-weight-bold text-dark mb-3">
-                                        Thông tin chi tiết dịch vụ
-                                    </h5>
-                                    
-                                    <div className="ps-1 mb-2">
-                                        <strong>Tên khách sạn: </strong>
-                                        <span className="text-secondary">{hotelService.hotelName}</span>
-                                    </div>
-                                    
-                                    <div className="ps-1 mb-3">
-                                        <strong>Địa chỉ: </strong>
-                                        <span className="text-secondary">{hotelService.address}</span>
-                                    </div>
-
-                                    <div className="ps-1">
-                                        <strong>Mô tả phòng ốc: </strong>
-                                        <p style={styles.descriptionText} className="mt-1">
-                                            {hotelService.services?.description}
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <hr />
-                                
-                                <ReviewSection 
-                                    reviews={reviews} 
-                                    onAddReview={handlePostReview} 
-                                    user={user} 
+                        <div style={ServiceDetailStyle.infoCard} className="d-flex justify-content-between my-4 py-4">
+                            <div className="d-flex align-items-center">
+                                <Image 
+                                    src={hotelService.services?.providerId?.users?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+                                    style={ServiceDetailStyle.providerAvatar} 
+                                    alt="Provider Avatar"
                                 />
-
+                                <div className="ms-3">
+                                    <h6 className="m-0 font-weight-bold text-primary">
+                                        {hotelService.services?.providerId?.businessName}
+                                    </h6>
+                                    <p className="m-0 text-muted small mt-1">
+                                        Trụ sở: {hotelService.services?.providerId?.address}
+                                    </p>
+                                    <p className="m-0 text-muted small">
+                                        Liên hệ: {hotelService.services?.providerId?.users?.phone}
+                                    </p>
+                                </div>
                             </div>
-                        </Col>
-                    </Row>
-                </>
+                            
+                            <div className="d-flex flex-column gap-2">
+                                <Button variant="primary" size="sm" 
+                                    className="font-weight-bold"
+                                    onClick={handleViewProvider}
+                                >
+                                    Xem chi tiết
+                                </Button>
+                                {user.users.role === "ROLE_CUSTOMER" &&
+                                <Button variant="success" size="sm" 
+                                    className="font-weight-bold"
+                                    onClick={handleChatProvider}
+                                >
+                                    Chat ngay
+                                </Button>}
+                            </div>
+                        </div>
+                    </Col>
+
+                    <Col md={7} xs={12}>
+                        <div style={ServiceDetailStyle.infoCard}>
+                            <div className="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span className="text-muted d-block small">Giá từ</span>
+                                    <h3 style={ServiceDetailStyle.priceText}>
+                                        {hotelService.services?.price?.toLocaleString()} VNĐ <small className="fs-6 text-muted fw-normal">/ đêm</small>
+                                    </h3>
+                                </div>
+                                {(user === null || user?.users?.role !== "ROLE_PROVIDER") && (
+                                    <Button variant="danger" size="lg" 
+                                        className="px-4 font-weight-bold mt-2" 
+                                        onClick={() => order(hotelService)}
+                                    >
+                                        Đặt
+                                    </Button>
+                                )}
+                            </div>
+
+                            <Row className="g-2 mb-3 p-2 bg-light rounded-3 align-items-center">
+                                <Col sm={4} xs={6}>
+                                    <Form.Group>
+                                        <Form.Label className="small fw-bold text-secondary mb-1">Ngày nhận phòng</Form.Label>
+                                        <Form.Control 
+                                            type="date" 
+                                            size="sm"
+                                            value={checkInDate}
+                                            onChange={(e) => setCheckInDate(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col sm={4} xs={6}>
+                                    <Form.Group>
+                                        <Form.Label className="small fw-bold text-secondary mb-1">Ngày trả phòng</Form.Label>
+                                        <Form.Control 
+                                            type="date" 
+                                            size="sm"
+                                            value={checkOutDate}
+                                            onChange={(e) => setCheckOutDate(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col sm={4} xs={12}>
+                                    <Form.Group>
+                                        <Form.Label className="small fw-bold text-secondary mb-1">Số lượng phòng</Form.Label>
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <Form.Select 
+                                                size="sm"
+                                                value={roomCount}
+                                                onChange={(e) => setRoomCount(Number(e.target.value))}
+                                                style={{ width: "70%" }}
+                                            >
+                                                {[...Array(Math.max(1, availableSlots)).keys()].map((i) => (
+                                                    <option key={i + 1} value={i + 1}>{i + 1} phòng</option>
+                                                ))}
+                                            </Form.Select>
+                                            <small className="text-muted text-end w-100 ps-1">
+                                                (Còn {availableSlots} phòng trống)
+                                            </small>
+                                        </div>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+
+                            <hr/>
+
+                            <div className="mt-3">
+                                <h5 className="font-weight-bold text-dark mb-3">
+                                    Thông tin chi tiết dịch vụ
+                                </h5>
+                                
+                                <div className="ps-1 mb-2">
+                                    <strong>Tên khách sạn: </strong>
+                                    <span className="text-secondary">{hotelService.hotelName}</span>
+                                </div>
+                                
+                                <div className="ps-1 mb-2">
+                                    <strong>Địa chỉ: </strong>
+                                    <span className="text-secondary">{hotelService.address}</span>
+                                </div>
+
+                                <div className="ps-1">
+                                    <strong>Mô tả phòng ốc: </strong>
+                                    <p style={ServiceDetailStyle.descriptionText} className="mt-1">
+                                        {hotelService.services?.description}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <hr />
+                            
+                            <ReviewSection reviews={reviews} 
+                                onAddReview={handlePostReview} 
+                                user={user} 
+                            />
+
+                        </div>
+                    </Col>
+                </Row>
+            </>
             )}
-        </Container>
+        </div>
     );
 };
 

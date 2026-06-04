@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
+import ComponentStyle from "./ComponentStyle";
 
 const DynamicFilter = ({ config, onFilterSubmit }) => {
     const [filterValues, setFilterValues] = useState({});
@@ -12,7 +13,7 @@ const DynamicFilter = ({ config, onFilterSubmit }) => {
     };
 
     return (
-    <Card style={{ width: '25rem', border: '2px solid #dee2e6' }}>
+    <Card style={ComponentStyle.dynamicFilter} className="h-100 shadow rounded-4 overflow-hidden border-0">
 		<Card.Body>
 			<Card.Title className="mb-4 text-center fw-bold">Bộ lọc</Card.Title>
 			
@@ -38,13 +39,11 @@ const DynamicFilter = ({ config, onFilterSubmit }) => {
 				</Form.Group>
 			))}
 
-			<Button 
-				variant="primary" 
-				className="w-100 mt-3" 
-				onClick={() => onFilterSubmit(filterValues)}
-			>
-				Lọc
-			</Button>
+				<Button variant="primary" className="w-100 mt-3 rounded-pill" 
+					onClick={() => onFilterSubmit(filterValues)}
+				>
+					Lọc
+				</Button>
 			</Form>
 		</Card.Body>
     </Card>

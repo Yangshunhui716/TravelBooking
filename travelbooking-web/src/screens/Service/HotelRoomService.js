@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"; 
+import { useCallback, useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom"; 
 
 import DynamicFilter from "../../components/DynamicFilter";
 import ServiceList from "../../components/ServiceList";
-import MySpinner from "../../components/MySpinner";
 import Apis, { endpoints } from "../../configs/Api";
+import ServiceStyle from "./ServiceStyle";
+import StaticStyle from "../StaticStyle";
 
 const HotelRoomService = () => {
     const [rooms, setRooms] = useState([]);
@@ -17,7 +18,7 @@ const HotelRoomService = () => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
 
-    const loadRooms = async () => {
+    const loadRooms = useCallback(async () => {
         try {
             setLoading(true);
             let params = { page: page };
@@ -58,7 +59,6 @@ const HotelRoomService = () => {
                 details: [
                     `Khách sạn: ${room.hotelName}`,
                     `Địa chỉ: ${room.address}`,
-                    `Số phòng còn: ${room.services?.availableSlots || 0} phòng`
                 ],
                 typeService: "hotel-room-services",
                 onView: () => navigate(`/hotel-room-services/${room.id}`)
@@ -74,17 +74,11 @@ const HotelRoomService = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchParams, page, navigate]);
 
     useEffect(() => {
-        if (page > 0) {
-            loadRooms();
-        }
-    }, [searchParams, page]); 
-
-    useEffect(() => {
-        setPage(1);
-    }, [searchParams]); 
+        loadRooms();
+    }, [loadRooms]);
 
     const handleLoadMore = () => {
         if (page > 0 && !loading) {
@@ -111,6 +105,7 @@ const HotelRoomService = () => {
         else newParams.delete("checkOutDate");
 
         setSearchParams(newParams);
+        setPage(1);
     };
 
     const handleSortChange = (sortValue) => {
@@ -118,30 +113,28 @@ const HotelRoomService = () => {
         if (sortValue) newParams.set("sort", sortValue);
         else newParams.delete("sort");
         setSearchParams(newParams);
+        setPage(1);
     };
 
     return (
-        <div className="d-flex p-4 gap-4">
-        <div style={{ position: "sticky", top: "20px", height: "fit-content" }}>
-            <DynamicFilter
-                config={hotelConfig}
-                onFilterSubmit={handleFilter}
-            />
-        </div>
-                <div className="flex-grow-1">
-                    <div className="d-flex justify-content-between align-items-center mb-3"></div>
-                    {loading && rooms.length === 0 && <MySpinner />}
-                    <ServiceList
-                        title="Danh sách Phòng khách sạn"
-                        items={rooms}
-                        sortCategory="rating"
-                        currentSort={searchParams.get("sort") || ""}
-                        onSortChange={handleSortChange}
-                        page={page}
-                        loading={loading}
-                        onLoadMore={handleLoadMore}
-                    />
-                </div>
+        <div className="d-flex pe-4 ps-4 gap-4" style={StaticStyle.baseHeight}>
+            <div className="pt-4" style={ServiceStyle.dynamicFilter}>
+                <DynamicFilter config={hotelConfig}
+                    onFilterSubmit={handleFilter}/>
+            </div>
+            <div className="flex-grow-1 mb-5">
+                <div className="mb-3"></div>
+                <ServiceList
+                    title="Danh sách Phòng khách sạn"
+                    items={rooms}
+                    sortCategory="rating"
+                    currentSort={searchParams.get("sort") || ""}
+                    onSortChange={handleSortChange}
+                    page={page}
+                    loading={loading}
+                    onLoadMore={handleLoadMore}
+                />
+            </div>
         </div>
     );
 };

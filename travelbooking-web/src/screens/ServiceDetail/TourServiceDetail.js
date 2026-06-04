@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Col, Container, Image, Row } from "react-bootstrap";
+import { Button, Col, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { authApis, endpoints } from "../../configs/Api";
 import { MyUserContext, MyCartContext } from "../../configs/Context";
-import styles from "./ServiceDetailStyle";
+import ServiceDetailStyle from "./ServiceDetailStyle";
+import StaticStyle from "../StaticStyle";
 import ReviewSection from "../../components/ReviewSection";
 import cookies from "react-cookies";
+
+
 const TourServiceDetail = () => {
     const { serviceId } = useParams();
     const [tourService, setTourService] = useState(null);
@@ -136,43 +139,69 @@ const TourServiceDetail = () => {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center my-5">
+            <div className="d-flex justify-content-center my-5" style={StaticStyle.baseHeight}>
                 <MySpinner />
             </div>
         );
     }
 
     return (
-        <Container className="mt-4 mb-5">
+        <div style={StaticStyle.baseHeight}>
             {tourService && (
                 <>
-                    <Row className="mb-4">
-                        <Col>
-                            <div style={styles.titleBox}>
-                                <h2 className="m-0 text-dark font-weight-bold">
-                                    {tourService.services?.name}
-                                </h2>
-                            </div>
-                        </Col>
-                    </Row>
+                    <div style={ServiceDetailStyle.titleBox} className=" m-4">
+                        <h2 className="m-0 text-dark font-weight-bold">
+                            {tourService.services?.name}
+                        </h2>
+                    </div>
 
-                    <Row>
-                        <Col md={5} xs={12} className="mb-4">
-                            <div style={styles.imageWrapper}>
-                                <DisplayImage 
-                                    src={tourService.services?.imgUrl} 
-                                    className="img-fluid rounded" 
-                                />
+                    <Row className="m-3 d-flex justify-content-center">
+                        <Col md={5} xs={12} style={ServiceDetailStyle.sticky}>
+                            <div style={{ ...ServiceDetailStyle.imageWrapper, width: "100%" }}>
+                                <DisplayImage src={tourService.services?.imgUrl} />
+                            </div>
+
+                            <div style={ServiceDetailStyle.infoCard} className="d-flex justify-content-between my-4 py-4">
+                                <div className="d-flex align-items-center">
+                                    <Image style={ServiceDetailStyle.providerAvatar} alt="Provider Avatar"
+                                        src={tourService.services?.providerId?.users?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+                                    />
+                                    <div className="ms-3">
+                                        <h6 className="m-0 font-weight-bold text-primary">
+                                            {tourService.services?.providerId?.businessName}
+                                        </h6>
+                                        <p className="m-0 text-muted small mt-1">
+                                            Địa chỉ: {tourService.services?.providerId?.address}
+                                        </p>
+                                        <p className="m-0 text-muted small">
+                                            Số điện thoại: {tourService.services?.providerId?.users?.phone}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div className="d-flex flex-column gap-2">
+                                    <Button variant="primary" size="sm" 
+                                        className="font-weight-bold btn-sm"
+                                        onClick={handleViewProvider}
+                                    >
+                                        Xem chi tiết
+                                    </Button>
+                                    <Button variant="success" size="sm" 
+                                        className="font-weight-bold btn-sm"
+                                        onClick={handleChatProvider}
+                                    >
+                                        Chat ngay
+                                    </Button>
+                                </div>
                             </div>
                         </Col>
 
                         <Col md={7} xs={12}>
-                            <div style={styles.infoCard}>
-
+                            <div style={ServiceDetailStyle.infoCard}>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div>
                                         <span className="text-muted d-block small">Giá từ</span>
-                                        <h3 style={styles.priceText}>
+                                        <h3 style={ServiceDetailStyle.priceText}>
                                             {tourService.services?.price?.toLocaleString()} VNĐ
                                         </h3>
                                         <small className="text-secondary">
@@ -180,58 +209,13 @@ const TourServiceDetail = () => {
                                         </small>
                                     </div>
                                     {(user === null || user?.users?.role !== "ROLE_PROVIDER") && (
-                                        <Button 
-                                            variant="danger" 
-                                            size="lg" 
+                                        <Button variant="danger" size="lg" 
                                             className="px-4 font-weight-bold mt-2" 
                                             onClick={() => order(tourService)}
                                         >
                                             Đặt
                                         </Button>
                                     )}
-                                </div>
-
-                                <hr />
-
-
-                                <div className="d-flex justify-content-between align-items-center my-3 py-2">
-                                    <div className="d-flex align-items-center">
-                                        <Image 
-                                            src={tourService.services?.providerId?.users?.avatar || "https://via.placeholder.com/50"} 
-                                            style={styles.providerAvatar} 
-                                            alt="Provider Avatar"
-                                        />
-                                        <div className="ms-3">
-                                            <h6 className="m-0 font-weight-bold text-primary">
-                                                {tourService.services?.providerId?.businessName}
-                                            </h6>
-                                            <p className="m-0 text-muted small mt-1">
-                                                Địa chỉ: {tourService.services?.providerId?.address}
-                                            </p>
-                                            <p className="m-0 text-muted small">
-                                                Số điện thoại: {tourService.services?.providerId?.users?.phone}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="d-flex flex-column gap-2">
-                                        <Button 
-                                            variant="outline-primary" 
-                                            size="sm" 
-                                            className="font-weight-bold btn-sm"
-                                            onClick={handleViewProvider}
-                                        >
-                                            Xem chi tiết
-                                        </Button>
-                                        <Button 
-                                            variant="outline-success" 
-                                            size="sm" 
-                                            className="font-weight-bold btn-sm"
-                                            onClick={handleChatProvider}
-                                        >
-                                            Chat ngay
-                                        </Button>
-                                    </div>
                                 </div>
 
                                 <hr />
@@ -252,7 +236,7 @@ const TourServiceDetail = () => {
                                         </li>
                                         <li className="mb-2">
                                             <strong>Mô tả: </strong>
-                                            <p style={styles.descriptionText} className="mt-1">
+                                            <p style={ServiceDetailStyle.descriptionText} className="mt-1">
                                                 {tourService.services?.description}
                                             </p>
                                         </li>
@@ -261,8 +245,7 @@ const TourServiceDetail = () => {
 
                                 <hr />
 
-                                <ReviewSection 
-                                    reviews={reviews}
+                                <ReviewSection reviews={reviews}
                                     onAddReview={handlePostReview}
                                     user={user}
                                 />
@@ -272,7 +255,7 @@ const TourServiceDetail = () => {
                     </Row>
                 </>
             )}
-        </Container>
+        </div>
     );
 };
 

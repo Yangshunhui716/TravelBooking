@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import DisplayImage from "../../components/DisplayImage";
 import { authApis, endpoints } from "../../configs/Api";
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import ButtonServiceGroup from "../../components/ButtonServiceGroup";
 import DynamicFormFields from "../../components/DynamicFormFields";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
+import StaticStyle from "../StaticStyle";
 
 
 const ModifierService = () => {
@@ -17,6 +18,8 @@ const ModifierService = () => {
     const [payload, setPayload] = useState({});
     const [serviceImage, setServiceImage] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const navigation = useNavigate();
 
     const tourFieldsConfig = [
         { key: "name", label: "Tên tour du lịch", type: "text", disableOnEdit: true },
@@ -80,6 +83,27 @@ const ModifierService = () => {
     };
 
     const saveService = async () => {
+let currentConfig = [];
+        if (serviceType === 'tour') currentConfig = tourFieldsConfig;
+        else if (serviceType === 'hotelRoom') currentConfig = hotelRoomFieldsConfig;
+        else if (serviceType === 'transport') currentConfig = transportFieldsConfig;
+
+        if (!isEditMode && !serviceImage) {
+            alert("Vui lòng tải lên ảnh dịch vụ!");
+            return;
+        }
+
+        for (let field of currentConfig) {
+            const isRequired = isEditMode ? !field.disableOnEdit : true;
+            if (isRequired) {
+                const value = service[field.key];
+                if (value === null || value === undefined || value.toString().trim() === "") {
+                    alert(`Vui lòng nhập đầy đủ thông tin: ${field.label}`);
+                    return;
+                }
+            }
+        }
+
         try {
             setLoading(true);
             let res;
@@ -107,8 +131,10 @@ const ModifierService = () => {
                 form.append("img", serviceImage);
                 await authApis().patch(endpoints["service-image"](res.data.id), form);
             }
-
             alert(isEditMode ? "Cập nhật dịch vụ thành công!" : "Thêm dịch vụ thành công!");
+            if(!isEditMode){
+                navigation("/profile");
+            }
         } catch (ex) {
             console.error(ex);
             alert(isEditMode ? "Cập nhật dịch vụ thất bại!" : "Thêm dịch vụ thất bại!");
@@ -118,14 +144,13 @@ const ModifierService = () => {
     };
 
     return (
-        <div className="container mt-4">
+        <Container className="mt-4 mb-4" style={StaticStyle.baseHeight} >
             <Row>
                 <Col md={4}>
-                    <Card className="p-3 shadow-sm rounded-4">
+                    <Card className="p-3 shadow rounded-4 border-1 mb-4">
                         <Form.Label>Ảnh dịch vụ</Form.Label>
-                        <Form.Control
-                            type="file"
-                            accept="image/*"
+                        <Form.Control type="file" accept="image/*"
+                            required={!isEditMode}
                             onChange={(e) =>
                                 setServiceImage(
                                     e.target.files[0]
@@ -136,7 +161,7 @@ const ModifierService = () => {
 
                     <DisplayImage imageUrl={serviceImage ? URL.createObjectURL(serviceImage) : existingService?.services?.imgUrl || null} />
 
-                    <div className="mt-4 d-flex justify-content-start gap-3">
+                    <div className="mt-4 d-flex justify-content-center gap-3">
                         {isEditMode ? (
                             loading === true ? <MySpinner /> :
                                 <>
@@ -150,12 +175,15 @@ const ModifierService = () => {
                 </Col>
 
                 <Col md={8}>
-                    <Card className="p-4 shadow-sm rounded-4">
-                        <div className="d-flex justify-content-between align-items-center mb-3">
+                    <Card className="p-4 shadow rounded-4 border-1">
+                        <div className="justify-content-between align-items-center mb-3">
                             {!isEditMode ? (
+                                <>
+                                <h3 className="fw-bold text-dark text-center text-sm-start text-uppercase mb-3">Thêm dịch vụ mới</h3>
                                 <ButtonServiceGroup currentType={serviceType} onChangeType={setServiceType} />
-                            ) : (
-                                <h4>Chỉnh sửa dịch vụ {serviceType==='tour' ? 'Tour du lịch' : serviceType==='hotelRoom' ? 'Phòng khách sạn' : 'Phương tiện'}</h4>
+                                </>
+                            ) : (    
+                                <h3 className="fw-bold text-dark text-center text-sm-start text-uppercase">Chỉnh sửa dịch vụ {serviceType==='tour' ? 'Tour du lịch' : serviceType==='hotelRoom' ? 'Phòng khách sạn' : 'Phương tiện'}</h3>
                             )}
                         </div>
 
@@ -167,7 +195,7 @@ const ModifierService = () => {
                     </Card>
                 </Col>
             </Row>
-        </div>
+        </Container>
     );
 };
 

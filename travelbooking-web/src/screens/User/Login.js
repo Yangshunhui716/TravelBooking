@@ -6,6 +6,7 @@ import Apis, { authApis, endpoints } from "../../configs/Api";
 import { MyUserContext } from "../../configs/Context";
 import MySpinner from "../../components/MySpinner";
 import styles from "./UserStyle";
+import StaticStyle from "../StaticStyle";
 import { auth } from "../../configs/FirebaseConfig";
 import { signInWithCustomToken } from "firebase/auth";
 
@@ -108,6 +109,7 @@ const Login = () => {
     }
 
     return (
+        <div style={styles.background}>
         <div style={styles.container}>
 
             <h1 style={styles.title}>
@@ -151,6 +153,7 @@ const Login = () => {
 
             </Form>
 
+        </div>
         </div>
     );
 }
