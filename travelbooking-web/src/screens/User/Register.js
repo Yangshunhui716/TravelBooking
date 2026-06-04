@@ -173,8 +173,8 @@ const Register = () => {
                             <Form.Select required value={user.gender || ""} onChange={(e) => setState(  e.target.value,  "gender")}
                             >
                                 <option value="">  Chọn giới tính  </option>
-                                <option value="MALE"> Nam  </option>
-                                <option value="FEMALE"> Nữ </option>
+                                <option value="Nam"> Nam  </option>
+                                <option value="Nữ"> Nữ </option>
                             </Form.Select>
                         </Form.Group>
                     </>
