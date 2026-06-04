@@ -58,9 +58,9 @@ public class TransportRepositoryImpl implements TransportRepository{
                 predicates.add(b.like(services.get("destination"), "%" + destination + "%"));
             }
             
-            String departureLocation = params.get("departureLocation");
+            String departureLocation = params.get("departure");
             if (departureLocation != null && !departureLocation.isEmpty()) {
-                predicates.add(b.like(root.get("departureLocation"), "%" + departureLocation + "%"));
+                predicates.add(b.like(root.get("departure"), "%" + departureLocation + "%"));
             }
             
             String transportType = params.get("transportType");

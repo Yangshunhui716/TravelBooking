@@ -38,13 +38,13 @@ const TransportService = () => {
             setLoading(true);
             let params = { page: page };
 
-            const departureLocation = searchParams.get("departureLocation");
+            const departure = searchParams.get("departure");
             const destination = searchParams.get("destination");
             const departureDate = searchParams.get("departureDate");
             const transportType = searchParams.get("transportType");
             const sort = searchParams.get("sort") || "";
 
-            if (departureLocation) params.departureLocation = departureLocation;
+            if (departure) params.departure = departure;
             if (destination) params.destination = destination;
             if (departureDate) params.departureTime = departureDate;
             if (transportType) params.transportType = transportType;
@@ -107,7 +107,7 @@ const TransportService = () => {
     };
 
     const transportConfig = [
-        { key: "departureLocation", label: "Điểm khởi hành", type: "text" },
+        { key: "departure", label: "Điểm khởi hành", type: "text" },
         { key: "destination", label: "Điểm đến", type: "text" },
         { key: "departureDate", label: "Ngày khởi hành", type: "date" },
         {
@@ -125,8 +125,8 @@ const TransportService = () => {
     const handleFilter = (values) => {
         const newParams = new URLSearchParams(searchParams);
         
-        if (values.departureLocation) newParams.set("departureLocation", values.departureLocation);
-        else newParams.delete("departureLocation");
+        if (values.departure) newParams.set("departure", values.departure);
+        else newParams.delete("departure");
 
         if (values.destination) newParams.set("destination", values.destination);
         else newParams.delete("destination");
