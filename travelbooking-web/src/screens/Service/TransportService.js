@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"; 
+import { useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom"; 
 
 import DynamicFilter from "../../components/DynamicFilter";
@@ -33,7 +33,7 @@ const TransportService = () => {
         });
     };
 
-    const loadTransports = useCallback( async () => {
+    const loadTransports = async () => {
         try {
             setLoading(true);
             let params = { page: page };
@@ -63,7 +63,7 @@ const TransportService = () => {
             );
 
             if (res.data.length === 0) {
-                setTransports([]);
+                alert("Không tìm thấy thêm dịch vụ phù hợp với yêu cầu!")
                 setPage(0);
                 return;
             }
@@ -95,11 +95,13 @@ const TransportService = () => {
         } finally {
             setLoading(false);
         }
-    },[searchParams, page, navigate]);
+    }
 
     useEffect(() => {
-        loadTransports();
-    }, [loadTransports]); 
+        if(page>0){
+            loadTransports();
+        }
+    },[searchParams, page]);
 
     const handleLoadMore = () => {
         if (page > 0 && !loading) {
