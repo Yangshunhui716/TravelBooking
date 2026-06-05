@@ -17,7 +17,7 @@ const Cart = () => {
     const calculateTotal = () => {
         if (!cart) return 0;
         return Object.values(cart).reduce((total, item) => {
-            const days = (item.durationDays && item.durationDays > 0) ? item.durationDays : 1;
+            const days = (item.durationDays && item.durationDays > 0 && item.type!=="tour") ? item.durationDays : 1;
             return total + (item.price * item.quantity * days);
         }, 0);
     };
@@ -51,11 +51,11 @@ const Cart = () => {
                             navigate(res.data.payUrl);
                         }else{
                             alert("Đã đặt đơn thành công!");
+                            navigate("/profile");
                         }
                         setCart(null);
                         cookies.remove("cart");
                         cartDispatch({ type: "PAID" });
-                        navigate("/profile");
                     }
                 } catch (error) {
                     console.error("Lỗi khi thanh toán:", error);
@@ -152,7 +152,7 @@ const Cart = () => {
                                             </Col>
                                             <Col xs={12} sm={4}>
                                                 Tổng: <span className="text-dark fw-bold">
-                                                    {(item.price * item.quantity * ((item.durationDays && item.durationDays > 0) ? item.durationDays : 1))?.toLocaleString()}đ
+                                                    {(item.price * item.quantity * ((item.durationDays && item.durationDays > 0 && item.type!=="tour") ? item.durationDays : 1))?.toLocaleString()}đ
                                                 </span>
                                             </Col>
                                         </Row>

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { endpoints } from "../../configs/Api";
-import { MyUserContext, MyCartContext } from "../../configs/Context";
+import { MyUserContext, MyCartContext, MyCompareContext } from "../../configs/Context";
 import ServiceDetailStyle from "./ServiceDetailStyle"; 
 import StaticStyle from "../StaticStyle";
 import ReviewSection from "../../components/ReviewSection";
@@ -190,6 +190,26 @@ const HotelRoomServiceDetail = () => {
             }
         }
     };
+
+    const [, compareDispatch] = useContext(MyCompareContext);
+    
+    const handleAddCompare = () => {
+        if (!hotelService || !hotelService.services) return; 
+        const servicePayload = {
+            id: hotelService.id,
+            name: hotelService.services.name,
+            description: [
+                `Khách sạn: ${hotelService.hotelName}`,
+                `Địa chỉ: ${hotelService.address}`,
+                `Ngày check in: ${checkInDate}`,
+                `Ngày check out: ${checkOutDate}`,
+            ].join("<br/>"), 
+            price: hotelService.services.price,
+            image: hotelService.services.imgUrl,
+            typeService: "hotel-room-services"
+        };
+        compareDispatch({ type: 'ADD_SERVICE', payload: servicePayload });
+    };
     
     if (loading) {
         return (
@@ -203,10 +223,16 @@ const HotelRoomServiceDetail = () => {
         <div style={StaticStyle.baseHeight}>
             {hotelService && (
             <>
-                <div style={ServiceDetailStyle.titleBox} className=" m-4">
+                <div style={ServiceDetailStyle.titleBox} className=" m-4 d-flex justify-content-between align-items-center">
                     <h2 className="text-dark font-weight-bold">
                         {hotelService.services?.name}
                     </h2>
+                    <Button variant="outline-secondary"
+                        className="rounded-pill"
+                        onClick={handleAddCompare}
+                    >
+                        + So sánh
+                    </Button>
                 </div>
 
                 <Row className="m-3 d-flex justify-content-center">
@@ -242,7 +268,7 @@ const HotelRoomServiceDetail = () => {
                                 >
                                     Xem chi tiết
                                 </Button>
-                                {user.users.role === "ROLE_CUSTOMER" &&
+                                {user?.users.role === "ROLE_CUSTOMER" &&
                                 <Button variant="success" size="sm" 
                                     className="font-weight-bold"
                                     onClick={handleChatProvider}

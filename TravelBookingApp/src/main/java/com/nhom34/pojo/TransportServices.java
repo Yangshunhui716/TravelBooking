@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "transport_services")
@@ -27,6 +28,7 @@ import java.util.Date;
     @NamedQuery(name = "TransportServices.findByTicketType", query = "SELECT t FROM TransportServices t WHERE t.ticketType = :ticketType"),
     @NamedQuery(name = "TransportServices.findByDepartureTime", query = "SELECT t FROM TransportServices t WHERE t.departureTime = :departureTime"),
     @NamedQuery(name = "TransportServices.findByEndTime", query = "SELECT t FROM TransportServices t WHERE t.endTime = :endTime")})
+@BatchSize(size=20)
 public class TransportServices implements Serializable {
 
     private static final long serialVersionUID = 1L;

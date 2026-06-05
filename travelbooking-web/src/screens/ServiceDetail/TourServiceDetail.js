@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { authApis, endpoints } from "../../configs/Api";
-import { MyUserContext, MyCartContext } from "../../configs/Context";
+import { MyUserContext, MyCartContext, MyCompareContext } from "../../configs/Context";
 import ServiceDetailStyle from "./ServiceDetailStyle";
 import StaticStyle from "../StaticStyle";
 import ReviewSection from "../../components/ReviewSection";
@@ -137,6 +137,29 @@ const TourServiceDetail = () => {
         }
     };
 
+    const formatDate = (timestamp) => {
+        return new Date(timestamp).toLocaleDateString("vi-VN");
+    };
+
+    const [, compareDispatch] = useContext(MyCompareContext);
+
+    const handleAddCompare = () => {
+        if (!tourService || !tourService.services) return; 
+        const servicePayload = {
+            id: tourService.id,
+            name: tourService.services.name,
+            description: [
+                `Điểm đến: ${tourService.services.destination}`,
+                `Thời gian khởi hành: ${formatDate(tourService.departureTime)}`,
+                `Thời lượng tour: ${tourService.durationDays} ngày`,
+            ].join("<br/>"), 
+            price: tourService.services.price,
+            image: tourService.services.imgUrl,
+            typeService: "tour-services"
+        };
+        compareDispatch({ type: 'ADD_SERVICE', payload: servicePayload });
+    };
+
     if (loading) {
         return (
             <div className="d-flex justify-content-center my-5" style={StaticStyle.baseHeight}>
@@ -149,10 +172,16 @@ const TourServiceDetail = () => {
         <div style={StaticStyle.baseHeight}>
             {tourService && (
                 <>
-                    <div style={ServiceDetailStyle.titleBox} className=" m-4">
-                        <h2 className="m-0 text-dark font-weight-bold">
+                    <div style={ServiceDetailStyle.titleBox} className=" m-4 d-flex justify-content-between align-items-center">
+                        <h2 className="text-dark font-weight-bold">
                             {tourService.services?.name}
                         </h2>
+                        <Button variant="outline-secondary"
+                            className="rounded-pill"
+                            onClick={handleAddCompare}
+                        >
+                            + So sánh
+                        </Button>
                     </div>
 
                     <Row className="m-3 d-flex justify-content-center">
@@ -186,12 +215,13 @@ const TourServiceDetail = () => {
                                     >
                                         Xem chi tiết
                                     </Button>
+                                    {user?.users.role === "ROLE_CUSTOMER" &&
                                     <Button variant="success" size="sm" 
-                                        className="font-weight-bold btn-sm"
+                                        className="font-weight-bold"
                                         onClick={handleChatProvider}
                                     >
                                         Chat ngay
-                                    </Button>
+                                    </Button>}
                                 </div>
                             </div>
                         </Col>

@@ -9,6 +9,7 @@ export const endpoints={
     'user-avatar': '/secure/user/avatar',
   
     'pay': '/secure/customer/pay',
+    're-pay': (bookingId) => `/secure/customer/pay/${bookingId}`,
     'handle-paypal': '/secure/customer/paypal/capture',
 
     'conversation': '/secure/conversations',
@@ -31,6 +32,7 @@ export const endpoints={
     'provider-customers': (idservice) => `/secure/provider/services/${idservice}/customers`,
     'provider-statistics': (metric) => `/secure/provider/statistic/${metric}`,
     'service-image': (serviceId) => `/secure/provider/services/${serviceId}/image`,
+    'delete-service': (serviceId) => `/secure/provider/services/${serviceId}`,
 
     'hotel-room-services': '/hotel-room-services',
     'hotel-room-service-detail': (serviceId) => `/hotel-room-services/${serviceId}`,
@@ -51,7 +53,7 @@ export const endpoints={
 
 export const authApis = () => {
     return axios.create({
-        baseURL: 'http://localhost:8000/TravelBookingApp/api/',
+        baseURL: 'http://localhost:8080/TravelBookingApp/api/',
         headers: {
             'Authorization': `Bearer ${cookies.load('token')}`
         }
@@ -59,5 +61,5 @@ export const authApis = () => {
 }
 
 export default axios.create({
-    baseURL: "http://localhost:8000/TravelBookingApp/api"
+    baseURL: "http://localhost:8080/TravelBookingApp/api"
 });

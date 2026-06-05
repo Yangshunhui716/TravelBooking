@@ -10,5 +10,5 @@ public interface ServiceDetailService<T> {
     T getDetailServiceById(Long id);
     T addDetailService(Map<String, String> info, Providers prov);
     T updatePartial(Map<String, String> params, Long id);
-    
+    void delete(Long id);
 }

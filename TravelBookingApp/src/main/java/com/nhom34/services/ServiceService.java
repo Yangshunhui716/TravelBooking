@@ -11,7 +11,7 @@ public interface ServiceService {
     Services getServiceById(Long id);
     Services addService(Map<String, String> info, Providers prov);
     void updateStatus(Long id, boolean status);
-    void deleteService(Long id);
+    boolean deleteService(Long id);
     boolean checkOwner(Long provId, Long id);
     boolean updateAvailableSlots(int slotsOrder, Long id, int serviceDuration, Date serviceStartDate);
     void updateImg(MultipartFile img, Long id);

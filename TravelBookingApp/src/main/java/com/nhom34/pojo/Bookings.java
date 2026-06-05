@@ -20,6 +20,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "bookings")
@@ -32,6 +33,7 @@ import java.util.Date;
     @NamedQuery(name = "Bookings.findByPaymentMethod", query = "SELECT b FROM Bookings b WHERE b.paymentMethod = :paymentMethod"),
     @NamedQuery(name = "Bookings.findByCreatedAt", query = "SELECT b FROM Bookings b WHERE b.createdAt = :createdAt"),
     @NamedQuery(name = "Bookings.findByUpdatedAt", query = "SELECT b FROM Bookings b WHERE b.updatedAt = :updatedAt")})
+@BatchSize(size=20)
 public class Bookings implements Serializable {
 
     private static final long serialVersionUID = 1L;

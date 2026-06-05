@@ -28,7 +28,11 @@ public class ApiTourController {
     }
     
     @GetMapping("/tour-services/{serviceId}")
-    public ResponseEntity<TourServices> retrieve(@PathVariable(value = "serviceId") Long id) {
-        return new ResponseEntity<>((TourServices)this.tourService.getDetailServiceById(id), HttpStatus.OK);
+    public ResponseEntity<?> retrieve(@PathVariable(value = "serviceId") Long id) {
+        TourServices t = this.tourService.getDetailServiceById(id);
+        if(t==null){
+            return new ResponseEntity<>("Dịch vụ không tồn tại", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
 }

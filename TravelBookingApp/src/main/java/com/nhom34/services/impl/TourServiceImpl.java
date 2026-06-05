@@ -7,6 +7,7 @@ import com.nhom34.repositories.TourRepository;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TourService;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,32 @@ public class TourServiceImpl implements TourService{
             return this.tourRepo.getDetailServiceById(id);
         }
         else{
-            return this.tourRepo.updatePartial(params, id);
+            TourServices serv = this.getDetailServiceById(id);
+            if(params.containsKey("price")){
+                serv.getServices().setPrice(Double.parseDouble(params.get("price")));
+            }
+            if(params.containsKey("slots")){
+                int preSlots = serv.getServices().getSlots();
+                int afterSlots = Integer.parseInt(params.get("slots"));
+                int addSlots = afterSlots-preSlots;
+                int availableSlots = serv.getServices().getAvailableSlots();
+                if(addSlots>0){
+                    serv.getServices().setSlots(afterSlots);
+                    serv.getServices().setAvailableSlots(availableSlots+addSlots);
+                }
+            }
+            if(params.containsKey("description")){
+                serv.getServices().setDescription(params.get("description"));
+            }
+            if(params.containsKey("departureTime")){
+                long newTimeInMillis = Long.parseLong(params.get("departureTime"));
+                Date oldDepartureTime = serv.getDepartureTime();
+                if (newTimeInMillis > System.currentTimeMillis() && newTimeInMillis > oldDepartureTime.getTime()) {
+                    serv.setDepartureTime(new Timestamp(newTimeInMillis));
+                }
+            }
+            serv.getServices().setUpdatedAt(new Date());
+            return this.tourRepo.updatePartial(serv);
         }
     }
 
@@ -64,5 +90,13 @@ public class TourServiceImpl implements TourService{
     @Scheduled(cron = "0 0/10 * * * ?")
     public void autoUpdateStatusByCheckDate() {
         this.tourRepo.autoUpdateStatusByCheckDate();
+    }
+    
+    @Override
+    public void delete(Long id) {
+        TourServices t = this.getDetailServiceById(id);
+        if(t!=null){
+            this.tourRepo.delete(t);
+        }
     }
 }

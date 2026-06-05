@@ -27,26 +27,27 @@ public class ConversationServiceImpl implements ConversationService{
     public void setReaded(Users user, String conversationId) {
         Conversation conversation = this.conversationRepo.getConversationById(conversationId);
         if(user.getRole().equals("ROLE_PROVIDER")&&conversation.getProvider().getId().equals(user.getId())){
-            this.conversationRepo.setUnreadForProvider(conversation, 0);
+            conversation.setProviderUnread(0);
         }
         else if(user.getRole().equals("ROLE_CUSTOMER")&&conversation.getCustomer().getId().equals(user.getId())){
-            this.conversationRepo.setUnreadForCustomer(conversation, 0);
+            conversation.setCustomerUnread(0);
         }
+        this.conversationRepo.updateConversation(conversation);
     }
 
     @Override
     public void setLastMessage(Users user, String conversationId, String message) {
         Conversation conversation = this.conversationRepo.getConversationById(conversationId);
         if(user.getRole().equals("ROLE_PROVIDER")&&conversation.getProvider().getId().equals(user.getId())){
-            this.conversationRepo.setLastMessage(conversation, message);
-            this.conversationRepo.setUnreadForCustomer(conversation, (conversation.getCustomerUnread()+1));
-            this.conversationRepo.setUnreadForProvider(conversation, 0);
+            conversation.setCustomerUnread(conversation.getCustomerUnread()+1);
+            conversation.setProviderUnread(0);
         }
         else if(user.getRole().equals("ROLE_CUSTOMER")&&conversation.getCustomer().getId().equals(user.getId())){
-            this.conversationRepo.setLastMessage(conversation, message);
-            this.conversationRepo.setUnreadForProvider(conversation, (conversation.getProviderUnread()+1));
-            this.conversationRepo.setUnreadForCustomer(conversation, 0);
+            conversation.setProviderUnread(conversation.getProviderUnread()+1);
+            conversation.setCustomerUnread(0);
         }
+        conversation.setLastMessage(message);
+        this.conversationRepo.updateConversation(conversation);
     }
 
     @Override

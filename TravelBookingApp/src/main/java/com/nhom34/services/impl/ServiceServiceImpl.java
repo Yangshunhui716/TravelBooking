@@ -2,15 +2,20 @@ package com.nhom34.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.nhom34.pojo.Bookings;
 import com.nhom34.pojo.HotelRoomServices;
 import com.nhom34.pojo.Providers;
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.ServiceRepository;
+import com.nhom34.services.BookingService;
 import com.nhom34.services.HotelService;
 import com.nhom34.services.ServiceService;
+import com.nhom34.services.TourService;
+import com.nhom34.services.TransportService;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +33,13 @@ public class ServiceServiceImpl implements ServiceService {
     @Autowired
     private HotelService hotelService;
     @Autowired
+    private TransportService transportService;
+    @Autowired
+    private TourService tourService;
+    @Autowired
     private Cloudinary cloudinary;
+    @Autowired
+    private BookingService bookingService;
 
     @Override
     public Services getServiceById(Long id) {
@@ -55,17 +66,25 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public void updateStatus(Long id, boolean status) {
-        this.serviceRepo.updateStatus(id, status);
+        Services s = this.getServiceById(id);
+        if(!s.getStatus()==status) s.setStatus(status);
+        this.serviceRepo.updateService(s);
     }
 
     @Override
     public boolean checkOwner(Long provId, Long id) {
-        return this.serviceRepo.checkOwner(provId, id);
+        return this.serviceRepo.getServiceById(id).getProviderId().getId().equals(provId);
     }
 
     @Override
-    public void deleteService(Long id) {
-        this.serviceRepo.deleteService(id);
+    public boolean deleteService(Long id) {
+        List<Bookings> bookings = this.bookingService.getBookingsByServiceId(id);
+        if(bookings == null || bookings.isEmpty()){
+            Services s = this.getServiceById(id);
+            this.serviceRepo.deleteService(s);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -105,6 +124,8 @@ public class ServiceServiceImpl implements ServiceService {
                 throw new RuntimeException("Xảy ra lỗi khi tải ảnh lên hệ thống");
             }
         }
-        this.serviceRepo.updateImg(imgUrl, id);
+        Services s = this.getServiceById(id);
+        s.setImgUrl(imgUrl);
+        this.serviceRepo.updateService(s);
     }
 }

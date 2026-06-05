@@ -82,8 +82,7 @@ const ModifierService = () => {
         setService(prev => ({ ...prev, [key]: value }));
     };
 
-    const saveService = async () => {
-let currentConfig = [];
+    const saveService = async () => { let currentConfig = [];
         if (serviceType === 'tour') currentConfig = tourFieldsConfig;
         else if (serviceType === 'hotelRoom') currentConfig = hotelRoomFieldsConfig;
         else if (serviceType === 'transport') currentConfig = transportFieldsConfig;
@@ -143,6 +142,20 @@ let currentConfig = [];
         }
     };
 
+    const deleteService = async () => {
+        try {
+            setLoading(true);
+            let res = await authApis().delete(endpoints["delete-service"](service.id));
+            alert(res.data);
+            navigation("/profile");
+        } catch (ex) {
+            console.error(ex);
+            alert(ex.response.data);
+        } finally {
+            setLoading(false);
+        }   
+    };
+
     return (
         <Container className="mt-4 mb-4" style={StaticStyle.baseHeight} >
             <Row>
@@ -166,7 +179,7 @@ let currentConfig = [];
                             loading === true ? <MySpinner /> :
                                 <>
                                     <Button variant="primary" onClick={saveService}>Xác nhận</Button>
-                                    <Button variant="danger">Xóa dịch vụ</Button>
+                                    <Button variant="danger" onClick={deleteService}>Xóa dịch vụ</Button>
                                 </>
                         ) : (
                             loading === true ? <MySpinner /> :<Button variant="primary" onClick={saveService}>Thêm dịch vụ</Button>

@@ -84,54 +84,56 @@ const ProviderProfile = () => {
     };
 
     return (
-        <div className="p-4 gap-4 d-flex" style={StaticStyle.baseHeight}>
-                <div style={ProviderProfileStyle.profile}>
-                    <Card className="shadow p-4 rounded-4 border-0">
-                        <div className="text-center mb-3">
-                            <Image alt="avatar" width="100" height="100" 
-                                src={provider?.users?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                                style={ProviderProfileStyle.image}
-                            />
-                        </div>
+        <div className="m-4" style={StaticStyle.baseHeight}>
+            <Row>
+            <Col md={3} style={ProviderProfileStyle.profile}>
+                <Card className="shadow p-4 rounded-4 border-0">
+                    <div className="text-center mb-3">
+                        <Image alt="avatar" width="100" height="100" 
+                            src={provider?.users?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                            style={ProviderProfileStyle.image}
+                        />
+                    </div>
 
-                        <h4 className="text-center mb-4 fw-bold">{provider?.businessName}</h4>
+                    <h4 className="text-center mb-4 fw-bold">{provider?.businessName}</h4>
 
-                        <div className="mb-3">
-                            <b className="text-muted">Mã số thuế:</b>
-                            <p className="mb-0 fw-medium">{provider?.tax || "Chưa cập nhật"}</p>
-                        </div>
+                    <div className="mb-3">
+                        <b className="text-muted">Mã số thuế:</b>
+                        <p className="mb-0 fw-medium">{provider?.tax || "Chưa cập nhật"}</p>
+                    </div>
 
-                        <div className="mb-3">
-                            <b className="text-muted">Địa chỉ:</b>
-                            <p className="mb-0 fw-medium">{provider?.address || "Chưa cập nhật"}</p>
-                        </div>
-                            
-                        <div className="mb-3">
-                            <b className="text-muted">SĐT:</b>
-                            <p className="mb-0 fw-medium">{provider?.users?.phone || "Chưa cập nhật"}</p>
-                        </div>
-
-                        <div className="mb-3">
-                            <b className="text-muted">Email:</b>
-                            <p className="mb-0 fw-medium">{provider?.users?.email || "Chưa cập nhật"}</p>
-                        </div>
+                    <div className="mb-3">
+                        <b className="text-muted">Địa chỉ:</b>
+                        <p className="mb-0 fw-medium">{provider?.address || "Chưa cập nhật"}</p>
+                    </div>
                         
-                        {user?.users.role === "ROLE_CUSTOMER" && (
-                            <div className="d-flex justify-content-center mt-4">
-                                <Button variant="primary" className="px-5 rounded-pill shadow-sm" 
-                                onClick={handleChat}>
-                                    Chat ngay 
-                                </Button>
-                            </div>
-                        )}
-                        
-                    </Card>
-                </div>
+                    <div className="mb-3">
+                        <b className="text-muted">SĐT:</b>
+                        <p className="mb-0 fw-medium">{provider?.users?.phone || "Chưa cập nhật"}</p>
+                    </div>
 
-                <div className="flex-grow-1">
-                    <ServicesList title={`Dịch vụ của ${provider?.businessName || "nhà cung cấp"}`} 
-                    items={providerServices} currentSort={serviceType} onSortChange={setServiceType} />
-                </div>
+                    <div className="mb-3">
+                        <b className="text-muted">Email:</b>
+                        <p className="mb-0 fw-medium">{provider?.users?.email || "Chưa cập nhật"}</p>
+                    </div>
+                    
+                    {user?.users.role === "ROLE_CUSTOMER" && (
+                        <div className="d-flex justify-content-center mt-4">
+                            <Button variant="primary" className="px-5 rounded-pill shadow-sm" 
+                            onClick={handleChat}>
+                                Chat ngay 
+                            </Button>
+                        </div>
+                    )}
+                    
+                </Card>
+            </Col>
+
+            <Col md={9}>
+                <ServicesList title={`Dịch vụ của ${provider?.businessName || "nhà cung cấp"}`} 
+                items={providerServices} currentSort={serviceType} onSortChange={setServiceType} />
+            </Col>
+            </Row>
         </div>
     );
 };

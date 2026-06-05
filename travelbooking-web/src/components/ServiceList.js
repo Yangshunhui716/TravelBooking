@@ -1,4 +1,4 @@
-import { Card, Col, Row } from "react-bootstrap";
+import { Alert, Card, Col, Container, Row } from "react-bootstrap";
 import ServiceCard from "./ServiceCard";
 import SortDropdown from "./SortDropdown";
 import ButtonServiceGroup from "./ButtonServiceGroup";
@@ -28,13 +28,20 @@ const ServiceList = ({ title, items, sortCategory, currentSort, onSortChange, pa
             </Row>
             </Card>
 
-            {page > 0 && onLoadMore && (
+            {page > 0 && onLoadMore ? (
                 <div className="text-center mt-4">
                     <Button variant="success" onClick={onLoadMore} 
                     disabled={loading} className="px-4 py-2 fw-bold">
                         {loading ? "Đang tải..." : "Xem thêm..."}
                     </Button>
                 </div>
+            ):(
+                <Container className="text-center mt-4">
+                    {items.length === 0 &&
+                        <Alert variant="warning">
+                            <h5 className="text-muted mt-3">Không tìm thấy dịch vụ phù hợp</h5>
+                        </Alert>}
+                </Container>
             )}
         </div>
     );

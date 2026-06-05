@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 
 @Entity
@@ -27,6 +28,7 @@ import java.util.Date;
     @NamedQuery(name = "Conversation.findByCustomerUnread", query = "SELECT c FROM Conversation c WHERE c.customerUnread = :customerUnread"),
     @NamedQuery(name = "Conversation.findByCreatedAt", query = "SELECT c FROM Conversation c WHERE c.createdAt = :createdAt"),
     @NamedQuery(name = "Conversation.findByUpdatedAt", query = "SELECT c FROM Conversation c WHERE c.updatedAt = :updatedAt")})
+@BatchSize(size=20)
 public class Conversation implements Serializable {
 
     private static final long serialVersionUID = 1L;

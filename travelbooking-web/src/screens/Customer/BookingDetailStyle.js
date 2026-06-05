@@ -61,8 +61,6 @@ const DetailStyle = {
     },
 
     totalBox: {
-        marginTop: "24px",
-        textAlign: "right",
         fontSize: "22px",
         fontWeight: "700"
     }

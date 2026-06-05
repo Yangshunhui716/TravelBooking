@@ -11,6 +11,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import org.hibernate.annotations.BatchSize;
 
 
 @Entity
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @NamedQueries({
     @NamedQuery(name = "Admins.findAll", query = "SELECT a FROM Admins a"),
     @NamedQuery(name = "Admins.findById", query = "SELECT a FROM Admins a WHERE a.id = :id")})
+@BatchSize(size=20)
 public class Admins implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -48,7 +48,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
         if (childRoot != null) {
             subquery.select(cb.literal(1));
-            subquery.where(cb.equal(childRoot.get("serviceId").get("id"), s.get("id")));
+            subquery.where(cb.equal(childRoot.get("services").get("id"), s.get("id")));
             predicates.add(cb.exists(subquery));
         }
     }

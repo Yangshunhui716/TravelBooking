@@ -13,7 +13,7 @@ export default function MyCompareReducer(state, action) {
             }
             
             const addedState = { ...state, services: [...state.services, action.payload] };
-            cookies.save('compare_list', JSON.stringify(addedState.services), { path: '/', maxAge: 7 * 24 * 60 * 60 });
+            cookies.save('compare_list', addedState.services);
             return addedState;
 
         case 'REMOVE_SERVICE':
@@ -21,7 +21,7 @@ export default function MyCompareReducer(state, action) {
                 ...state,
                 services: state.services.filter(s => s.id !== action.payload)
             };
-            cookies.save('compare_list', JSON.stringify(removedState.services), { path: '/', maxAge: 7 * 24 * 60 * 60 });
+            cookies.save('compare_list', removedState.services);
             return removedState;
 
         case 'LOAD_SERVICES':

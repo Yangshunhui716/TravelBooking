@@ -3,24 +3,19 @@ package com.nhom34.controllers;
 import com.nhom34.pojo.Customers;
 import com.nhom34.pojo.Reviews;
 import com.nhom34.pojo.Services;
-import com.nhom34.pojo.Users;
 import com.nhom34.services.BookingService;
 import com.nhom34.services.CustomerService;
 import com.nhom34.services.ReviewService;
 import com.nhom34.services.ServiceService;
-import com.nhom34.services.UserService;
 import java.security.Principal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,23 +32,19 @@ public class ApiReviewController {
     @Autowired
     private ServiceService serviceService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private CustomerService customerService;
     @Autowired
     private BookingService bookingService;
     
     @GetMapping("/services/{serviceId}/reviews")
     public ResponseEntity<List<Reviews>> getReviews(@PathVariable(value = "serviceId") Long serviceId) {
-        return new ResponseEntity<>(this.reviewService.getReviewsByServiceId(serviceId),HttpStatus.OK
-        );
+        return new ResponseEntity<>(this.reviewService.getReviewsByServiceId(serviceId),HttpStatus.OK);
     }
 
     @PostMapping("/secure/customer/services/{serviceId}/reviews")
     public ResponseEntity<?> addReview(@PathVariable(value = "serviceId") Long serviceId,    @RequestBody Map<String, String> params,  Principal principal) {
         Services service = this.serviceService.getServiceById(serviceId);
-        Users user = this.userService.getUserByUsername(principal.getName());
-        Customers customer = this.customerService.getCustomerByUserId(user.getId());
+        Customers customer = this.customerService.getCustomerByUsername(principal.getName());
         boolean hasPaid = this.bookingService.checkCustomerPaidService(customer.getId(), service.getId());
         if (!hasPaid) {
             return new ResponseEntity<>("Ban khong the danh gia dich vu nay vi chua dat hang hoac chua hoan tat thanh toan!", HttpStatus.BAD_REQUEST);

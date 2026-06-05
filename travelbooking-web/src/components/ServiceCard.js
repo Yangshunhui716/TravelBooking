@@ -55,7 +55,7 @@ const ServiceCard = ({ data }) => {
                         className="rounded-pill"
                         onClick={handleAddCompare}
                     >
-                        So sánh
+                        + So sánh
                     </Button>}
                     
                     <span className="fw-bold text-danger fs-5 me-2">

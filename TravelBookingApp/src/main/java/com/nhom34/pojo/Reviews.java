@@ -19,6 +19,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "reviews")
@@ -28,6 +29,7 @@ import java.util.Date;
     @NamedQuery(name = "Reviews.findByRating", query = "SELECT r FROM Reviews r WHERE r.rating = :rating"),
     @NamedQuery(name = "Reviews.findByCreatedAt", query = "SELECT r FROM Reviews r WHERE r.createdAt = :createdAt"),
     @NamedQuery(name = "Reviews.findByUpdatedAt", query = "SELECT r FROM Reviews r WHERE r.updatedAt = :updatedAt")})
+@BatchSize(size=20)
 public class Reviews implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -25,7 +25,7 @@ const Header = () => {
                     </Nav.Link>
 
                     <Nav.Link as={Link} to="/tour-services" style={ComponentStyle.navLink}>
-                        Tour
+                        Tour du lịch
                     </Nav.Link>
 
                     <Nav.Link as={Link} to="/hotel-room-services" style={ComponentStyle.navLink}>

@@ -13,7 +13,7 @@ const ButtonServiceGroup = ({ currentType, onChangeType }) => {
         <ButtonGroup aria-label="Basic example" className="d-flex">
             <Button className="flex-fill" variant={activeType === 'tour' ? 'primary' : 'secondary'} 
             onClick={() => handleButtonClick('tour')}>
-                Tour
+                Tour du lịch
             </Button>
             <Button className="flex-fill" variant={activeType === 'hotelRoom' ? 'primary' : 'secondary'} 
             onClick={() => handleButtonClick('hotelRoom')}>

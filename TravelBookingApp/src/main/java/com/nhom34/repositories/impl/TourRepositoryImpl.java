@@ -17,7 +17,6 @@ import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +52,8 @@ public class TourRepositoryImpl implements TourRepository {
         predicates.add(b.greaterThan(services.get("availableSlots"), 0));
         
         List<Order> orders = new ArrayList<>();
+        orders.add(b.desc(services.get("createdAt")));
+        
         if(params != null){
             String destination = params.get("destination");
             if (destination != null && !destination.isEmpty()) {
@@ -108,7 +109,7 @@ public class TourRepositoryImpl implements TourRepository {
         Query query = s.createQuery(q);
         if (params != null) {
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
-            
+            if(page<=0) page=1;
             int pageSize = this.env.getProperty("service.pageSize", Integer.class);
             
             int start = (page - 1) * pageSize;
@@ -134,32 +135,8 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
-    public TourServices updatePartial(Map<String, String> params, Long id) {
+    public TourServices updatePartial(TourServices serv) {
         Session s = this.factory.getObject().getCurrentSession();
-        TourServices serv = this.getDetailServiceById(id);
-        
-        if(params.containsKey("price")){
-            serv.getServices().setPrice(Double.parseDouble(params.get("price")));
-        }
-        if(params.containsKey("slots")){
-            int preSlots = serv.getServices().getSlots();
-            int afterSlots = Integer.parseInt(params.get("slots"));
-            int addSlots = afterSlots-preSlots;
-            int availableSlots = serv.getServices().getAvailableSlots();
-            if(addSlots>0)
-                serv.getServices().setSlots(afterSlots);
-                serv.getServices().setAvailableSlots(availableSlots+addSlots);
-        }
-        if(params.containsKey("description")){
-            serv.getServices().setDescription(params.get("description"));
-        }
-        if(params.containsKey("departureTime")){
-            long newTimeInMillis = Long.parseLong(params.get("departureTime"));
-            Date oldDepartureTime = serv.getDepartureTime();
-            if (newTimeInMillis > System.currentTimeMillis() && newTimeInMillis > oldDepartureTime.getTime()) {
-                serv.setDepartureTime(new Timestamp(newTimeInMillis));
-            }
-        }
         s.merge(serv);
         return serv;
     }
@@ -196,5 +173,11 @@ public class TourRepositoryImpl implements TourRepository {
             System.out.println("Xảy ra lỗi khi chạy Auto Update TourServices: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public void delete(TourServices serv) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.remove(serv);
     }
 }

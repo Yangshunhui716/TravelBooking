@@ -49,6 +49,7 @@ const TourService = () => {
             );
 
             if (res.data.length === 0) {
+                setTours([]);
                 setPage(0); 
                 return;
             }
@@ -125,7 +126,7 @@ const TourService = () => {
             <div className="flex-grow-1 mb-5">
                 <div className="mb-3"></div>
                 <ServiceList
-                    title="Danh sách Tour"
+                    title="Danh sách Tour du lịch"
                     items={tours}
                     sortCategory="slot"
                     currentSort={searchParams.get("sort") || ""}

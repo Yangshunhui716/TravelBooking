@@ -18,6 +18,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "bookings_service_detail")
@@ -29,6 +30,7 @@ import java.util.Date;
     @NamedQuery(name = "BookingsServiceDetail.findByQuantity", query = "SELECT b FROM BookingsServiceDetail b WHERE b.quantity = :quantity"),
     @NamedQuery(name = "BookingsServiceDetail.findByServiceStartDate", query = "SELECT b FROM BookingsServiceDetail b WHERE b.serviceStartDate = :serviceStartDate"),
     @NamedQuery(name = "BookingsServiceDetail.findByServiceDuration", query = "SELECT b FROM BookingsServiceDetail b WHERE b.serviceDuration = :serviceDuration")})
+@BatchSize(size=20)
 public class BookingsServiceDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;

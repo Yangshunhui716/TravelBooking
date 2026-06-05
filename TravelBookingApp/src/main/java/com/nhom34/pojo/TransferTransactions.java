@@ -17,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "transfer_transactions")
@@ -28,6 +29,7 @@ import java.util.Date;
     @NamedQuery(name = "TransferTransactions.findByStatus", query = "SELECT t FROM TransferTransactions t WHERE t.status = :status"),
     @NamedQuery(name = "TransferTransactions.findByCreatedAt", query = "SELECT t FROM TransferTransactions t WHERE t.createdAt = :createdAt"),
     @NamedQuery(name = "TransferTransactions.findByUpdatedAt", query = "SELECT t FROM TransferTransactions t WHERE t.updatedAt = :updatedAt")})
+@BatchSize(size=20)
 public class TransferTransactions implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -9,11 +9,12 @@ import java.util.List;
 public interface BookingService {
     Bookings addBooking(RequestOrder requestPayload, Customers customer);
     Bookings getBookingById(Long id);
-    void changePaymentStatus(Long id, String paymentStatus);
-    void changeBookingStatus(Long id, String bookingStatus);
-    void bookingPaySuccess(String transactionCode, Long id);
-    void changeBookingPayMethod(Long id, String payMethod);
+    void changePaymentStatus(Bookings booking, String paymentStatus);
+    void changeBookingStatus(Bookings booking, String bookingStatus);
+    void bookingPaySuccess(String transactionCode, Bookings booking);
+    void changeBookingPayMethod(Bookings booking, String payMethod);
     List<Bookings> getBookingsByCustomerId(Long customerId);
     List<Object[]> getCustomerByServiceId(Long serviceId);
     boolean checkCustomerPaidService(Long customerId, Long serviceId);
+    List<Bookings> getBookingsByServiceId(Long serviceId);
 }
