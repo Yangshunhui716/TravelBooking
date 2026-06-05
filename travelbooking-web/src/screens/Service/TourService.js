@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"; 
+import { useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import DynamicFilter from "../../components/DynamicFilter";
@@ -23,7 +23,7 @@ const TourService = () => {
         return new Date(timestamp).toLocaleDateString("vi-VN");
     };
 
-    const loadTours = useCallback( async () => {
+    const loadTours = async () => {
         try {
             setLoading(true);
             let params = { page: page };
@@ -49,7 +49,7 @@ const TourService = () => {
             );
 
             if (res.data.length === 0) {
-                setTours([]);
+                alert("Không tìm thấy thêm dịch vụ phù hợp với yêu cầu!")
                 setPage(0); 
                 return;
             }
@@ -79,11 +79,13 @@ const TourService = () => {
         } finally {
             setLoading(false);
         }
-    },[searchParams, page, navigate]);
+    };
 
     useEffect(() => {
-        loadTours();
-    }, [loadTours]); 
+        if(page>0){
+            loadTours();
+        }
+    },[searchParams, page]); 
 
     const handleLoadMore = () => {
         if (page > 0 && !loading) {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"; 
+import { useEffect, useState } from "react"; 
 import { useNavigate, useSearchParams } from "react-router-dom"; 
 
 import DynamicFilter from "../../components/DynamicFilter";
@@ -18,7 +18,7 @@ const HotelRoomService = () => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
 
-    const loadRooms = useCallback(async () => {
+    const loadRooms = async () => {
         try {
             setLoading(true);
             let params = { page: page };
@@ -46,7 +46,7 @@ const HotelRoomService = () => {
             );
 
             if (res.data.length === 0) {
-                setRooms([]);
+                alert("Không tìm thấy thêm dịch vụ phù hợp với yêu cầu!")
                 setPage(0);
                 return;
             }
@@ -93,11 +93,13 @@ const HotelRoomService = () => {
         } finally {
             setLoading(false);
         }
-    }, [searchParams, page, navigate]);
+    };
 
     useEffect(() => {
-        loadRooms();
-    }, [loadRooms]);
+        if(page>0){
+            loadRooms();
+        }
+    }, [searchParams, page]);
 
     const handleLoadMore = () => {
         if (page > 0 && !loading) {
