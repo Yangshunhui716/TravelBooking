@@ -36,7 +36,7 @@ public class ProviderRepositoryImpl implements ProviderRepository{
     @Override
     public List<Providers> getProv() {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM Providers", Providers.class);
+        Query q = s.createQuery("FROM Providers p ORDER BY p.id DESC",Providers.class);
         return q.getResultList();
     }  
 

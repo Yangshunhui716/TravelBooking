@@ -8,7 +8,6 @@ public interface BookingRepository {
     Bookings addBooking(Bookings booking);
     void addBookingDetails(List<BookingsServiceDetail> bookingDetail, Bookings booking);
     Bookings getBookingById(Long id);
-    List<BookingsServiceDetail> getBookingDetailByBookingId(Long id);
     void updateBooking(Bookings booking);
     List<Bookings> getBookingsByCustomerId(Long customerId);
     List<Object[]> getCustomerByServiceId(Long serviceId);

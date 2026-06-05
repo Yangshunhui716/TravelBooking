@@ -64,18 +64,7 @@ public class BookingRepositoryImpl implements BookingRepository{
             s.persist(b);
         } 
     }
-
-    @Override
-    public List<BookingsServiceDetail> getBookingDetailByBookingId(Long id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        CriteriaBuilder builder = s.getCriteriaBuilder();
-        CriteriaQuery<BookingsServiceDetail> query = builder.createQuery(BookingsServiceDetail.class);
-        Root rBD = query.from(BookingsServiceDetail.class);
-        query.where(builder.equal(rBD.get("bookingId").get("id"), id));
-        Query q = s.createQuery(query);
-        return q.getResultList();
-    }
-    
+  
     @Override
     public void updateBooking(Bookings b) {
         Session s = this.factory.getObject().getCurrentSession();
