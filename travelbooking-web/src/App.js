@@ -10,7 +10,7 @@ import Register from "./screens/User/Register";
 import TransportService from "./screens/Service/TransportService";
 import HotelRoomService from "./screens/Service/HotelRoomService";
 import TourService from "./screens/Service/TourService";
-import { MyCartContext, MyUserContext, MyCompareContext } from "./configs/Context";
+import { MyCartContext, MyUserContext, MyCompareContext, MyMessageContext } from "./configs/Context";
 import MyUserReducer from "./reducers/MyUserReducer";
 import MyCompareReducer from "./reducers/MyCompareReducer";
 import Profile from "./screens/User/Profile";
@@ -27,75 +27,121 @@ import Statistic from "./screens/Statistic/Statistic";
 import Conversations from "./screens/Conversation/Conversations";
 import PaymentResult from "./screens/Payment/AnnouncementResult";
 import CompareService from "./screens/CompareService/CompareService";
+import MyMessageReducer from "./reducers/MyMessageReducer";
+import { onValue, ref } from "firebase/database";
+import { authApis, endpoints } from "./configs/Api";
+import { db } from "./configs/FirebaseConfig";
 
 const App = () => {
     const [user, dispatch] = useReducer(MyUserReducer, cookies.load("user") || null);
+    
     const [cart, cartDispatch] = useReducer(MyCartReducer, { totalQuantity: 0 , "totalAmount": 0 });
-    const savedCompareList = cookies.load("compare_list");
-    const initialCompareState = {
-        services: savedCompareList ? (typeof savedCompareList === 'string' ? JSON.parse(savedCompareList) : savedCompareList) : []
-    };
-    const [compareList, compareDispatch] = useReducer(MyCompareReducer, initialCompareState);
     useEffect(() => {
         cartDispatch({ type: "UPDATE" });
-
     },[])
+    
+    const savedCompareList = cookies.load("compare_list");
+    const initialCompareState = {
+        services: savedCompareList ? savedCompareList : []
+    };
+    const [compareList, compareDispatch] = useReducer(MyCompareReducer, initialCompareState);
+    
+    const [unreadCount, unreadDispatch] = useReducer(MyMessageReducer, 0);
+    const fetchUnreadCount = async () => {
+        if (!user) return;
+        try {
+            const res = await authApis().get(endpoints['conversation']);
+            const convData = res.data;
+            let totalUnread = 0;
+            const isCustomer = user?.users?.role === 'ROLE_CUSTOMER';
+            convData.forEach(conv => {
+                totalUnread += isCustomer ? (conv.customerUnread || 0) : (conv.providerUnread || 0);
+            });
+            unreadDispatch({
+                type: "SET_UNREAD_COUNT",
+                payload: totalUnread
+            });
+        } catch (e) {
+            console.error("Lỗi lấy tổng tin nhắn chưa đọc:", e);
+        }
+    };
+    useEffect(() => {
+        fetchUnreadCount();
+    }, [user]);
+    useEffect(() => {
+        if (!user) return;
+        const userId = user?.users.id;
+        const pingRef = ref(db, `chat_updates/${userId}`);
+        const unsub = onValue(pingRef, (snap) => {
+            const lastUpdate = snap.val();
+            if (lastUpdate) {
+                setTimeout(() => {
+                    fetchUnreadCount();
+                }, 400);
+            }
+        });
+        return () => unsub();
+    }, [user]);
+
+
     return (
         <MyUserContext.Provider value={[user, dispatch]}>
             <MyCartContext.Provider value={[cart, cartDispatch]}>
-                <MyCompareContext.Provider value={[compareList, compareDispatch]}>
-                    <BrowserRouter>
+                <MyMessageContext.Provider value={[unreadCount, unreadDispatch]}>
+                    <MyCompareContext.Provider value={[compareList, compareDispatch]}>
+                        <BrowserRouter>
 
-                        <Header />
+                            <Header />
 
-                            <Routes>
-                                
-                                <Route path="*" element={<Home />} />
-                                <Route path="/tour-services" element={<TourService/>} />
-                                <Route path="/hotel-room-services" element={<HotelRoomService/>} />
-                                <Route path="/transport-services" element={<TransportService/>} />
-                                <Route path="/tour-services/:serviceId" element={<TourServiceDetail />} />
-                                <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
-                                <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
-                                <Route path="/cart" element={<Cart />} />
-                                <Route path="/compare" element={<CompareService />} />
-                                <Route path="/providers/:providerId" element={<ProviderProfile />} /> {/* Thường profile nhà cung cấp ai cũng xem được */}
+                                <Routes>
+                                    
+                                    <Route path="*" element={<Home />} />
+                                    <Route path="/tour-services" element={<TourService/>} />
+                                    <Route path="/hotel-room-services" element={<HotelRoomService/>} />
+                                    <Route path="/transport-services" element={<TransportService/>} />
+                                    <Route path="/tour-services/:serviceId" element={<TourServiceDetail />} />
+                                    <Route path="/transport-services/:serviceId" element={<TransportServiceDetail />} />
+                                    <Route path="/hotel-room-services/:serviceId" element={<HotelRoomServiceDetail />} />
+                                    <Route path="/cart" element={<Cart />} />
+                                    <Route path="/compare" element={<CompareService />} />
+                                    <Route path="/providers/:providerId" element={<ProviderProfile />} /> {/* Thường profile nhà cung cấp ai cũng xem được */}
 
-                                {!user && (
-                                    <>
-                                        <Route path="/login" element={<Login />} />
-                                        <Route path="/register" element={<Register />} />
-                                    </>
-                                )}
+                                    {!user && (
+                                        <>
+                                            <Route path="/login" element={<Login />} />
+                                            <Route path="/register" element={<Register />} />
+                                        </>
+                                    )}
 
-                                {user && (
-                                    <>
-                                        <Route path="/profile" element={<Profile />} />
-                                        <Route path="/conversations" element={<Conversations />} />
-                                    </>
-                                )}
+                                    {user && (
+                                        <>
+                                            <Route path="/profile" element={<Profile />} />
+                                            <Route path="/conversations" element={<Conversations />} />
+                                        </>
+                                    )}
 
-                                {user && user.users.role==="ROLE_CUSTOMER" && (
-                                    <>
-                                        <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
-                                        <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
-                                    </>
-                                )}
+                                    {user && user.users.role==="ROLE_CUSTOMER" && (
+                                        <>
+                                            <Route path="/customer/bookings/:bookingId" element={<BookingDetail />} />
+                                            <Route path="/pay-result/:method/:status" element={<PaymentResult />} />
+                                        </>
+                                    )}
 
-                                {user && user.users.role==="ROLE_PROVIDER" && (
-                                    <>
-                                        {user.users.isActive && <Route path="/modifier-service" element={<ModifierService />} />}
-                                        <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
-                                        <Route path="/statistic" element={<Statistic />} />
-                                    </>
-                                )}
+                                    {user && user.users.role==="ROLE_PROVIDER" && (
+                                        <>
+                                            {user.users.isActive && <Route path="/modifier-service" element={<ModifierService />} />}
+                                            <Route path="/provider/services/:idservice/customers" element={<ListCustomer />} />
+                                            <Route path="/statistic" element={<Statistic />} />
+                                        </>
+                                    )}
 
-                            </Routes>
+                                </Routes>
 
-                        <Footer />
+                            <Footer />
 
-                    </BrowserRouter>        
-                </MyCompareContext.Provider>
+                        </BrowserRouter>        
+                    </MyCompareContext.Provider>
+                </MyMessageContext.Provider>
             </MyCartContext.Provider>
         </MyUserContext.Provider>
     );

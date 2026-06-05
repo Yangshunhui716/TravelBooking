@@ -1,16 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { Card, Badge, Image, Form, Button, Container, Row, Col } from "react-bootstrap";
-import { ref, onValue, push } from "firebase/database";
+import { ref, onValue, push, set } from "firebase/database";
 import { db, auth } from "../../configs/FirebaseConfig";
 import { authApis, endpoints } from "../../configs/Api";
-import { MyUserContext } from "../../configs/Context";
+import { MyMessageContext, MyUserContext } from "../../configs/Context";
 import MySpinner from "../../components/MySpinner";
 import { useLocation } from "react-router-dom";
 
 const Conversations = () => {
     const [conversations, setConversations] = useState([]);
     const [user] = useContext(MyUserContext);
-
+    const [unreadCount]= useContext(MyMessageContext);
     const location = useLocation();
     const { conversationId=null } = location.state || {};
     const [activeConversationId, setActiveConversationId] = useState(conversationId);
@@ -30,7 +30,7 @@ const Conversations = () => {
 
     useEffect(() => {
         loadConversations();
-    }, []);
+    }, [unreadCount]);
 
 
     useEffect(() => {
@@ -66,14 +66,14 @@ const Conversations = () => {
             try {
                 await authApis().patch(endpoints["conversation-detail"](activeConversationId), {});
                 loadConversations();
+                await set(ref(db, `chat_updates/${user.users.id}`), Date.now());
             } catch (error) {
                 console.error("Lỗi khi bắn API báo Seen:", error);
             }
-        }, 1500);
+        }, 500);
 
         return () => clearTimeout(seen);
     }, [messages.length, activeConversationId]);
-
 
     const sendMessage = async (e) => {
         e?.preventDefault();
@@ -87,6 +87,11 @@ const Conversations = () => {
                 text: tmpText,
                 created_at: Date.now(),
             });
+            const parts = activeConversationId.split('_');
+            const receiverId = parts[1] === auth.currentUser.uid ? parts[2] : parts[1];
+            if (receiverId) {
+                await set(ref(db, `chat_updates/${receiverId}`), Date.now());
+            }
             await authApis().patch(endpoints["conversation-detail"](activeConversationId), {
                 "message": tmpText,
             });
