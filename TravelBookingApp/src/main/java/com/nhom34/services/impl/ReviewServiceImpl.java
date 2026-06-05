@@ -35,7 +35,8 @@ public class ReviewServiceImpl implements ReviewService {
             if (hotel != null) {
                 Double avgRating = reviewRepo.getAverageRatingByServiceId(serviceId);
                 double roundedRate = Math.round(avgRating * 10.0) / 10.0;
-                hotelService.updateHotelRate(serviceId, roundedRate);
+                hotel.setRate(roundedRate);
+                hotelService.updateHotelRate(hotel);
             }
         }
 

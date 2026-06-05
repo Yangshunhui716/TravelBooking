@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "customers")
@@ -21,6 +22,7 @@ import java.io.Serializable;
     @NamedQuery(name = "Customers.findById", query = "SELECT c FROM Customers c WHERE c.id = :id"),
     @NamedQuery(name = "Customers.findByFullname", query = "SELECT c FROM Customers c WHERE c.fullname = :fullname"),
     @NamedQuery(name = "Customers.findByGender", query = "SELECT c FROM Customers c WHERE c.gender = :gender")})
+@BatchSize(size=20)
 public class Customers implements Serializable {
 
     private static final long serialVersionUID = 1L;

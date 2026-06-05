@@ -1,6 +1,5 @@
 const ProviderProfileStyle = {
     profile:{
-        width: '28rem',
         position: "sticky",
         top: 90,
         height: "fit-content",

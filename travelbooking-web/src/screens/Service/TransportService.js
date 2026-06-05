@@ -63,6 +63,7 @@ const TransportService = () => {
             );
 
             if (res.data.length === 0) {
+                setTransports([]);
                 setPage(0);
                 return;
             }

@@ -20,9 +20,7 @@ public class TransferTransactionServiceImpl implements TransferTransactionServic
     private BookingService bookingService;
 
     @Override
-    public void addTransferTransaction(String transactionCode, String status, Long id) {
-        Bookings b = this.bookingService.getBookingById(id);
-        
+    public void addTransferTransaction(String transactionCode, String status, Bookings b) {
         TransferTransactions tt = new TransferTransactions();
         tt.setAmount(b.getTotalAmount());
         tt.setStatus(status);

@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "hotel_room_services")
@@ -21,6 +22,7 @@ import java.io.Serializable;
     @NamedQuery(name = "HotelRoomServices.findByHotelName", query = "SELECT h FROM HotelRoomServices h WHERE h.hotelName = :hotelName"),
     @NamedQuery(name = "HotelRoomServices.findByAddress", query = "SELECT h FROM HotelRoomServices h WHERE h.address = :address"),
     @NamedQuery(name = "HotelRoomServices.findByRate", query = "SELECT h FROM HotelRoomServices h WHERE h.rate = :rate")})
+@BatchSize(size=20)
 public class HotelRoomServices implements Serializable {
 
     private static final long serialVersionUID = 1L;

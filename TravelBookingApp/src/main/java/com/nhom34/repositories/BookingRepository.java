@@ -9,10 +9,9 @@ public interface BookingRepository {
     void addBookingDetails(List<BookingsServiceDetail> bookingDetail, Bookings booking);
     Bookings getBookingById(Long id);
     List<BookingsServiceDetail> getBookingDetailByBookingId(Long id);
-    void changePaymentStatus(Long id, String paymentStatus);
-    void changeBookingStatus(Long id, String bookingStatus);
-    void changeBookingPayMethod(Long id, String payMethod);
+    void updateBooking(Bookings booking);
     List<Bookings> getBookingsByCustomerId(Long customerId);
     List<Object[]> getCustomerByServiceId(Long serviceId);
     boolean checkCustomerPaidService(Long customerId, Long serviceId);
+    List<Bookings> getBookingsByServiceId(Long serviceId);
 }

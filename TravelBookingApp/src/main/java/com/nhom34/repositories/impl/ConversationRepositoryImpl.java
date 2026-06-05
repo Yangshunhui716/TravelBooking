@@ -22,22 +22,8 @@ public class ConversationRepositoryImpl implements ConversationRepository{
     private LocalSessionFactoryBean factory;
 
     @Override
-    public void setUnreadForProvider(Conversation conversation, int amount) {
+    public void updateConversation(Conversation conversation) {
         Session s = this.factory.getObject().getCurrentSession();
-        conversation.setProviderUnread(amount);
-        s.merge(conversation);
-    }
-
-    @Override
-    public void setUnreadForCustomer(Conversation conversation, int amount) {
-        Session s = this.factory.getObject().getCurrentSession();
-        conversation.setCustomerUnread(amount);
-        s.merge(conversation);    }
-
-    @Override
-    public void setLastMessage(Conversation conversation, String message) {
-        Session s = this.factory.getObject().getCurrentSession();
-        conversation.setLastMessage(message);
         conversation.setUpdatedAt(new Date());
         s.merge(conversation);
     }

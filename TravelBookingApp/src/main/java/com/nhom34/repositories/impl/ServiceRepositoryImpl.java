@@ -32,44 +32,15 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
-    public void updateStatus(Long id, boolean status) {
+    public void deleteService(Services service) {
         Session s = this.factory.getObject().getCurrentSession();
-        Services service = this.getServiceById(id);
-        if (service.getStatus()!=status){
-            service.setStatus(status);
-        }
-        s.merge(service);
-    }
-
-    @Override
-    public boolean checkOwner(Long provId, Long id) {
-        Services service = this.getServiceById(id);
-        return service.getProviderId().getId().equals(provId);
-    }
-
-    @Override
-    public void deleteService(Long id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        Services service = this.getServiceById(id);
-        
         s.remove(service);
-    }
-    
-    @Override
-    public void updateImg(String img, Long id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        Services service;
-        if (img!=null){
-            service = this.getServiceById(id);
-            service.setImgUrl(img);
-            service.setUpdatedAt(new Date());
-            s.merge(service);
-        }
     }
 
     @Override
     public void updateService(Services service) {
         Session s = this.factory.getObject().getCurrentSession();
+        service.setUpdatedAt(new Date());
         s.merge(service);  
     }
 }

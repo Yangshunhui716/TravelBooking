@@ -55,7 +55,25 @@ public class HotelServiceImpl implements HotelService{
             return this.hotelRepo.getDetailServiceById(id);
         }
         else{
-            return this.hotelRepo.updatePartial(params, id); 
+            HotelRoomServices serv = this.getDetailServiceById(id);
+            if(params.containsKey("price")){
+                serv.getServices().setPrice(Double.parseDouble(params.get("price")));
+            }
+            if(params.containsKey("slots")){
+                int preSlots = serv.getServices().getSlots();
+                int afterSlots = Integer.parseInt(params.get("slots"));
+                int addSlots = afterSlots-preSlots;
+                int availableSlots = serv.getServices().getAvailableSlots();
+                if(addSlots > 0) {
+                    serv.getServices().setSlots(afterSlots);
+                    serv.getServices().setAvailableSlots(availableSlots + addSlots);
+                }
+            }
+            if(params.containsKey("description")){
+                serv.getServices().setDescription(params.get("description"));
+            }
+            serv.getServices().setUpdatedAt(new Date());
+            return this.hotelRepo.updatePartial(serv); 
         }
     }
 
@@ -92,7 +110,15 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
-    public void updateHotelRate(Long hotelId, Double newRate) {
-        this.hotelRepo.updateHotelRate(hotelId, newRate);
+    public void updateHotelRate(HotelRoomServices h) {
+        this.hotelRepo.updatePartial(h);
+    }
+    
+    @Override
+    public void delete(Long id) {
+        HotelRoomServices h = this.getDetailServiceById(id);
+        if(h!=null){
+            this.hotelRepo.delete(h);
+        }
     }
 }

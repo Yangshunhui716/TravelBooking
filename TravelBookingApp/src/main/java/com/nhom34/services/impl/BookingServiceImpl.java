@@ -8,6 +8,7 @@ import com.nhom34.dto.OrderServices;
 import com.nhom34.repositories.BookingRepository;
 import com.nhom34.services.BookingService;
 import com.nhom34.services.ServiceService;
+import com.nhom34.services.TourService;
 import com.nhom34.services.TransferTransactionService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,8 @@ public class BookingServiceImpl implements BookingService{
     private TransferTransactionService ttService;
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private TourService tourService;
 
     @Override
     public Bookings addBooking(RequestOrder requestPayload, Customers customer) {
@@ -38,7 +41,11 @@ public class BookingServiceImpl implements BookingService{
                 detail.setServiceId(this.serviceService.getServiceById(o.getId()));
                 detail.setQuantity(o.getQuantity());
                 detail.setUnitPrice(o.getUnitPrice());
-                detail.setSubtotal(o.getUnitPrice()*o.getQuantity()*o.getServiceDuration());
+                if(this.tourService.getDetailServiceById(o.getId())!=null){
+                    detail.setSubtotal(o.getUnitPrice()*o.getQuantity());
+                }else{
+                    detail.setSubtotal(o.getUnitPrice()*o.getQuantity()*o.getServiceDuration());
+                }
                 detail.setServiceStartDate(o.getServiceStartDate());
                 detail.setServiceDuration(o.getServiceDuration());
                 total += detail.getSubtotal();
@@ -76,25 +83,34 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public void changePaymentStatus(Long id, String paymentStatus) {
-        this.bookingRepo.changePaymentStatus(id, paymentStatus);
+    public void changePaymentStatus(Bookings b, String paymentStatus) {
+        if (!b.getPaymentStatus().equals(paymentStatus)){
+            b.setPaymentStatus(paymentStatus);
+            this.bookingRepo.updateBooking(b);
+        }
     }
 
     @Override
-    public void changeBookingStatus(Long id, String bookingStatus) {
-        this.bookingRepo.changeBookingStatus(id, bookingStatus);
+    public void changeBookingStatus(Bookings b, String bookingStatus) {
+        if (!b.getBookingStatus().equals(bookingStatus)){
+            b.setBookingStatus(bookingStatus);
+            this.bookingRepo.updateBooking(b);
+        }
     }
     
     @Override
-    public void changeBookingPayMethod(Long id, String payMethod) {
-        this.bookingRepo.changeBookingPayMethod(id, payMethod);
+    public void changeBookingPayMethod(Bookings b, String payMethod) {
+        if (!b.getPaymentMethod().equals(payMethod)){
+            b.setPaymentMethod(payMethod);
+            this.bookingRepo.updateBooking(b);
+        }
     }
 
     @Override
-    public void bookingPaySuccess(String transactionCode, Long id) {
-        this.ttService.addTransferTransaction(transactionCode, "SUCCESS", id);
-        this.bookingRepo.changePaymentStatus(id, "PAID");
-        this.bookingRepo.changeBookingStatus(id, "CONFIRM");
+    public void bookingPaySuccess(String transactionCode, Bookings b) {
+        this.ttService.addTransferTransaction(transactionCode, "SUCCESS", b);
+        this.changePaymentStatus(b, "PAID");
+        this.changeBookingStatus(b, "CONFIRM");
     }
 
     @Override
@@ -105,5 +121,10 @@ public class BookingServiceImpl implements BookingService{
     @Override
     public boolean checkCustomerPaidService(Long customerId, Long serviceId) {
         return this.bookingRepo.checkCustomerPaidService(customerId, serviceId);
+    }
+
+    @Override
+    public List<Bookings> getBookingsByServiceId(Long serviceId) {
+        return this.bookingRepo.getBookingsByServiceId(serviceId);
     }
 }

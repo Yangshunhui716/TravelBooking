@@ -29,7 +29,7 @@ public class ApiUserController {
     @Autowired
     private UserService userService;
 
-    @PatchMapping("/users/{userId}")
+    @PatchMapping("admin/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
     public void updatePartial(@PathVariable(value = "userId") Long id, @RequestBody Map<String, String> params){

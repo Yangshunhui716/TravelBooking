@@ -119,8 +119,8 @@ const Statistic = () => {
                             <select className="form-select border-dark shadow-none" value={serviceType} onChange={(e) => setServiceType(e.target.value)}>
                                 <option value="all">Tất cả</option>
                                 <option value="tour">Tour</option>
-                                <option value="hotel">Phòng khách sạn</option>
-                                <option value="vehicle">Phương tiện</option>
+                                <option value="hotelRoom">Phòng khách sạn</option>
+                                <option value="transport">Phương tiện</option>
                             </select>
                         </div>
 

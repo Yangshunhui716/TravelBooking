@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -43,7 +44,7 @@ public class ApiConversationController {
     }
     
     @GetMapping("/conversations")
-    public ResponseEntity<?> getConversations(Principal principal) {
+    public ResponseEntity<List<Conversation>> getConversations(Principal principal) {
         Users u = this.userService.getUserByUsername(principal.getName());
         List<Conversation> conversations = this.conversationService.getConversationsByUser(u);
         return new ResponseEntity<>(conversations, HttpStatus.OK);
@@ -53,7 +54,6 @@ public class ApiConversationController {
     public ResponseEntity<?> createConversation(@PathVariable(value = "targetId") Long targetId, Principal principal) {
         Users currentUser = this.userService.getUserByUsername(principal.getName());
         Users targetUser = this.userService.getUserById(targetId);
-
         if(targetUser==null || currentUser.getRole().equals(targetUser.getRole())){
             return new ResponseEntity<>("Đối tượng nhắn tin không hợp lệ", HttpStatus.BAD_REQUEST);
         }
@@ -62,7 +62,8 @@ public class ApiConversationController {
     }
     
     @PatchMapping("/conversations/{conversationId}")
-    public void getConversationDetail(@PathVariable("conversationId") String conversationId, @RequestBody Map<String, String> body, Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public void updateConversationDetail(@PathVariable("conversationId") String conversationId, @RequestBody Map<String, String> body, Principal principal) {
         Users u = this.userService.getUserByUsername(principal.getName());
         if(body.isEmpty()){
             this.conversationService.setReaded(u, conversationId);

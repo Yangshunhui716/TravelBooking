@@ -49,6 +49,8 @@ public class ApiPaymentController {
         Bookings booking;
         try {
             booking = this.bookingService.addBooking(requestPayload, customer);
+        } catch (IllegalStateException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             return new ResponseEntity<>("Không thể tạo đơn", HttpStatus.BAD_REQUEST);
         }
@@ -62,34 +64,37 @@ public class ApiPaymentController {
             response.put("payUrl", payMethod.call(bookingId, totalAmount, orderInfo));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }else{
-            this.bookingService.changeBookingStatus(booking.getId(), "CONFIRM");
-            this.bookingService.changePaymentStatus(booking.getId(), "UNPAID");
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            this.bookingService.changeBookingStatus(booking, "CONFIRM");
+            this.bookingService.changePaymentStatus(booking, "UNPAID");
+            return new ResponseEntity<>("Xác nhận đơn đã đặt thành công",HttpStatus.OK);
         }
     }
     
     @PostMapping("/secure/customer/pay/{bookingId}")
-    public ResponseEntity<?> rePay(@PathVariable("bookingId") Long bookingId, @RequestBody RequestOrder requestPayload, Principal principal) {
+    public ResponseEntity<?> rePay(@PathVariable("bookingId") Long bookingId, @RequestBody Map<String,String> requestPayload, Principal principal) {
+        Customers customer = this.cusService.getCustomerByUsername(principal.getName());
         Bookings booking = this.bookingService.getBookingById(bookingId);
-
-        if(booking.getPaymentStatus().equals("PAID")){
-            return new ResponseEntity<>("Đơn đã thanh toán",HttpStatus.BAD_REQUEST);
-        }
-        
-        this.bookingService.changeBookingPayMethod(bookingId, requestPayload.getPayMethod());
-        
-        if(!"CASH".equals(requestPayload.getPayMethod())){
-            PaymentService payMethod = paymentFactory.getMethod(requestPayload.getPayMethod());
-            String id = booking.getId().toString();
-            String orderInfo = "Thanh toán đơn "+ id;
-            String totalAmount = String.format("%.0f", booking.getTotalAmount());
-            Map<String, String> response = new HashMap<>();
-            response.put("payUrl", payMethod.call(id, totalAmount, orderInfo));
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        if(booking.getCustomerId().getId().equals(customer.getId())){
+            if(booking.getPaymentStatus().equals("PAID")){
+                return new ResponseEntity<>("Đơn hàng đã thanh toán",HttpStatus.BAD_REQUEST);
+            }
+            if(!"CASH".equals(requestPayload.get("payMethod"))){
+                PaymentService payMethod = paymentFactory.getMethod(requestPayload.get("payMethod"));
+                String id = booking.getId().toString();
+                String orderInfo = "Thanh toán đơn "+ id;
+                String totalAmount = String.format("%.0f", booking.getTotalAmount());
+                Map<String, String> response = new HashMap<>();
+                response.put("payUrl", payMethod.call(id, totalAmount, orderInfo));
+                this.bookingService.changeBookingPayMethod(booking, requestPayload.get("payMethod"));
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }else{
+                this.bookingService.changeBookingStatus(booking, "CONFIRM");
+                this.bookingService.changePaymentStatus(booking, "UNPAID");
+                this.bookingService.changeBookingPayMethod(booking, requestPayload.get("payMethod"));
+                return new ResponseEntity<>("Xác nhận đơn đã đặt thành công",HttpStatus.OK);
+            }
         }else{
-            this.bookingService.changeBookingStatus(booking.getId(), "CONFIRM");
-            this.bookingService.changePaymentStatus(booking.getId(), "UNPAID");
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return new ResponseEntity<>("Đơn hàng không thuộc khách hàng yêu cầu",HttpStatus.BAD_REQUEST);
         }
     }
     
@@ -106,11 +111,11 @@ public class ApiPaymentController {
         String momoReturnOrderId = momoIpn.get("orderId").toString();
         String realOrderId = momoReturnOrderId.split("_")[0];
         Long orderId = Long.parseLong(realOrderId);
-        
+        Bookings booking = this.bookingService.getBookingById(orderId);
         if (resultCode != null && resultCode == 0) {
-            this.bookingService.bookingPaySuccess(transactionCode, orderId);
+            this.bookingService.bookingPaySuccess(transactionCode, booking);
         } else {
-            this.ttService.addTransferTransaction(transactionCode, "FAILED", orderId);
+            this.ttService.addTransferTransaction(transactionCode, "FAILED", booking);
         }
         
         return ResponseEntity.noContent().build();
@@ -122,16 +127,16 @@ public class ApiPaymentController {
         if (order == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giao dịch không hợp lệ");
         }
+        Long orderId = Long.valueOf(order.purchaseUnits().get(0).customId());
+        Bookings booking = this.bookingService.getBookingById(orderId);
         if ("COMPLETED".equals(order.status())) {    
-            Long orderId = Long.valueOf(order.purchaseUnits().get(0).customId());
             String transactionCode = "PAYPAL_" + order.purchaseUnits().get(0).payments().captures().get(0).id();
-            this.bookingService.bookingPaySuccess(transactionCode, orderId);
-            return ResponseEntity.status(HttpStatus.OK).body("Thanh toán thành công! Đã ghi nhận đơn hàng");
+            this.bookingService.bookingPaySuccess(transactionCode, booking);
+            return ResponseEntity.status(HttpStatus.OK).body("Thanh toán thành công");
         } else {
-            if (order.purchaseUnits() != null && !order.purchaseUnits().isEmpty()) {
-                Long orderId = Long.valueOf(order.purchaseUnits().get(0).customId());
+            if (order.purchaseUnits() != null && !order.purchaseUnits().isEmpty()){
                 String transactionCode = "PAYPAL_" + System.currentTimeMillis();
-                this.ttService.addTransferTransaction(transactionCode, "FAILED", orderId);
+                this.ttService.addTransferTransaction(transactionCode, "FAILED", booking);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giao dịch chưa hoàn tất hoặc thất bại");
         }

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,6 +78,9 @@ public class ApiProviderController {
         if(!provider.getUsers().getIsActive()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
         }
+        if (info.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu tạo mới");
+        }
         return new ResponseEntity<>(this.tourService.addDetailService(info, provider),HttpStatus.CREATED);
     }
     
@@ -85,6 +89,9 @@ public class ApiProviderController {
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(!provider.getUsers().getIsActive()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
+        }
+        if (info.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu tạo mới");
         }
         return new ResponseEntity<>(this.transportService.addDetailService(info, provider),HttpStatus.CREATED);
     } 
@@ -95,15 +102,15 @@ public class ApiProviderController {
         if(!provider.getUsers().getIsActive()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
         }
+        if (info.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu tạo mới");
+        }
         return new ResponseEntity<>(this.hotelRoomService.addDetailService(info, provider),HttpStatus.CREATED);
     }
     
     @PatchMapping("/tour-services/{serviceId}")
     public ResponseEntity<?> updateTourService(@PathVariable(value = "serviceId") Long servId, @RequestBody Map<String, String> params,
             Principal principal){
-        if (params==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
-        }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(!provider.getUsers().getIsActive()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
@@ -118,9 +125,6 @@ public class ApiProviderController {
     @PatchMapping("/transport-services/{serviceId}")
     public ResponseEntity<?> updateTransportService(@PathVariable(value = "serviceId") Long servId, @RequestBody Map<String, String> params,
             Principal principal){
-        if (params==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
-        }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(!provider.getUsers().getIsActive()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
@@ -135,9 +139,6 @@ public class ApiProviderController {
     @PatchMapping("/hotel-room-services/{serviceId}")
     public ResponseEntity<?> updateHotelRoomService(@PathVariable(value = "serviceId") Long servId, @RequestBody Map<String, String> params,
             Principal principal){
-        if (params==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại các giá trị và tham số yêu cầu cập nhật");
-        }
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(!provider.getUsers().getIsActive()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nhà cung cấp chưa được phê duyệt để đăng tải dịch vụ");
@@ -160,10 +161,13 @@ public class ApiProviderController {
     }
     
     @PatchMapping("/services/{serviceId}/image")
-    public void updateImage(@PathVariable(value = "serviceId") Long servId ,@RequestParam(value = "img") MultipartFile img, Principal principal){
+    public ResponseEntity<?> updateImage(@PathVariable(value = "serviceId") Long servId ,@RequestParam(value = "img") MultipartFile img, Principal principal){
         Providers provider = this.provService.getProvByUsername(principal.getName());
         if(this.servService.checkOwner(provider.getId(),servId)){
             this.servService.updateImg(img, servId);
+            return ResponseEntity.status(HttpStatus.OK).body("Đăng tải ảnh thành công");
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
         }
     }
     
@@ -184,5 +188,19 @@ public class ApiProviderController {
     public ResponseEntity<List<ProviderStatistic>> getStatistic(@PathVariable(value = "metric") String metric, @RequestParam Map<String, String> params, Principal principal){
         Providers provider = this.provService.getProvByUsername(principal.getName());
         return new ResponseEntity<>(this.statisticService.providerStatistic(params, provider, metric), HttpStatus.OK);
+    }
+    
+    @DeleteMapping("/services/{serviceId}")
+    public ResponseEntity<?> deleteService(@PathVariable(value = "serviceId") Long servId, Principal principal){
+        Providers provider = this.provService.getProvByUsername(principal.getName());
+        if(this.servService.checkOwner(provider.getId(),servId)){
+            if(this.servService.deleteService(servId)){
+                return new ResponseEntity<>("Đã xóa thành công",HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("Không thể xóa do tồn tại đơn đặt dịch vụ",HttpStatus.BAD_REQUEST);
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Dịch vụ không thuộc nhà cung cấp");
+        }
     }
 }

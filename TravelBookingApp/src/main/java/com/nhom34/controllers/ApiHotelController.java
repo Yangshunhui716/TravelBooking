@@ -23,18 +23,25 @@ public class ApiHotelController {
     private HotelService hotelService;
     
     @GetMapping("/hotel-room-services")
-    public ResponseEntity<List<HotelRoomServices>> list( @RequestParam Map<String, String> params) {
+    public ResponseEntity<List<HotelRoomServices>> list(@RequestParam Map<String, String> params) {
         return new ResponseEntity<>(this.hotelService.getDetailServices(params),HttpStatus.OK);
     }
     
     @GetMapping("/hotel-room-services/{serviceId}")
-    public ResponseEntity<HotelRoomServices> retrieve(@PathVariable(value = "serviceId") Long id) {
-        return new ResponseEntity<>((HotelRoomServices)this.hotelService.getDetailServiceById(id), HttpStatus.OK);
+    public ResponseEntity<?> retrieve(@PathVariable(value = "serviceId") Long id) {
+        HotelRoomServices h = this.hotelService.getDetailServiceById(id);
+        if(h==null){
+            return new ResponseEntity<>("Dịch vụ không tồn tại", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(h, HttpStatus.OK);
     }
     
     @GetMapping("/hotel-room-services/{serviceId}/available-slots")
-    public ResponseEntity<Integer> checkAvailableSlots(@PathVariable(value = "serviceId") Long id, @RequestParam Map<String, String> params) {
+    public ResponseEntity<?> getAvailableSlots(@PathVariable(value = "serviceId") Long id, @RequestParam Map<String, String> params) {
         int slots = this.hotelService.getAvailableSlots(id, params);
+        if(slots==-1){
+            return new ResponseEntity<>("Dịch vụ không tồn tại", HttpStatus.BAD_GATEWAY);
+        }
         return new ResponseEntity<>(slots, HttpStatus.OK);
     }
 }

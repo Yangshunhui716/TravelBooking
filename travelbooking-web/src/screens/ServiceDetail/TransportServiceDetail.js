@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DisplayImage from "../../components/DisplayImage";
 import MySpinner from "../../components/MySpinner";
 import Api, { authApis, endpoints } from "../../configs/Api";
-import { MyUserContext, MyCartContext } from "../../configs/Context";
+import { MyUserContext, MyCartContext, MyCompareContext } from "../../configs/Context";
 import ServiceDetailStyle from "./ServiceDetailStyle";
 import StaticStyle from "../StaticStyle";
 import ReviewSection from "../../components/ReviewSection";
@@ -147,6 +147,25 @@ const TransportServiceDetail = () => {
         }
     };
 
+    const [, compareDispatch] = useContext(MyCompareContext);
+
+    const handleAddCompare = () => {
+        if (!transportService || !transportService.services) return; 
+        const servicePayload = {
+            id: transportService.id,
+            name: transportService.services.name,
+            description: [
+                `Loại phương tiện: ${transportService.transportType}`,
+                `Địa điểm: ${transportService.departure} > ${transportService.services.destination}`,
+                `Thời gian khởi hành: ${formatDateTime(transportService.departureTime)}`
+            ].join("<br/>"), 
+            price: transportService.services.price,
+            image: transportService.services.imgUrl,
+            typeService: "transport-services"
+        };
+        compareDispatch({ type: 'ADD_SERVICE', payload: servicePayload });
+    };
+
     if (loading) {
         return (
             <div className="d-flex justify-content-center my-5" style={StaticStyle.baseHeight}>
@@ -159,10 +178,16 @@ const TransportServiceDetail = () => {
         <div style={StaticStyle.baseHeight}>
             {transportService && (
                 <>
-                    <div style={ServiceDetailStyle.titleBox} className=" m-4">
-                        <h2 className="m-0 text-dark font-weight-bold">
+                    <div style={ServiceDetailStyle.titleBox} className=" m-4 d-flex justify-content-between align-items-center">
+                        <h2 className="text-dark font-weight-bold">
                             {transportService.services?.name}
                         </h2>
+                        <Button variant="outline-secondary"
+                            className="rounded-pill"
+                            onClick={handleAddCompare}
+                        >
+                            + So sánh
+                        </Button>
                     </div>
 
                     <Row className="m-3 d-flex justify-content-center">
@@ -196,12 +221,13 @@ const TransportServiceDetail = () => {
                                     >
                                         Xem chi tiết
                                     </Button>
+                                    {user?.users.role === "ROLE_CUSTOMER" &&
                                     <Button variant="success" size="sm" 
                                         className="font-weight-bold"
                                         onClick={handleChatProvider}
                                     >
                                         Chat ngay
-                                    </Button>
+                                    </Button>}
                                 </div>
                             </div>
                         </Col>
@@ -239,16 +265,15 @@ const TransportServiceDetail = () => {
                                     <Row>
                                         <Col sm={6} xs={12}>
                                             <ul className="list-unstyled ps-1">
-                                                <li className="mb-2">
+                                                <li className="mb-3">
                                                     <strong>Loại phương tiện: </strong> 
                                                     <span className="text-secondary">{transportService.transportType}</span>
                                                 </li>
-                                                <li className="mb-2">
+                                                <li className="mb-3">
                                                     <strong>Địa điểm: </strong> 
                                                     <span className="text-secondary">
-                                                        {transportService.departure} &rarr; {transportService.services?.destination}
+                                                        {transportService.loactionDetail} ({transportService.departure} &rarr; {transportService.services?.destination})
                                                     </span>
-                                                    <div className="text-muted small ps-2">({transportService.loactionDetail})</div>
                                                 </li>
                                                 <li className="mb-2">
                                                     <strong>Thời gian khởi hành: </strong> 
@@ -260,8 +285,8 @@ const TransportServiceDetail = () => {
                                         </Col>
 
                                         <Col sm={6} xs={12}>
-                                            <ul className="list-unstyled ps-1">
-                                                <li className="mb-2">
+                                            <ul className="list-unstyled mb-2">
+                                                <li>
                                                     <strong>Loại vé: </strong> 
                                                     <span className="text-secondary">{transportService.ticketType}</span>
                                                 </li>

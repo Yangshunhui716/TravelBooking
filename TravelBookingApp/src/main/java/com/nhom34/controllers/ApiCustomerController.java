@@ -34,8 +34,7 @@ public class ApiCustomerController {
     
     @GetMapping("/profile")
     public ResponseEntity<Customers> getProfile(Principal principal) {
-        Users user = this.userService.getUserByUsername(principal.getName());
-        Customers customer = this.customerService.getCustomerByUserId(user.getId());
+        Customers customer = this.customerService.getCustomerByUsername(principal.getName());
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
     
@@ -49,7 +48,7 @@ public class ApiCustomerController {
     @GetMapping("/bookings")
     public ResponseEntity<List<Bookings>> listBookings( Principal principal) {
         Users user = this.userService.getUserByUsername(principal.getName());
-        return new ResponseEntity<>(  this.bookingService.getBookingsByCustomerId(user.getId()),HttpStatus.OK);
+        return new ResponseEntity<>(this.bookingService.getBookingsByCustomerId(user.getId()),HttpStatus.OK);
     }
 
     @GetMapping("/bookings/{bookingId}")

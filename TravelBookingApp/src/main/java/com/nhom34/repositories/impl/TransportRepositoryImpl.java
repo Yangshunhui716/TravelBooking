@@ -52,6 +52,8 @@ public class TransportRepositoryImpl implements TransportRepository{
         predicates.add(b.greaterThan(services.get("availableSlots"), 0));
 
         List<Order> orders = new ArrayList<>();
+        orders.add(b.desc(services.get("createdAt")));
+        
         if (params != null) {
             String destination = params.get("destination");
             if (destination != null && !destination.isEmpty()) {
@@ -117,7 +119,7 @@ public class TransportRepositoryImpl implements TransportRepository{
         
         if (params != null) {
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
-            
+            if(page<=0) page=1;
             int pageSize = this.env.getProperty("service.pageSize", Integer.class);
             
             int start = (page - 1) * pageSize;
@@ -144,29 +146,8 @@ public class TransportRepositoryImpl implements TransportRepository{
     }
 
     @Override
-    public TransportServices updatePartial(Map<String, String> params, Long id) {
+    public TransportServices updatePartial(TransportServices serv) {
         Session s = this.factory.getObject().getCurrentSession();
-        TransportServices serv = this.getDetailServiceById(id);
-        
-        if(params.containsKey("price")){
-            serv.getServices().setPrice(Double.parseDouble(params.get("price")));
-        }
-        if(params.containsKey("slots")){
-            int preSlots = serv.getServices().getSlots();
-            int afterSlots = Integer.parseInt(params.get("slots"));
-            int addSlots = afterSlots-preSlots;
-            int availableSlots = serv.getServices().getAvailableSlots();
-            if(addSlots>0)
-                serv.getServices().setSlots(afterSlots);
-                serv.getServices().setAvailableSlots(availableSlots+addSlots);
-        }
-        if(params.containsKey("description")){
-            serv.getServices().setDescription(params.get("description"));
-        }
-        if(params.containsKey("locationDetail")){
-            serv.setLoactionDetail(params.get("locationDetail"));
-        }
-        
         s.merge(serv);
         return serv;
     }
@@ -203,5 +184,11 @@ public class TransportRepositoryImpl implements TransportRepository{
             System.out.println("Xảy ra lỗi khi chạy Auto Update TourServices: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public void delete(TransportServices serv) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.remove(serv);
     }
 }

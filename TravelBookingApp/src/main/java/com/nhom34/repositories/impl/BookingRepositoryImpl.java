@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,35 +75,12 @@ public class BookingRepositoryImpl implements BookingRepository{
         Query q = s.createQuery(query);
         return q.getResultList();
     }
-
-    @Override
-    public void changePaymentStatus(Long id, String paymentStatus) {
-        Session s = this.factory.getObject().getCurrentSession();
-        Bookings b = this.getBookingById(id);
-        if (!b.getPaymentStatus().equals(paymentStatus)){
-            b.setPaymentStatus(paymentStatus);
-            s.merge(b);
-        }
-    }
     
     @Override
-    public void changeBookingStatus(Long id, String bookingStatus) {
+    public void updateBooking(Bookings b) {
         Session s = this.factory.getObject().getCurrentSession();
-        Bookings b = this.getBookingById(id);
-        if (!b.getBookingStatus().equals(bookingStatus)){
-            b.setBookingStatus(bookingStatus);
-            s.merge(b);
-        }
-    }
-    
-    @Override
-    public void changeBookingPayMethod(Long id, String payMethod){
-        Session s = this.factory.getObject().getCurrentSession();
-        Bookings b = this.getBookingById(id);
-        if (!b.getPaymentMethod().equals(payMethod)){
-            b.setPaymentMethod(payMethod);
-            s.merge(b);
-        }
+        b.setUpdatedAt(new Date());
+        s.merge(b);
     }
 
     @Override
@@ -145,5 +123,17 @@ public class BookingRepositoryImpl implements BookingRepository{
         Long count = (Long) q.getSingleResult();
         
         return count > 0;
+    }
+
+    @Override
+    public List<Bookings> getBookingsByServiceId(Long serviceId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createQuery(
+            "SELECT DISTINCT b FROM Bookings b " +
+            "JOIN FETCH b.bookingsServiceDetailCollection d " +
+            "WHERE d.serviceId.id = :serviceId ",
+            Bookings.class);
+        q.setParameter("serviceId", serviceId);
+        return q.getResultList();
     }
 }

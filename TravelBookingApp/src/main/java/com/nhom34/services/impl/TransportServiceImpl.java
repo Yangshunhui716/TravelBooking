@@ -7,6 +7,7 @@ import com.nhom34.repositories.TransportRepository;
 import com.nhom34.services.ServiceService;
 import com.nhom34.services.TransportService;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,28 @@ public class TransportServiceImpl implements TransportService{
             return this.transportRepo.getDetailServiceById(id);
         }
         else{
-            return this.transportRepo.updatePartial(params, id);
+            TransportServices serv = this.getDetailServiceById(id);
+            if(params.containsKey("price")){
+                serv.getServices().setPrice(Double.parseDouble(params.get("price")));
+            }
+            if(params.containsKey("slots")){
+                int preSlots = serv.getServices().getSlots();
+                int afterSlots = Integer.parseInt(params.get("slots"));
+                int addSlots = afterSlots-preSlots;
+                int availableSlots = serv.getServices().getAvailableSlots();
+                if(addSlots>0){
+                    serv.getServices().setSlots(afterSlots);
+                    serv.getServices().setAvailableSlots(availableSlots+addSlots);
+                }
+            }
+            if(params.containsKey("description")){
+                serv.getServices().setDescription(params.get("description"));
+            }
+            if(params.containsKey("locationDetail")){
+                serv.setLoactionDetail(params.get("locationDetail"));
+            }
+            serv.getServices().setUpdatedAt(new Date());
+            return this.transportRepo.updatePartial(serv);
         }
     }
 
@@ -67,5 +89,13 @@ public class TransportServiceImpl implements TransportService{
     @Scheduled(cron = "0 0/10 * * * ?")
     public void autoUpdateStatusByCheckDate() {
         this.transportRepo.autoUpdateStatusByCheckDate();
+    }
+    
+    @Override
+    public void delete(Long id) {
+        TransportServices t = this.getDetailServiceById(id);
+        if(t!=null){
+            this.transportRepo.delete(t);
+        }
     }
 }

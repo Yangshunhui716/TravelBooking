@@ -46,23 +46,42 @@ const HotelRoomService = () => {
             );
 
             if (res.data.length === 0) {
+                setRooms([]);
                 setPage(0);
                 return;
             }
 
-            const mappedRooms = res.data.map((room) => ({
-                id: room.id,
-                title: room.services?.name, 
-                badge: room.rate,
-                image: room.services?.imgUrl,
-                price: formatPrice(room.services?.price),
-                details: [
-                    `Khách sạn: ${room.hotelName}`,
-                    `Địa chỉ: ${room.address}`,
-                ],
-                typeService: "hotel-room-services",
-                onView: () => navigate(`/hotel-room-services/${room.id}`)
-            }));
+            const mappedRooms = await Promise.all(
+                res.data.map(async (room) => {
+                    let availableSlots = "Đang cập nhật số lượng";
+                    try {
+                        const slotRes = await Apis.get(`${endpoints['hotel-room-service-detail'](room.id)}/available-slots`, {
+                            params: {
+                                startDate: checkInDate,
+                                endDate: checkOutDate
+                            }
+                        });
+                        availableSlots = slotRes.data;
+                    } catch (error) {
+                        console.error(`Lỗi lấy slot phòng ${room.id}:`, error);
+                    }
+
+                    return {
+                        id: room.id,
+                        title: room.services?.name, 
+                        badge: room.rate,
+                        image: room.services?.imgUrl,
+                        price: formatPrice(room.services?.price),
+                        details: [
+                            `Khách sạn: ${room.hotelName}`,
+                            `Địa chỉ: ${room.address}`,
+                            `Số phòng hiện có: ${availableSlots} phòng`
+                        ],
+                        typeService: "hotel-room-services",
+                        onView: () => navigate(`/hotel-room-services/${room.id}`)
+                    };
+                })
+            );
 
             if (page === 1) {
                 setRooms(mappedRooms); 

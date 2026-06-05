@@ -2,7 +2,6 @@ package com.nhom34.repositories.impl;
 
 import com.nhom34.pojo.BookingsServiceDetail;
 import com.nhom34.pojo.HotelRoomServices;
-import com.nhom34.pojo.Reviews;
 import com.nhom34.pojo.Services;
 import com.nhom34.repositories.HotelRepository;
 import jakarta.persistence.Query;
@@ -22,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
-import org.hibernate.query.MutationQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -53,6 +51,7 @@ public class HotelRepositoryImpl implements HotelRepository {
         predicates.add(b.equal(services.get("status"), true));
 
         List<Order> orders = new ArrayList<>();
+        orders.add(b.desc(services.get("createdAt")));
 
         if (params != null) {
             String destination = params.get("destination");
@@ -123,7 +122,7 @@ public class HotelRepositoryImpl implements HotelRepository {
         
         if (params != null) {
             int page = Integer.parseInt(params.getOrDefault("page", "1"));
-            
+            if(page<=0) page=1;
             int pageSize = this.env.getProperty("service.pageSize", Integer.class);
             
             int start = (page - 1) * pageSize;
@@ -149,27 +148,8 @@ public class HotelRepositoryImpl implements HotelRepository {
     }
 
     @Override
-    public HotelRoomServices updatePartial(Map<String, String> params, Long id) {
+    public HotelRoomServices updatePartial(HotelRoomServices serv) {
         Session s = this.factory.getObject().getCurrentSession();
-        HotelRoomServices serv = this.getDetailServiceById(id);
-        
-        if(params.containsKey("price")){
-            serv.getServices().setPrice(Double.parseDouble(params.get("price")));
-        }
-        if(params.containsKey("slots")){
-            int preSlots = serv.getServices().getSlots();
-            int afterSlots = Integer.parseInt(params.get("slots"));
-            int addSlots = afterSlots-preSlots;
-            int availableSlots = serv.getServices().getAvailableSlots();
-            if(addSlots > 0) {
-                serv.getServices().setSlots(afterSlots);
-                serv.getServices().setAvailableSlots(availableSlots + addSlots);
-            }
-        }
-        if(params.containsKey("description")){
-            serv.getServices().setDescription(params.get("description"));
-        }
-        
         s.merge(serv);
         return serv;
     }
@@ -203,16 +183,9 @@ public class HotelRepositoryImpl implements HotelRepository {
     }
 
     @Override
-    public void updateHotelRate(Long hotelId, Double newRate) {
+    public void delete(HotelRoomServices serv) {
         Session s = this.factory.getObject().getCurrentSession();
-
-        String hql = "UPDATE HotelRoomServices h SET h.rate = :newRate WHERE h.id = :hotelId";
-        MutationQuery query = s.createMutationQuery(hql);
-
-        query.setParameter("newRate", newRate);
-        query.setParameter("hotelId", hotelId);
-        query.executeUpdate();
+        s.remove(serv);
     }
-
 
 }
