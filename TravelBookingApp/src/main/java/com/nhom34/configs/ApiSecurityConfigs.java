@@ -31,7 +31,8 @@ public class ApiSecurityConfigs {
                     .requestMatchers("/api/secure/customer/**").hasRole("CUSTOMER")
                     .requestMatchers("/api/secure/provider/**").hasRole("PROVIDER")
                     .requestMatchers("/api/secure/**").authenticated()
-                    .anyRequest().permitAll()
+                    .requestMatchers("/api/momo/ipn").permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

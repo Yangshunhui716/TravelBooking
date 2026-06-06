@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Nav, Navbar, Button, Badge } from "react-bootstrap";
 import { useContext } from "react";
-import { MyUserContext, MyCartContext, MyCompareContext } from "../configs/Context";
+import { MyUserContext, MyCartContext, MyCompareContext, MyMessageContext } from "../configs/Context";
 import ComponentStyle from "./ComponentStyle";
 
 const Header = () => {
@@ -9,6 +9,7 @@ const Header = () => {
     const [cart,] = useContext(MyCartContext);
     const [compareList] = useContext(MyCompareContext);
     const userRole = user?.users?.role;
+    const [unreadCount] = useContext(MyMessageContext);
 
     return (
         <Navbar expand="lg" className="py-3" style={ComponentStyle.navbar}>
@@ -79,7 +80,7 @@ const Header = () => {
                             </Link>
                         )}
                         <Link to="/conversations" style={ComponentStyle.navLink}>
-                            💬 Tin nhắn
+                            💬 Tin nhắn <Badge className="bg-danger">{unreadCount>99 ? '99+' : unreadCount}</Badge>
                         </Link>
                     </>
                 )}
