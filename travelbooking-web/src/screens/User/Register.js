@@ -98,7 +98,11 @@ const Register = () => {
             } catch (ex) {
                 console.error(ex);
                 if (ex.response && ex.response.data) {
-                    setErr(ex.response.data);
+                    if (typeof ex.response.data === 'string' && ex.response.data.includes('avatar') && ex.response.data.includes('not present')) {
+                        setErr("Vui lòng tải lên ảnh đại diện!");
+                    }else{
+                        setErr(ex.response.data);
+                    }
                 } else {
                     setErr("Đăng ký thất bại!");
                 }

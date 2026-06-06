@@ -37,7 +37,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     private void applyServiceTypeFilter(CriteriaBuilder cb, CriteriaQuery<?> query, Join<BookingsServiceDetail, Services> s, String serviceType, List<Predicate> predicates) {
         if (serviceType == null || "all".equals(serviceType)) return;
 
-        Subquery<Integer> subquery = query.subquery(Integer.class);
+        Subquery<Long> subquery = query.subquery(Long.class);
         Root<?> childRoot = null;
 
         switch (serviceType) {
@@ -47,9 +47,8 @@ public class StatisticRepositoryImpl implements StatisticRepository {
         }
 
         if (childRoot != null) {
-            subquery.select(cb.literal(1));
-            subquery.where(cb.equal(childRoot.get("services").get("id"), s.get("id")));
-            predicates.add(cb.exists(subquery));
+            subquery.select(childRoot.get("services").get("id")); 
+            predicates.add(s.get("id").in(subquery));
         }
     }
 

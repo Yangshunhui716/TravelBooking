@@ -41,7 +41,6 @@ public class HotelRoomServices implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "address")
     private String address;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "rate")
     private Double rate;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)

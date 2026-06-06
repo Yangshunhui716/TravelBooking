@@ -94,7 +94,7 @@ const ReviewSection = ({ reviews = [], onAddReview, user }) => {
                     aria-controls="collapse-reviews-list"
                     aria-expanded={showReviews}
                 >
-                    <span>{showReviews ? "▲ Thu gọn danh sách" : "▼ Xem tất cả đánh giá"}</span>
+                    <span>{showReviews ? " Thu gọn danh sách" : " Xem tất cả đánh giá"}</span>
                     <span className="badge bg-secondary text-white">{reviews.length}</span>
                 </Button>
             </div>

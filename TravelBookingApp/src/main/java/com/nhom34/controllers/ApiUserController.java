@@ -41,8 +41,11 @@ public class ApiUserController {
     }
     
     @PostMapping("/auth/register")
-    public ResponseEntity<Users> create(@RequestParam Map<String, String> info, 
+    public ResponseEntity<?> create(@RequestParam Map<String, String> info, 
             @RequestParam(value = "avatar") MultipartFile avatar) {
+        if(this.userService.getUserByUsername(info.get("username"))!=null){
+            return new ResponseEntity<>("Tên tài khoản đã tồn tại", HttpStatus.BAD_REQUEST);
+        }
         Users u = this.userService.addUser(info, avatar);
         return new ResponseEntity<>(u, HttpStatus.CREATED);
     }

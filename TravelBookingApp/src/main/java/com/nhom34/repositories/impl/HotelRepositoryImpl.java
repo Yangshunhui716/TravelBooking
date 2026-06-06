@@ -64,13 +64,24 @@ public class HotelRepositoryImpl implements HotelRepository {
             try {
                 Date startDate = null;
                 Date endDate = null;
-                if (startDateStr != null && !startDateStr.isEmpty() && endDateStr != null && !endDateStr.isEmpty()) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (startDateStr != null && !startDateStr.isEmpty()) {
                     startDate = sdf.parse(startDateStr);
-                    endDate = sdf.parse(endDateStr);
                 }else{
                     startDate = new Date();
+                }
+                if(endDateStr != null && !endDateStr.isEmpty()){
+                    Date temp = sdf.parse(endDateStr);
+                    if (startDate.after(temp)) {
+                        endDate = startDate;
+                        startDate = temp;
+                    }else{
+                        endDate = temp;
+                    }
+                }
+                else{
                     Calendar cal = Calendar.getInstance();
+                    cal.setTime(startDate);
                     cal.add(Calendar.DAY_OF_MONTH, 1);
                     endDate = cal.getTime();
                 }

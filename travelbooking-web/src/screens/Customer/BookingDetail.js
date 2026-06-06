@@ -66,7 +66,7 @@ const BookingDetail = () => {
     if (!booking)
     return (
         <Container className="mt-4" style={StaticStyle.baseHeight}>
-            <Alert variant="danger">
+            <Alert variant="warning">
                 Không tìm thấy booking!
             </Alert>
         </Container>
