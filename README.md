@@ -1,58 +1,91 @@
 # Travel Booking System
-A full-stack travel booking platform developed using **Spring MVC**, **Spring Security**, **ReactJS**, and **MySQL**. The system allows customers to search, compare, and book travel services online while enabling service providers and administrators to efficiently manage services, bookings, and business reports.
-## Technologies
+
+## Overview
+
+Travel Booking System is a web-based application developed to support customers in searching, comparing, and booking travel services online. The system provides three main roles: Administrator, Service Provider, and Customer.
+
+The application helps service providers manage travel services efficiently while allowing administrators to monitor system activities, manage users, and generate statistical reports.
+
+## Technologies Used
+
 ### Backend
+
 * Java
 * Spring MVC
 * Spring Security
-* Hibernate / JPA
+* Hibernate
 * Maven
+* JSP
+
 ### Frontend
 * ReactJS
-* Axios
-* React Router
 ### Database
+
 * MySQL
+
 ### Other Technologies
+
 * RESTful API
 * Firebase Realtime Database
+
+---
+
 ## Features
+
 ### Authentication & Authorization
+
 * User registration and login
+* User profile management
 * Avatar upload
-* Role-based access control
-* Service provider approval workflow
+* Role-based access control using Spring Security
+* Service provider approval by administrator
+
 ### Customer Features
+
 * Search travel services
-* Filter by location, date, service type, and price
-* Compare services
+* Filter services by location, departure date, service type, and price
+* Compare travel services
 * Book tours, hotels, and transportation tickets
 * View booking history
-* Rate and review services
+* Submit ratings and reviews
+
 ### Service Provider Features
-* Create, update, and delete services
-* Manage availability
+
+* Create travel services
+* Update service information
+* Delete services
+* Manage available slots
 * View customer bookings
 * Monitor service performance
 * Manage customer feedback
+
 ### Administrator Features
-* Manage users and providers
-* Monitor system activities
-* Generate reports and statistics
-* View revenue analytics
+
+* Manage users
+* Approve service providers
+* Monitor services
+* Generate reports
+* View system statistics
+
 ### Statistics & Reporting
+
 * Booking statistics
 * Revenue reports
 * Monthly, quarterly, and yearly analytics
-### Real-time Chat
-* Customer-provider communication
+
+### Real-Time Chat
+
+* Customer and provider communication
 * Firebase Realtime Database integration
+
+---
+
 ## System Architecture
 
 ```text
 ReactJS Frontend
         ↓
-    REST API
+    RESTful API
         ↓
 Spring MVC Backend
         ↓
@@ -67,26 +100,32 @@ Spring MVC Backend
 TravelBooking/
 │
 ├── TravelBookingApp/
-│   ├── components/
-│   ├── configs/
-│   ├── controllers/
-│   ├── dto/
-│   ├── filters/
-│   ├── pojo/
-│   ├── repositories/
-│   ├── services/
-│   ├── utils/
-│   ├── resources/
-│   └── webapp/
+│   └── src/main
+│       ├── java/com/nhom34
+│       │   ├── components
+│       │   ├── configs
+│       │   ├── controllers
+│       │   ├── dto
+│       │   ├── filters
+│       │   ├── pojo
+│       │   ├── repositories
+│       │   ├── services
+│       │   ├── travelbookingapp
+│       │   └── utils
+│       │
+│       ├── resources
+│       └── webapp
 │
 ├── travelbooking-web/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── configs/
-│   │   ├── reducers/
-│   │   └── screens/
-│   └── package.json
+│   ├── public
+│   ├── src
+│   │   ├── components
+│   │   ├── configs
+│   │   ├── reducers
+│   │   └── screens
+│   │
+│   ├── package.json
+│   └── yarn.lock
 │
 └── travelbookingdatabase.sql
 ```
@@ -95,13 +134,15 @@ TravelBooking/
 
 ## Installation
 
-### Clone Repository
+### Prerequisites
 
-```bash
-git clone https://github.com/lequanganit/TravelBooking.git
-```
+* JDK
+* Apache Tomcat
+* MySQL
+* Node.js
+* NetBeans IDE
 
-### Setup Database
+### Database Setup
 
 Create a MySQL database and import:
 
@@ -109,20 +150,25 @@ Create a MySQL database and import:
 travelbookingdatabase.sql
 ```
 
-### Run Backend
+### Backend Setup
 
-```bash
-cd TravelBookingApp
-mvn clean install
-mvn spring-boot:run
-```
+1. Open `TravelBookingApp` in NetBeans.
+2. Configure the MySQL database connection.
+3. Build the project using **Clean and Build**.
+4. Run the application using **Run Project (F6)** or deploy it to Apache Tomcat.
 
-### Run Frontend
+### Frontend Setup
 
 ```bash
 cd travelbooking-web
 npm install
 npm start
+```
+
+The React application will run on:
+
+```text
+http://localhost:3000
 ```
 
 ---
