@@ -122,9 +122,12 @@ TravelBooking/
 │   │   ├── components
 │   │   ├── configs
 │   │   ├── reducers
-│   │   └── screens
+│   │   ├── screens
+│   │   ├── App.js
+│   │   └── index.js
 │   │
 │   ├── package.json
+│   ├── package-lock.json
 │   └── yarn.lock
 │
 └── travelbookingdatabase.sql
