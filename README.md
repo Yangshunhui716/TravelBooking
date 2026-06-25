@@ -142,7 +142,6 @@ TravelBooking/
 * JDK
 * Apache Tomcat
 * MySQL
-* Node.js
 * NetBeans IDE
 
 ### Database Setup
